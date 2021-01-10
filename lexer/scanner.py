@@ -35,73 +35,20 @@ class Scanner:
             elif char == '\n':
                 self.linha += 1
 
-            # Delimitadores
-            elif char == '(':  # Parentese esquerdo
+            # Verificar se são tokens delimitadores ("(", ")", "{", "}")
+            elif char == '(' or char == ')' or char == '{' or char == '}':
                 self.tokens.append(
-                    Token("PLEFT", self.programa[self.inicio:self.atual], self.linha))
-
-            elif char == ')':  # Parentese direito
+                    Token(delimitadoresToken(char), self.programa[self.inicio:self.atual], self.linha))
+            
+            # Verificar se são tokens de operações aritméticas ("+", "-", "*", "/")
+            elif char == '+' or char == '-' or char == '*' or char == '/':
                 self.tokens.append(
-                    Token("PRIGHT", self.programa[self.inicio:self.atual], self.linha))
-
-            elif char == '{':  # Chaves esquerdo
+                    Token(opAritmeticaToken(char), self.programa[self.inicio:self.atual], self.linha)) 
+            
+            # Verificar se são tokens de operações booleanas ("=". "==", "!=", ">", "<", ">=", "<=")
+            elif char == '=' or char == '!' or char == '<' or char == '>':
                 self.tokens.append(
-                    Token("CLEFT", self.programa[self.inicio:self.atual], self.linha))
-
-            elif char == '}':  # Chaves direito
-                self.tokens.append(
-                    Token("CRIGHT", self.programa[self.inicio:self.atual], self.linha))
-
-            # Operações Aritméticas
-            elif char == '+':  # Soma
-                self.tokens.append(
-                    Token("ADD", self.programa[self.inicio:self.atual], self.linha))
-
-            elif char == '-':  # Subtração
-                self.tokens.append(
-                    Token("SUB", self.programa[self.inicio:self.atual], self.linha))
-
-            elif char == '*':  # Multiplicação
-                self.tokens.append(
-                    Token("MULT", self.programa[self.inicio:self.atual], self.linha))
-
-            elif char == '/':  # Divisão
-                self.tokens.append(
-                    Token("DIV", self.programa[self.inicio:self.atual], self.linha))
-
-            # Operações Booleanas
-            elif char == '=':  # Igual ou Atribuição
-                if self.lookAhead() == '=':  # == (comparação)
-                    self.atual += 1
-                    self.tokens.append(
-                        Token("EQUAL", self.programa[self.inicio:self.atual], self.linha))
-                else:  # = (atribuição)
-                    self.tokens.append(
-                        Token("ATB", self.programa[self.inicio:self.atual], self.linha))
-
-            elif char == '!':  # Diferente
-                if self.lookAhead() == '=':
-                    self.atual += 1
-                    self.tokens.append(
-                        Token("DIFF", self.programa[self.inicio:self.atual], self.linha))
-
-            elif char == '<':  # Menor ou igual, menor
-                if self.lookAhead() == '=':
-                    self.atual += 1
-                    self.tokens.append(
-                        Token("LESSEQUAL", self.programa[self.inicio:self.atual], self.linha))
-                else:
-                    self.tokens.append(
-                        Token("LESS", self.programa[self.inicio:self.atual], self.linha))
-
-            elif char == '>':  # Maior ou igual, Maior
-                if self.lookAhead() == '=':
-                    self.atual += 1
-                    self.tokens.append(
-                        Token("GREATEREQUAL", self.programa[self.inicio:self.atual], self.linha))
-                else:
-                    self.tokens.append(
-                        Token("GREATER", self.programa[self.inicio:self.atual], self.linha))
+                    Token(opBolleanaToken(char), self.programa[self.inicio:self.atual], self.linha))
 
             # Separador
             elif char == ',':  # Virgula
@@ -132,10 +79,67 @@ class Scanner:
                 print('Invalid character in line:', self.linha)
                 exit(2)
 
+    def delimitadoresToken(char):
+        # Delimitadores
+        if char == '(':  # Parentese esquerdo
+            return "PLEFT"
+
+        elif char == ')':  # Parentese direito
+            return "PRIGHT"
+
+        elif char == '{':  # Chaves esquerdo
+            return "CLEFT"
+
+        elif char == '}':  # Chaves direito
+            return "CRIGHT"
+
+    def opAritmeticaToken(char):
+        # Operações Aritméticas
+        if char == '+':  # Soma
+            return "ADD"
+
+        elif char == '-':  # Subtração
+            return "SUB"
+
+        elif char == '*':  # Multiplicação
+            return "MULT"
+
+        elif char == '/':  # Divisão
+            return "DIV"
+
+    def opBolleanaToken(char):
+        # Operações Booleanas
+        if char == '=':  # Igual ou Atribuição
+            if self.lookAhead() == '=':  # == (comparação)
+                self.atual += 1
+                return "EQUAL"
+
+            else:  # = (atribuição)
+                return "ATB"
+
+        elif char == '!':  # Diferente ("!=")
+            if self.lookAhead() == '=':
+                self.atual += 1
+                return "DIFF"
+
+        elif char == '<':  # Menor ou igual, menor
+            if self.lookAhead() == '=': # ("<= ")
+                self.atual += 1
+                return "LESSEQUAL"
+                
+            else:   # ("<")
+                return "LESS"
+
+        elif char == '>':  # Maior ou igual, Maior
+            if self.lookAhead() == '=': #(">=")
+                self.atual += 1
+                return "GREATEREQUAL"
+            else:   #(">")
+                return "GREATER"
+                
     def scanReserved(self):
         for i in self.tokens:
             if(i.tipo == 'ID'):
-
                 # Inicio do programa
                 if(i.lexema == 'program'):
                     i.tipo = "PROGRAM"
