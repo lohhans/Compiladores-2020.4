@@ -1,4 +1,4 @@
-from token import Token
+from lexer.token import Token
 
 class Scanner:
 
@@ -19,7 +19,6 @@ class Scanner:
     # chama o buscador de token de palavras reservadas
     def scan(self):
         self.scanTokens()
-        self.tokens.append(Token("END", '', self.linha))
         self.scanReserved()
         return self.tokens
 
@@ -38,17 +37,17 @@ class Scanner:
             # Verificar se são tokens delimitadores ("(", ")", "{", "}")
             elif char == '(' or char == ')' or char == '{' or char == '}':
                 self.tokens.append(
-                    Token(delimitadoresToken(char), self.programa[self.inicio:self.atual], self.linha))
+                    Token(self.delimitadoresToken(char), self.programa[self.inicio:self.atual], self.linha))
             
             # Verificar se são tokens de operações aritméticas ("+", "-", "*", "/")
             elif char == '+' or char == '-' or char == '*' or char == '/':
                 self.tokens.append(
-                    Token(opAritmeticaToken(char), self.programa[self.inicio:self.atual], self.linha)) 
+                    Token(self.opAritmeticaToken(char), self.programa[self.inicio:self.atual], self.linha)) 
             
             # Verificar se são tokens de operações booleanas ("=". "==", "!=", ">", "<", ">=", "<=")
             elif char == '=' or char == '!' or char == '<' or char == '>':
                 self.tokens.append(
-                    Token(opBolleanaToken(char), self.programa[self.inicio:self.atual], self.linha))
+                    Token(self.opBolleanaToken(char), self.programa[self.inicio:self.atual], self.linha))
 
             # Separador
             elif char == ',':  # Virgula
@@ -79,7 +78,7 @@ class Scanner:
                 print('Invalid character in line:', self.linha)
                 exit(2)
 
-    def delimitadoresToken(char):
+    def delimitadoresToken(self, char):
         # Delimitadores
         if char == '(':  # Parentese esquerdo
             return "PLEFT"
@@ -93,7 +92,7 @@ class Scanner:
         elif char == '}':  # Chaves direito
             return "CRIGHT"
 
-    def opAritmeticaToken(char):
+    def opAritmeticaToken(self, char):
         # Operações Aritméticas
         if char == '+':  # Soma
             return "ADD"
@@ -107,7 +106,7 @@ class Scanner:
         elif char == '/':  # Divisão
             return "DIV"
 
-    def opBolleanaToken(char):
+    def opBolleanaToken(self, char):
         # Operações Booleanas
         if char == '=':  # Igual ou Atribuição
             if self.lookAhead() == '=':  # == (comparação)

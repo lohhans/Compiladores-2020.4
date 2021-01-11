@@ -1,6 +1,23 @@
-program{
+program {
+
     func int soma(int a, int b){
         int c = a + b;
         return c;
     }
-}
+
+    boolean d = false;
+
+    func boolean returnFalse(d){
+        bool e = d;
+        return e;
+    }
+    
+    proc soma (int a, int b){
+        int c = a + b;
+        print (c);
+    }
+
+    int a = 1;
+    int b = 2;
+
+ } end
