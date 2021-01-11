@@ -37,15 +37,15 @@
 
 # ----------------- Função ------------------------------------------------------
 
-<declaration_func> ::= func <type> <identifier> (<params>) { <block> <return_statement>} <block>
+<declaration_func> ::= func <type> <identifier> (<params>) { <block> <return_statement>}
 
 <call_func> ::= call func <identifier> (<params_call>)
 
 # ----------------- Procedimento ------------------------------------------------------
 
-<declaration_proc> ::= proc <identifier> (<params>) { <block> } <block>
+<declaration_proc> ::= proc <identifier> (<params>) { <block> }
 
-<call_proc> ::= call proc <identifier> (<params_call>); <block>
+<call_proc> ::= call proc <identifier> (<params_call>);
 
 # ----------------- Operações ------------------------------------------------------
 
@@ -71,14 +71,14 @@
 
 # ----------------- Condicional ------------------------------------------------------
 
-<if_statement> ::= if(<expression>){<block>} <else_part> endif <block>
+<if_statement> ::= if(<expression>){<<block3>>} <else_part> endif
 
-<else_part> ::= else { <block> } endelse | <empty>
+<else_part> ::= else { <<block3>> } endelse | <empty>
  
-<while_statement> ::= while(<expression>){<block2>}endwhile <block>
+<while_statement> ::= while(<expression>){<block2>}endwhile
 
 # IF chamado somente dentro do while, pois dentro dele pode ter BREAK E CONTINUE (block2)
-<if_statement2> ::= if(<expression>){<block2>} <else_part> endif <block2>
+<if_statement2> ::= if(<expression>){<block2>} <else_part> endif
 
 # ----------------- Incondicional ------------------------------------------------------
 
@@ -99,7 +99,11 @@
 
 # ----------------- Blocos ------------------------------------------------------
 
-<block> ::= <declaration_func> | <declaration_proc> | <declaration_var> | <call_proc> | <call_func> | <identifier> | <if_statement> | <while_statement> | <print_statement> | <empty> 
+<block> ::= <declaration_func> | <declaration_proc> | <declaration_var> | <call_proc> | <call_func> | <identifier> | <if_statement> | <while_statement> | <print_statement> | 
+<call_op> | <empty> 
 
 # block2 é o bloco que contém break/continue que só pode ser chamado dentro de um while
-<block2> ::= <declaration_func> | <declaration_proc> | <declaration_var> | <call_proc> | <call_func> | <identifier> | <if_statement2> | <while_statement> | <unconditional_branch> | <print_statement> 
+<block2> ::= <declaration_var> | <call_proc> | <call_func> | <identifier> | <if_statement2> | <while_statement> | <unconditional_branch> | <call_op> | <print_statement> 
+
+# block3 é o bloco do if/else, que não pode declarar função e procedimento dentro
+<block3> ::= <declaration_var> | <call_proc> | <call_func> | <identifier> | <if_statement2> | <while_statement> | <call_op> | <print_statement> 
