@@ -179,13 +179,25 @@ class Scanner:
                 elif(i.lexema == 'if'):
                     i.tipo = 'IF'
 
+                # Identificador de fim do IF
+                elif(i.lexema == 'endif'):
+                    i.tipo = 'ENDIF'
+
                 # Condicional ELSE
                 elif(i.lexema == 'else'):
                     i.tipo = 'ELSE'
 
+                # Identificador de fim do ELSE
+                elif(i.lexema == 'endelse'):
+                    i.tipo = 'ENDELSE'
+
                 # Condicional WHILE
                 elif(i.lexema == 'while'):
                     i.tipo = 'WHILE'
+
+                # Identificador de fim do WHILE
+                elif(i.lexema == 'endwhile'):
+                    i.tipo = 'ENDWHILE'
 
                  # Escrita na tela
                 elif(i.lexema == 'print'):

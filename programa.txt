@@ -17,6 +17,13 @@ program {
         print (c);
     }
 
+    if(a>b){
+        print (a);
+    }endif
+    else{
+        print (b);
+    }endelse
+
     int a = 1;
     int b = 2;
 
