@@ -22,7 +22,7 @@
 
 <declaration_var> ::= <type> <identifier> = <end_var>;
 
-<end_var> ::= = <call_fuction> | <identifier> | <boolean> | <call_op> | <num>
+<end_var> ::= = <call_func> | <identifier> | <boolean> | <call_op> | <num>
 
 # ----------------- Parametros ------------------------------------------------------
 
@@ -39,21 +39,23 @@
 
 <declaration_func> ::= func <type> <identifier> (<params>) { <block> <return_statement>} <block>
 
-<call_fuction> ::= func <identifier> (<params_call>)
+<call_func> ::= call func <identifier> (<params_call>)
 
 # ----------------- Procedimento ------------------------------------------------------
 
 <declaration_proc> ::= proc <identifier> (<params>) { <block> } <block>
 
-<call_proc> ::= proc <identifier> (<params_call>); <block>
+<call_proc> ::= call proc <identifier> (<params_call>); <block>
 
 # ----------------- Operações ------------------------------------------------------
 
 <call_op> ::= <num> <op_aritmetic> <call_op2> | <identifier> <op_aritmetic> <call_op2>
 
-<call_op2> ::= <num> | <identifier> | <identifier> (<op_aritmetic> <call_op3>)* | <num> (<op_aritmetic> <call_op3>)*
+<call_op2> ::= <num> <call_op4> | <identifier> <call_op4>
 
 <call_op3> ::= <call_op2> | <num> 
+
+<call_op4> ::= (<op_aritmetic> <call_op3>)* | <empty>
 
 # ----------------- Start ------------------------------------------------------
 
@@ -97,7 +99,7 @@
 
 # ----------------- Blocos ------------------------------------------------------
 
-<block> ::= <declaration_func> | <declaration_proc> | <declaration_var> | <call_proc> | <identifier> | <if_statement> | <while_statement> | <print_statement> | <empty> 
+<block> ::= <declaration_func> | <declaration_proc> | <declaration_var> | <call_proc> | <call_func> | <identifier> | <if_statement> | <while_statement> | <print_statement> | <empty> 
 
 # block2 é o bloco que contém break/continue que só pode ser chamado dentro de um while
-<block2> ::= <declaration_func> | <declaration_proc> | <declaration_var> | <call_proc> | <identifier> | <if_statement2> | <while_statement> | <unconditional_branch> | <print_statement> 
+<block2> ::= <declaration_func> | <declaration_proc> | <declaration_var> | <call_proc> | <call_func> | <identifier> | <if_statement2> | <while_statement> | <unconditional_branch> | <print_statement> 
