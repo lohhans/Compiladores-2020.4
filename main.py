@@ -18,11 +18,11 @@ if __name__ == '__main__':
 
     tabelaDeTokens = lexer.scan()
 
-    for i in tabelaDeTokens:
-        print(i.lexema)
-
     # for i in tabelaDeTokens:
-    #     print(i)
+    #     print(i.lexema)
+
+    for i in tabelaDeTokens:
+        print(i)
     
     AnalisadorSintatico(tabelaDeTokens)
 

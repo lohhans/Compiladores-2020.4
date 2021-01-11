@@ -27,4 +27,6 @@ program {
     int a = 1;
     int b = 2;
 
+    call func returnFalse(d);
+
  } end
