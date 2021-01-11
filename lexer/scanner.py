@@ -155,6 +155,10 @@ class Scanner:
                 elif(i.lexema == 'proc'):
                     i.tipo = "PROC"
 
+                # Identificador de chamada para proc e func
+                elif(i.lexema == 'call'):
+                    i.tipo = "CALL"
+
                 # Identificador de inteiros
                 elif(i.lexema == 'int'):
                     i.tipo = 'INT'
