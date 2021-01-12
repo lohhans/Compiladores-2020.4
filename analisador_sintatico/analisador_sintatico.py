@@ -2,33 +2,30 @@ class AnalisadorSintatico:
     def __init__(self, tabelaDeTokens):
         self.tabelaDeTokens = tabelaDeTokens
         self.indexDaTabelaDeTokens = 0
-        self.erro = False
 
     def statement_list(self):
-        if(self.tokenAtual().tipo == "END"):
-            self.listaEscopos[0].fechar()
-            return
-
-        elif(self.tokenAtual().tipo == "PROGRAM"):
+        if(self.tokenAtual().tipo == "PROGRAM"):
             self.indexToken +=1
             if(self.tokenAtual().tipo == "CLEFT"):
                 self.indexToken += 1
                 if(block() == True):    # tem algo no block para rodar
                     self.statement()
-                self.statement_list()
-                return
+                    self.statement_list()
+                
                 else:                   # bloco vazio
                     if(self.tokenAtual().tipo == "CRIGHT"):
-                        self.indexToken += 1
+                        self.indexDaTabelaDeTokens += 1
                         if(self.tokenAtual().tipo == "END"):
                             self.listaEscopos[0].fechar()
                             # Deu certo
-                        # else falta o end
-                    #else falta fechar CRIGHT
-            return   
-
+                        else:
+                            raise Exception('Erro sintatico: falta do END na linha ' + str(self.tokenAtual().linha))
+                    else:
+                        raise Exception('Erro sintatico: falta do CRIGHT na linha ' + str(self.tokenAtual().linha))
+            else:
+                raise Exception('Erro sintatico: falta do CLEFT na linha ' + str(self.tokenAtual().linha))
         else:
-            # Tratar erro
+            # TODO: Tratar erro
             self.listaEscopos[0].fechar()
             return
             
@@ -44,7 +41,13 @@ class AnalisadorSintatico:
                 self.indexToken +=1
                 if(self.tokenAtual().tipo == 'ATTR'):   #atribuicao
                     self.indexToken +=1
-                    # aqui vem o end_var
+                    # TODO: aqui vem o end_var
+                else:
+                    raise Exception('Erro sintatico: falta da atribuição na linha ' + str(self.tokenAtual().linha))
+            else:
+                raise Exception('Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
+        else:
+            return
 
     # <declaration_func>
     def declaration_func_statement(self):
@@ -60,7 +63,13 @@ class AnalisadorSintatico:
                 if(self.tokenAtual().tipo == 'ID' and self.tokenAtual().lexema[0] == 'func'):#identificador
                     temp.append(self.tokenAtual().lexema)
                     self.indexToken += 1                  
-                    #(params)
+                    #(params) TODO: criar metodo
+                else:
+                    raise Exception('Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
+            else:
+                raise Exception('Erro sintatico: falta do type na linha ' + str(self.tokenAtual().linha))
+        else:
+            return
 
     # <call_func>
     def call_func_statement(self):
@@ -75,7 +84,11 @@ class AnalisadorSintatico:
                 escopoDaFuncao = self.indexEscopoAtual
                 escopoForaDaFunc = self.indexEscopoAtual
                 self.indexToken += 1
-                #<identifier> (<params_call>)
+                #<identifier> (<params_call>)   TODO: fazer metodo
+            else:
+                raise Exception('Erro sintatico: falta do FUNC na linha ' + str(self.tokenAtual().linha))
+        else:
+            return
 
     # <declaration_proc>
     def declaration_proc_statement(self):
@@ -85,7 +98,9 @@ class AnalisadorSintatico:
             escopoDoProcecimento = self.indexEscopoAtual
             escopoForaDoProc = self.indexEscopoAtual
             self.indexToken += 1
-            #<identifier> (<params>) { <block> }
+            #<identifier> (<params>) { <block> } TODO: fazer método
+        else:
+            return
     
     # <call_proc>
     def call_proc_statement(self):
@@ -100,8 +115,52 @@ class AnalisadorSintatico:
                 escopoDaFuncao = self.indexEscopoAtual
                 escopoForaDaFunc = self.indexEscopoAtual
                 self.indexToken += 1
-                #<identifier> (<params_call>)
+                #<identifier> (<params_call>) TODO: Fazer método
+            else:
+                raise Exception('Erro sintatico: falta do PROC na linha ' + str(self.tokenAtual().linha))
+        else:
+            return
 
+    # <print_statement>
+    def print_statement(self):
+        if(self.tokenAtual().tipo == 'PRINT'):
+            temp = []
+            temp.append('PRINT')
+            escopoDaFuncao = self.indexEscopoAtual
+            escopoForaDaFunc = self.indexEscopoAtual
+            self.indexToken += 1
+            if(self.tokenAtual().tipo == 'PLEFT'):
+                temp.append('PLEFT')
+                self.indexToken += 1
+                if(self.tokenAtual().tipo == ''): # <params_print>
+                    temp.append('') # <params_print>
+                    self.indexToken += 1
+                    params_print_statement() # TODO: Criação do método
+                    
+                    if(self.tokenAtual().tipo == 'PRIGHT'):
+                        temp.append('PRIGHT')
+                        self.indexToken += 1
+                        if(self.tokenAtual().tipo == 'SEMICOLON'):
+                            temp.append('SEMICOLON')
+                            self.indexToken += 1
+                        else:
+                            raise Exception('Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
+                    else:
+                        raise Exception('Erro sintatico: falta do Parentese direito na linha ' + str(self.tokenAtual().linha))
+                else:
+                    raise Exception('Erro sintatico: sem argumento no Print na linha ' + str(self.tokenAtual().linha))
+            else:
+                raise Exception('Erro sintatico: falta do Parentese esquerdo na linha  ' + str(self.tokenAtual().linha))
+        else:
+            return        
+    
+            #<print_statement> ::= print (<params_print>) ; <block>
+            #<params_print> ::= <identifier> | <call_func> | <call_op> | <boolean> | <num>
+
+    
+
+    #TODO: funções que faltam
+    
     # def block
     # def params
     # <params_call>
@@ -113,6 +172,6 @@ class AnalisadorSintatico:
     # <if_statement> 
     # <else_part> 
     # <unconditional_branch>
-    # <print_statement>
+    
 
 

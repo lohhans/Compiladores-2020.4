@@ -95,7 +95,7 @@
 
 <print_statement> ::= print (<params_print>) ; <block>
 
-<params_print> ::= <identifier> | <call_func> | <call_op> | <boolean>
+<params_print> ::= <identifier> | <call_func> | <call_op> | <boolean> | <num>
 
 # ----------------- Blocos ------------------------------------------------------
 
