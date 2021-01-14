@@ -264,3 +264,4 @@ class AnalisadorSintatico:
     # <program> ::= program { <block> } end
     # <expression>
     # <unconditional_branch>
+    # <while_statement> ::= while(<expression>){<block2>}endwhile
