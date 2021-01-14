@@ -228,16 +228,39 @@ class AnalisadorSintatico:
     # <else_part>
     def else_part_statement(self):
         if(self.tokenAtual().tipo == 'ELSE'):
+            temp = []
+            temp.append('ELSE')
             self.indexToken += 1
+            if(self.tokenAtual().tipo == 'CLEFT'):
+                self.indexToken += 1
 
-        # TODO: funções que faltam
+                # <block2> TODO: criar metodo
 
-        # def block
-        # def params
-        # <params_call>
-        # def end_var
-        # def <return_statement>
-        # <identifier> (variavel)
-        # <program> ::= program { <block> } end
-        # <expression>
-        # <unconditional_branch>
+                if(self.tokenAtual().tipo == 'CRIGHT'):
+                    self.indexToken += 1
+
+                    if(self.tokenAtual().tipo == 'ENDELSE'):
+                        self.indexToken += 1
+
+                    else:
+                        raise Exception(
+                            'Erro sintatico: falta de ENDIF ' + str(self.tokenAtual().linha))
+                else:
+                    raise Exception(
+                        'Erro sintatico: falta do CRIGHT na linha ' + str(self.tokenAtual().linha))
+            else:
+                raise Exception(
+                    'Erro sintatico: falta do CLEFT na linha ' + str(self.tokenAtual().linha))
+        else:
+            return
+
+    # TODO: funções que faltam
+    # def block
+    # def params
+    # <params_call>
+    # def end_var
+    # def <return_statement>
+    # <identifier> (variavel)
+    # <program> ::= program { <block> } end
+    # <expression>
+    # <unconditional_branch>
