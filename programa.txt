@@ -1,13 +1,21 @@
 program {
 
-    func int soma(int a, int b){
-        int c = a + b;
+    int num1 = 1;
+    int num2 = 2;
+
+    boolean b = false;
+
+    func int soma(int recNumero1, int recNumero2){
+        int c = recNumero1 + recNumero2;
         return c;
     }
 
-    boolean d = false;
+    func int somaSemParams(){
+        int resultadoSemParams = num1 + num2;
+        return resultadoSemParams;
+    }
 
-    func boolean returnFalse(d){
+    func boolean retornaBooleanoRecebido(b){
         bool e = d;
         return e;
     }
@@ -24,9 +32,7 @@ program {
         print (b);
     }endelse
 
-    int a = 1;
+    
     int b = 2;
-
-    call func returnFalse(d);
 
  } end

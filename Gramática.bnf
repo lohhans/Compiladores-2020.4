@@ -71,9 +71,9 @@
 
 # ----------------- Condicional ------------------------------------------------------
 
-<if_statement> ::= if(<expression>){<<block3>>} <else_part> endif
+<if_statement> ::= if(<expression>){<block3>} <else_part> endif
 
-<else_part> ::= else { <<block3>> } endelse | <empty>
+<else_part> ::= else { <block3> } endelse | <empty>
  
 <while_statement> ::= while(<expression>){<block2>}endwhile
 

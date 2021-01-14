@@ -23,8 +23,8 @@ if __name__ == '__main__':
 
     for i in tabelaDeTokens:
         print(i)
-    
-    AnalisadorSintatico(tabelaDeTokens)
+
+    analisadorSintatico = AnalisadorSintatico(tabelaDeTokens)
 
 else:
     print('me executou como um módulo')
