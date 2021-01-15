@@ -293,6 +293,41 @@ class AnalisadorSintatico:
         else:
             return
 
+    # <while_statement> ::= while(<expression>){<block2>}endwhile
+    def while_statement(self):
+        if(self.tokenAtual().tipo == 'WHILE'):
+            temp = []
+            temp.append('WHILE')
+            self.indexToken += 1
+            if(self.tokenAtual().tipo == 'PLEFT'):
+                self.indexToken+=1
+                # <expression> TODO: fazer método
+
+                if(self.tokenAtual().tipo == 'PRIGHT'):
+                    self.indexToken+=1
+                    if(self.tokenAtual().tipo == 'CLEFT'):
+                        self.indexToken += 1
+
+                    # Block while TODO: criar metodo com break e continue
+
+                        if (self.tokenAtual().tipo == 'ENDWHILE')
+                            temp = []
+                            temp.append('WHILE')
+                            self.indexToken += 1
+                        
+                        else:
+                            raise Exception(
+                                'Erro sintatico: falta de ENDWHILE ' + str(self.tokenAtual().linha))
+                    else:
+                        raise Exception(
+                            'Erro sintatico: falta do CRIGHT na linha ' + str(self.tokenAtual().linha))
+                else:
+                    raise Exception(
+                        'Erro sintatico: falta do PRIGHT na linha ' + str(self.tokenAtual().linha))
+            else:
+                raise Exception(
+                    'Erro sintatico: falta do PLEFT na linha ' + str(self.tokenAtual().linha))
+
     # TODO: funções que faltam
     # def params
     # <params_call>
@@ -302,4 +337,4 @@ class AnalisadorSintatico:
     # <program> ::= program { <block> } end
     # <expression>
     # <unconditional_branch>
-    # <while_statement> ::= while(<expression>){<block2>}endwhile
+    
