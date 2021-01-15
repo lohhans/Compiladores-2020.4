@@ -8,9 +8,8 @@ class AnalisadorSintatico:
             self.indexToken += 1
             if(self.tokenAtual().tipo == "CLEFT"):
                 self.indexToken += 1
-                if(block() == True):    # tem algo no block para rodar
-                    self.statement()
-                    self.statement_list()
+                if(block_statement(self) == True):    # tem algo no block para rodar
+                    block_statement(self)
 
                 else:                   # bloco vazio
                     if(self.tokenAtual().tipo == "CRIGHT"):
@@ -31,6 +30,46 @@ class AnalisadorSintatico:
             # TODO: Tratar erro
             self.listaEscopos[0].fechar()
             return
+
+    # <block>
+    def block_statement(self):
+        # <declaration_var>
+        if (self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):
+            declaration_var(self)
+            return True
+        # <declaration_func>
+        elif (self.tokenAtual().tipo == 'FUNC'):
+            declaration_func_statement(self)
+            return True
+        # <declaration_proc>
+        elif (self.tokenAtual().tipo == 'PROC'):
+            declaration_proc_statement(self)
+            return True
+        elif (self.tokenAtual().tipo == 'CALL'):
+            self.indexToken += 1
+            # <call_func>
+            if (self.tokenAtual().tipo == 'FUNC'):
+                call_func_statement(self)
+                return True
+             # <call_proc>
+            elif (self.tokenAtual().tipo == 'PROC'):
+                call_proc_statement(self)
+                return True
+            else:
+                raise Exception(
+                    'Erro sintatico: falta de PROC ou FUNC' + str(self.tokenAtual().linha))
+
+        # <print_statement>
+        elif (self.tokenAtual().tipo == 'PRINT'):
+            print_statement(self)
+            return True
+
+        # <if_statement>
+        elif (self.tokenAtual().tipo == 'IF'):
+            if_statement(self)
+            return True
+        
+        TODO: Colocar os outros métodos
 
     # <declaration_var>
     def declaration_var_statement(self):
@@ -255,7 +294,6 @@ class AnalisadorSintatico:
             return
 
     # TODO: funções que faltam
-    # def block
     # def params
     # <params_call>
     # def end_var
