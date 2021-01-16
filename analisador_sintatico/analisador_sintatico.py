@@ -89,7 +89,6 @@ class AnalisadorSintatico:
                 self.end_var_statement()        # o que tem dentro da variavel
                 if(self.tokenAtual().tipo == 'SEMICOLON'):
                     self.indexDaTabelaDeTokens += 1
-
                     return
                 else:
                     raise Exception(
@@ -100,8 +99,8 @@ class AnalisadorSintatico:
         else:
             raise Exception(
                 'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
-    # <end_var>
 
+    # <end_var>
     def end_var_statement(self):
         #  <call_func> | <call_op>
         if (self.tokenAtual().tipo == 'CALL'):
@@ -109,9 +108,11 @@ class AnalisadorSintatico:
             # <call_func>
             if (self.tokenAtual().tipo == 'FUNC'):
                 self.call_func_statement()
+                self.indexDaTabelaDeTokens += 1
              # <call_proc>
             elif (self.tokenAtual().tipo == 'PROC'):
                 self.call_proc_statement()
+                self.indexDaTabelaDeTokens += 1
             else:
                 raise Exception(
                     'Erro sintatico: chamada de função ou procedimento erroneamente na linha ' + str(self.tokenAtual().linha))
@@ -126,15 +127,32 @@ class AnalisadorSintatico:
                     'Erro sintatico: boolean atribuido erroneamente na linha ' + str(self.tokenAtual().linha))
         # <num>
         if (self.tokenAtual().tipo == "NUM"):
-            if (self.tokenAtual().lexema >= '0' and self.tokenAtual().lexema <= '9'):
+            if (self.tokenAtuaal().lexema >= '0' and self.tokenAtual().lexema <= '9'):
                 self.indexDaTabelaDeTokens += 1
                 return
             else:
                 raise Exception(
                     'Erro sintatico: int atribuido erroneamente na linha ' + str(self.tokenAtual().linha))
 
+         # <identifier>
+        if (self.tokenAtual().tipo == 'ID'):
+            self.identifier_statement()
+            self.indexDaTabelaDeTokens += 1
+
+        else:
+            raise Exception(
+                'Erro sintatico: atribuição de variavel erroneamente na linha ' + str(self.tokenAtual().linha))
+
     # <identifier>
     def identifier_statement(self):
+        # <letter>
+        if (self.tokenAtual().tipo == "NUM"):
+            if (self.tokenAtual().lexema >= '0' and self.tokenAtual().lexema <= '9'):
+                self.indexDaTabelaDeTokens += 1
+                return
+            else:
+                raise Exception(
+                    'Erro sintatico: int atribuido erroneamente na linha ' + str(self.tokenAtual().linha))
         return
         # <identifier> ::= <letter> (<letter> | <num>)*
 
@@ -318,6 +336,5 @@ class AnalisadorSintatico:
     # <params_call>
     # def <return_statement>
     # <identifier> (variavel)
-    # <program> ::= program { <block> } end
     # <expression>
     # <unconditional_branch>
