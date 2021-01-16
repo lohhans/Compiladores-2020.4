@@ -39,7 +39,7 @@
 
 <declaration_func> ::= func <type> <identifier> (<params>) { <block> <return_statement>}
 
-<call_func> ::= call func <identifier> (<params_call>)
+<call_func> ::= call func <identifier> (<params_call>);
 
 # ----------------- Procedimento ------------------------------------------------------
 
