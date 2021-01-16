@@ -162,7 +162,18 @@ class AnalisadorSintatico:
             # identificador
             if(self.tokenAtual().tipo == 'ID' and self.tokenAtual().lexema[0] == 'func'):
                 self.indexDaTabelaDeTokens += 1
-                # (params) TODO: criar metodo
+                if(self.tokenAtual().tipo == 'PLEFT'):
+                    self.indexDaTabelaDeTokens += 1
+                    # (params) TODO: criar metodo
+
+                    if(self.tokenAtual().tipo == 'CLEFT'):
+                        self.indexDaTabelaDeTokens += 1
+                        # <block> <return_statement> TODO: criar metodos
+
+                    else:
+                        raise Exception('Erro sintatico: falta do chave esquerda na linha ' + str(self.tokenAtual().linha))
+                else:
+                    raise Exception('Erro sintatico: falta do parentese esquerdo na linha ' + str(self.tokenAtual().linha))
             else:
                 raise Exception(
                     'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
@@ -177,8 +188,26 @@ class AnalisadorSintatico:
 
     # <declaration_proc>
     def declaration_proc_statement(self):
+        # <declaration_proc> ::= proc <identifier> (<params>) { <block> }
         self.indexDaTabelaDeTokens += 1
-        # <identifier> (<params>) { <block> } TODO: fazer método
+        # identificador
+        if(self.tokenAtual().tipo == 'ID' and self.tokenAtual().lexema[0] == 'proc'):
+            self.indexDaTabelaDeTokens += 1
+            if(self.tokenAtual().tipo == 'PLEFT'):
+                self.indexDaTabelaDeTokens += 1
+                # (params) TODO: criar metodo
+
+                if(self.tokenAtual().tipo == 'CLEFT'):
+                    self.indexDaTabelaDeTokens += 1
+                    # <block> TODO: colocar o bloco
+
+                else:
+                    raise Exception('Erro sintatico: falta do chave esquerda na linha ' + str(self.tokenAtual().linha))
+            else:
+                raise Exception('Erro sintatico: falta do parentese esquerdo na linha ' + str(self.tokenAtual().linha))
+        else:
+            raise Exception(
+                'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
 
     # <call_proc>
     def call_proc_statement(self):
