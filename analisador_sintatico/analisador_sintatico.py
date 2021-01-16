@@ -44,25 +44,21 @@ class AnalisadorSintatico:
         # <declaration_var>
         if (self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):
             self.declaration_var_statement()
-            return True
         # <declaration_func>
         elif (self.tokenAtual().tipo == 'FUNC'):
             self.declaration_func_statement()
-            return True
         # <declaration_proc>
         elif (self.tokenAtual().tipo == 'PROC'):
             self.declaration_proc_statement()
-            return True
+        # Chamadas de função e procedimentos
         elif (self.tokenAtual().tipo == 'CALL'):
             self.indexDaTabelaDeTokens += 1
             # <call_func>
             if (self.tokenAtual().tipo == 'FUNC'):
                 self.call_func_statement()
-                return True
             # <call_proc>
             elif (self.tokenAtual().tipo == 'PROC'):
                 self.call_proc_statement()
-                return True
             else:
                 raise Exception(
                     'Erro sintatico: falta de PROC ou FUNC' + str(self.tokenAtual().linha))
@@ -70,12 +66,14 @@ class AnalisadorSintatico:
         # <print_statement>
         elif (self.tokenAtual().tipo == 'PRINT'):
             self.print_statement()
-            return True
 
         # <if_statement>
         elif (self.tokenAtual().tipo == 'IF'):
             self.if_statement()
-            return True
+
+        # <while_statement>
+        elif (self.tokenAtual().tipo == 'WHILE'):
+            while_statement(self):
 
         # TODO: Colocar os outros métodos
 
@@ -174,162 +172,132 @@ class AnalisadorSintatico:
 
     # <call_func>
     def call_func_statement(self):
-        if(self.tokenAtual().tipo == 'CALL'):
-            self.indexDaTabelaDeTokens += 1
-            if(self.tokenAtual().tipo == 'FUNC'):
-                self.indexDaTabelaDeTokens += 1
-                # <identifier> (<params_call>)   TODO: fazer metodo
-            else:
-                raise Exception(
-                    'Erro sintatico: falta do FUNC na linha ' + str(self.tokenAtual().linha))
-        else:
-            return
+        self.indexDaTabelaDeTokens += 1
+        # <identifier> (<params_call>)   TODO: fazer metodo
 
     # <declaration_proc>
     def declaration_proc_statement(self):
-        if(self.tokenAtual().tipo == 'PROC'):
-            self.indexDaTabelaDeTokens += 1
-            # <identifier> (<params>) { <block> } TODO: fazer método
-        else:
-            return
+        self.indexDaTabelaDeTokens += 1
+        # <identifier> (<params>) { <block> } TODO: fazer método
 
     # <call_proc>
     def call_proc_statement(self):
-        if(self.tokenAtual().tipo == 'CALL'):
-            self.indexDaTabelaDeTokens += 1
-            if(self.tokenAtual().tipo == 'PROC'):
-                self.indexDaTabelaDeTokens += 1
-                # <identifier> (<params_call>) TODO: Fazer método
-            else:
-                raise Exception(
-                    'Erro sintatico: falta do PROC na linha ' + str(self.tokenAtual().linha))
-        else:
-            return
+        self.indexDaTabelaDeTokens += 1
+        # <identifier> (<params_call>) TODO: Fazer método
 
     # <print_statement>
     def print_statement(self):
-        if(self.tokenAtual().tipo == 'PRINT'):
+        self.indexDaTabelaDeTokens += 1
+        if(self.tokenAtual().tipo == 'PLEFT'):
             self.indexDaTabelaDeTokens += 1
-            if(self.tokenAtual().tipo == 'PLEFT'):
+            if(self.tokenAtual().tipo == ''):  # <params_print>
                 self.indexDaTabelaDeTokens += 1
-                if(self.tokenAtual().tipo == ''):  # <params_print>
+                # params_print_statement()  # TODO: Criação do método
+                if(self.tokenAtual().tipo == 'PRIGHT'):
                     self.indexDaTabelaDeTokens += 1
-                    # params_print_statement()  # TODO: Criação do método
-                    if(self.tokenAtual().tipo == 'PRIGHT'):
+                    if(self.tokenAtual().tipo == 'SEMICOLON'):
                         self.indexDaTabelaDeTokens += 1
-                        if(self.tokenAtual().tipo == 'SEMICOLON'):
-                            self.indexDaTabelaDeTokens += 1
-                        else:
-                            raise Exception(
-                                'Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
                     else:
                         raise Exception(
-                            'Erro sintatico: falta do Parentese direito na linha ' + str(self.tokenAtual().linha))
+                            'Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
                 else:
                     raise Exception(
-                        'Erro sintatico: sem argumento no Print na linha ' + str(self.tokenAtual().linha))
+                        'Erro sintatico: falta do Parentese direito na linha ' + str(self.tokenAtual().linha))
             else:
                 raise Exception(
-                    'Erro sintatico: falta do Parentese esquerdo na linha  ' + str(self.tokenAtual().linha))
+                    'Erro sintatico: sem argumento no Print na linha ' + str(self.tokenAtual().linha))
         else:
-            return
+            raise Exception(
+                'Erro sintatico: falta do Parentese esquerdo na linha  ' + str(self.tokenAtual().linha))
 
-            # <print_statement> ::= print (<params_print>) ; <block>
-            # <params_print> ::= <identifier> | <call_func> | <call_op> | <boolean> | <num>
+        # <print_statement> ::= print (<params_print>) ; <block>
+        # <params_print> ::= <identifier> | <call_func> | <call_op> | <boolean> | <num>
 
     # <if_statement>
     def if_statement(self):
-        if(self.tokenAtual().tipo == 'IF'):
+        self.indexDaTabelaDeTokens += 1
+        if(self.tokenAtual().tipo == 'PLEFT'):
             self.indexDaTabelaDeTokens += 1
-            if(self.tokenAtual().tipo == 'PLEFT'):
+            # <expression> TODO: criar metodo
+            if(self.tokenAtual().tipo == 'PRIGHT'):
                 self.indexDaTabelaDeTokens += 1
-                # <expression> TODO: criar metodo
-                if(self.tokenAtual().tipo == 'PRIGHT'):
+                if(self.tokenAtual().tipo == 'CLEFT'):
                     self.indexDaTabelaDeTokens += 1
-                    if(self.tokenAtual().tipo == 'CLEFT'):
+                    # <block2> TODO: criar metodo
+                    if(self.tokenAtual().tipo == 'CRIGHT'):
                         self.indexDaTabelaDeTokens += 1
-                        # <block2> TODO: criar metodo
-                        if(self.tokenAtual().tipo == 'CRIGHT'):
+                        if(self.tokenAtual().tipo == 'ELSE'):
                             self.indexDaTabelaDeTokens += 1
-                            if(self.tokenAtual().tipo == 'ELSE'):
-                                self.indexDaTabelaDeTokens += 1
-                                else_part_statement(self)   # Block do ELSE
-                                if(self.tokenAtual().tipo == 'ENDIF'):
-                                    self.indexDaTabelaDeTokens += 1
-                                else:
-                                    raise Exception(
-                                        'Erro sintatico: falta de ENDIF ' + str(self.tokenAtual().linha))
-                            elif(self.tokenAtual().tipo == 'ENDIF'):
+                            else_part_statement(self)   # Block do ELSE
+                            if(self.tokenAtual().tipo == 'ENDIF'):
                                 self.indexDaTabelaDeTokens += 1
                             else:
                                 raise Exception(
                                     'Erro sintatico: falta de ENDIF ' + str(self.tokenAtual().linha))
-                        else:
-                            raise Exception(
-                                'Erro sintatico: falta do CRIGHT na linha ' + str(self.tokenAtual().linha))
-                    else:
-                        raise Exception(
-                            'Erro sintatico: falta do CLEFT na linha ' + str(self.tokenAtual().linha))
-                else:
-                    raise Exception(
-                        'Erro sintatico: falta do Parentese direito na linha  ' + str(self.tokenAtual().linha))
-            else:
-                raise Exception(
-                    'Erro sintatico: falta do Parentese esquerdo na linha  ' + str(self.tokenAtual().linha))
-        else:
-            return
-
-    # <else_part>
-    def else_part_statement(self):
-        if(self.tokenAtual().tipo == 'ELSE'):
-            self.indexDaTabelaDeTokens += 1
-            if(self.tokenAtual().tipo == 'CLEFT'):
-                self.indexDaTabelaDeTokens += 1
-                # <block2> TODO: criar metodo
-                if(self.tokenAtual().tipo == 'CRIGHT'):
-                    self.indexDaTabelaDeTokens += 1
-                    if(self.tokenAtual().tipo == 'ENDELSE'):
-                        self.indexDaTabelaDeTokens += 1
-                    else:
-                        raise Exception(
-                            'Erro sintatico: falta de ENDIF ' + str(self.tokenAtual().linha))
-                else:
-                    raise Exception(
-                        'Erro sintatico: falta do CRIGHT na linha ' + str(self.tokenAtual().linha))
-            else:
-                raise Exception(
-                    'Erro sintatico: falta do CLEFT na linha ' + str(self.tokenAtual().linha))
-        else:
-            return
-
-    # <while_statement> ::= while(<expression>){<block2>}endwhile
-    def while_statement(self):
-        if(self.tokenAtual().tipo == 'WHILE'):
-            self.indexDaTabelaDeTokens += 1
-            if(self.tokenAtual().tipo == 'PLEFT'):
-                self.indexDaTabelaDeTokens += 1
-                # <expression> TODO: fazer método
-                if(self.tokenAtual().tipo == 'PRIGHT'):
-                    self.indexDaTabelaDeTokens += 1
-                    if(self.tokenAtual().tipo == 'CLEFT'):
-                        self.indexDaTabelaDeTokens += 1
-
-                        # Block while TODO: criar metodo com break e continue
-                        if (self.tokenAtual().tipo == 'ENDWHILE'):
+                        elif(self.tokenAtual().tipo == 'ENDIF'):
                             self.indexDaTabelaDeTokens += 1
-
                         else:
                             raise Exception(
-                                'Erro sintatico: falta de ENDWHILE ' + str(self.tokenAtual().linha))
+                                'Erro sintatico: falta de ENDIF ' + str(self.tokenAtual().linha))
                     else:
                         raise Exception(
                             'Erro sintatico: falta do CRIGHT na linha ' + str(self.tokenAtual().linha))
                 else:
                     raise Exception(
-                        'Erro sintatico: falta do PRIGHT na linha ' + str(self.tokenAtual().linha))
+                        'Erro sintatico: falta do CLEFT na linha ' + str(self.tokenAtual().linha))
             else:
                 raise Exception(
-                    'Erro sintatico: falta do PLEFT na linha ' + str(self.tokenAtual().linha))
+                    'Erro sintatico: falta do Parentese direito na linha  ' + str(self.tokenAtual().linha))
+        else:
+            raise Exception(
+                'Erro sintatico: falta do Parentese esquerdo na linha  ' + str(self.tokenAtual().linha))
+
+    # <else_part>
+    def else_part_statement(self):
+        if(self.tokenAtual().tipo == 'CLEFT'):
+            self.indexDaTabelaDeTokens += 1
+            # <block2> TODO: criar metodo
+            if(self.tokenAtual().tipo == 'CRIGHT'):
+                self.indexDaTabelaDeTokens += 1
+                if(self.tokenAtual().tipo == 'ENDELSE'):
+                    self.indexDaTabelaDeTokens += 1
+                else:
+                    raise Exception(
+                        'Erro sintatico: falta de ENDIF ' + str(self.tokenAtual().linha))
+            else:
+                raise Exception(
+                    'Erro sintatico: falta do CRIGHT na linha ' + str(self.tokenAtual().linha))
+        else:
+            raise Exception(
+                'Erro sintatico: falta do CLEFT na linha ' + str(self.tokenAtual().linha))
+
+    # <while_statement> ::= while(<expression>){<block2>}endwhile
+    def while_statement(self):
+        self.indexDaTabelaDeTokens += 1
+        if(self.tokenAtual().tipo == 'PLEFT'):
+            self.indexDaTabelaDeTokens += 1
+            # <expression> TODO: fazer método
+            if(self.tokenAtual().tipo == 'PRIGHT'):
+                self.indexDaTabelaDeTokens += 1
+                if(self.tokenAtual().tipo == 'CLEFT'):
+                    self.indexDaTabelaDeTokens += 1
+
+                    # Block while TODO: criar metodo com break e continue
+                    if (self.tokenAtual().tipo == 'ENDWHILE'):
+                        self.indexDaTabelaDeTokens += 1
+
+                    else:
+                        raise Exception(
+                            'Erro sintatico: falta de ENDWHILE ' + str(self.tokenAtual().linha))
+                else:
+                    raise Exception(
+                        'Erro sintatico: falta do CRIGHT na linha ' + str(self.tokenAtual().linha))
+            else:
+                raise Exception(
+                    'Erro sintatico: falta do PRIGHT na linha ' + str(self.tokenAtual().linha))
+        else:
+            raise Exception(
+                'Erro sintatico: falta do PLEFT na linha ' + str(self.tokenAtual().linha))
 
     # TODO: funções que faltam
     # def params
