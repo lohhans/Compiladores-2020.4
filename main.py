@@ -25,6 +25,13 @@ if __name__ == '__main__':
         print(i)
 
     analisadorSintatico = AnalisadorSintatico(tabelaDeTokens)
+    
+    print('\n--- PÓS LEXER ---\n')
+    
+    try:
+        analisadorSintatico.start()
+    except Exception as e:
+        print(e)
 
 else:
     print('me executou como um módulo')

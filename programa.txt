@@ -2,37 +2,6 @@ program {
 
     int num1 = 1;
     int num2 = 2;
-
-    boolean b = false;
-
-    func int soma(int recNumero1, int recNumero2){
-        int c = recNumero1 + recNumero2;
-        return c;
-    }
-
-    func int somaSemParams(){
-        int resultadoSemParams = num1 + num2;
-        return resultadoSemParams;
-    }
-
-    func boolean retornaBooleanoRecebido(b){
-        bool e = d;
-        return e;
-    }
-    
-    proc soma (int a, int b){
-        int c = a + b;
-        print (c);
-    }
-
-    if(a>b){
-        print (a);
-    }endif
-    else{
-        print (b);
-    }endelse
-
-    
-    int b = 2;
+    bool b = False;
 
  } end

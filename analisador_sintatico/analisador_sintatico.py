@@ -2,27 +2,35 @@ class AnalisadorSintatico:
     def __init__(self, tabelaDeTokens):
         self.tabelaDeTokens = tabelaDeTokens
         self.indexDaTabelaDeTokens = 0
-
+        
+    def tokenAtual(self):
+        return self.tabelaDeTokens[self.indexDaTabelaDeTokens]
+        
+    def start(self):
+        self.statement_list()
+        return
+    
     def statement_list(self):
         if(self.tokenAtual().tipo == "PROGRAM"):
-            self.indexToken += 1
+            self.indexDaTabelaDeTokens += 1
             if(self.tokenAtual().tipo == "CLEFT"):
-                self.indexToken += 1
-                if(block_statement(self) == True):    # tem algo no block para rodar
-                    block_statement(self)
+                self.indexDaTabelaDeTokens += 1
 
-                else:                   # bloco vazio
-                    if(self.tokenAtual().tipo == "CRIGHT"):
-                        self.indexDaTabelaDeTokens += 1
-                        if(self.tokenAtual().tipo == "END"):
-                            self.listaEscopos[0].fechar()
-                            # Deu certo
-                        else:
-                            raise Exception(
-                                'Erro sintatico: falta do END na linha ' + str(self.tokenAtual().linha))
+                while(self.tokenAtual().tipo != 'CRIGHT'):
+                    self.block_statement()
+
+                if(self.tokenAtual().tipo == "CRIGHT"):
+                    self.indexDaTabelaDeTokens += 1
+                    
+                    if(self.tokenAtual().tipo == "END"):
+                        print('FIM DO PROGRAMA - DEU CERTO :)')
+                        # Deu certo
                     else:
                         raise Exception(
-                            'Erro sintatico: falta do CRIGHT na linha ' + str(self.tokenAtual().linha))
+                            'Erro sintatico: falta do END na linha ' + str(self.tokenAtual().linha))
+                else:
+                    raise Exception(
+                        'Erro sintatico: falta do CRIGHT na linha ' + str(self.tokenAtual().linha))
             else:
                 raise Exception(
                     'Erro sintatico: falta do CLEFT na linha ' + str(self.tokenAtual().linha))
@@ -35,25 +43,25 @@ class AnalisadorSintatico:
     def block_statement(self):
         # <declaration_var>
         if (self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):
-            declaration_var(self)
+            self.declaration_var_statement()
             return True
         # <declaration_func>
         elif (self.tokenAtual().tipo == 'FUNC'):
-            declaration_func_statement(self)
+            self.declaration_func_statement()
             return True
         # <declaration_proc>
         elif (self.tokenAtual().tipo == 'PROC'):
-            declaration_proc_statement(self)
+            self.declaration_proc_statement()
             return True
         elif (self.tokenAtual().tipo == 'CALL'):
-            self.indexToken += 1
+            self.indexDaTabelaDeTokens += 1
             # <call_func>
             if (self.tokenAtual().tipo == 'FUNC'):
-                call_func_statement(self)
+                self.call_func_statement()
                 return True
-             # <call_proc>
+            # <call_proc>
             elif (self.tokenAtual().tipo == 'PROC'):
-                call_proc_statement(self)
+                self.call_proc_statement()
                 return True
             else:
                 raise Exception(
@@ -61,62 +69,85 @@ class AnalisadorSintatico:
 
         # <print_statement>
         elif (self.tokenAtual().tipo == 'PRINT'):
-            print_statement(self)
+            self.print_statement()
             return True
 
         # <if_statement>
         elif (self.tokenAtual().tipo == 'IF'):
-            if_statement(self)
+            self.if_statement()
             return True
         
-        TODO: Colocar os outros métodos
+        # TODO: Colocar os outros métodos
 
     # <declaration_var>
     def declaration_var_statement(self):
-        if(self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):
-            temp = []
-            temp.append('VAR')
-            temp.append(self.tokenAtual().tipo)
-            self.indexToken += 1
-            if(self.tokenAtual().tipo == 'ID'):
-                temp.append(self.tokenAtual().lexema)
-                self.indexToken += 1
-                if(self.tokenAtual().tipo == 'ATTR'):  # atribuicao
-                    self.indexToken += 1
-                    # TODO: aqui vem o end_var
+        self.indexDaTabelaDeTokens += 1
+        if(self.tokenAtual().tipo == 'ID'):
+            self.indexDaTabelaDeTokens += 1
+            if(self.tokenAtual().tipo == 'ATB'):  # atribuicao
+                self.indexDaTabelaDeTokens += 1
+                self.end_var_statement()        # o que tem dentro da variavel
+                if(self.tokenAtual().tipo == 'SEMICOLON'):
+                    self.indexDaTabelaDeTokens += 1
+
+                    return
                 else:
-                    raise Exception(
-                        'Erro sintatico: falta da atribuição na linha ' + str(self.tokenAtual().linha))
+                    raise Exception('Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
+            else:
+                raise Exception('Erro sintatico: falta da atribuição na linha ' + str(self.tokenAtual().linha))
+        else:
+            raise Exception('Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
+    # <end_var> 
+    def end_var_statement(self):
+        #  <call_func> | <call_op>
+        if (self.tokenAtual().tipo == 'CALL'):
+            self.indexDaTabelaDeTokens += 1
+            # <call_func>
+            if (self.tokenAtual().tipo == 'FUNC'):
+                self.call_func_statement()
+             # <call_proc>
+            elif (self.tokenAtual().tipo == 'PROC'):
+                self.call_proc_statement()
+            else:
+                raise Exception('Erro sintatico: chamada de função ou procedimento erroneamente na linha ' + str(self.tokenAtual().linha))
+        
+        # <boolean>
+        if (self.tokenAtual().tipo == "BOOLEAN"):
+            if (self.tokenAtual().lexema == 'True' or self.tokenAtual().lexema == 'False'):
+                self.indexDaTabelaDeTokens += 1
+                return
+            else:
+                raise Exception('Erro sintatico: boolean atribuido erroneamente na linha ' + str(self.tokenAtual().linha))
+        # <num>
+        if (self.tokenAtual().tipo == "NUM"):
+            if (self.tokenAtual().lexema >= '0' and self.tokenAtual().lexema <= '9'):
+                self.indexDaTabelaDeTokens += 1
+                return
+            else:
+                raise Exception('Erro sintatico: int atribuido erroneamente na linha ' + str(self.tokenAtual().linha))
+        
+    # <identifier>
+    def identifier_statement(self):
+        return
+        #<identifier> ::= <letter> (<letter> | <num>)* 
+
+    # <declaration_func>
+    def declaration_func_statement(self):
+        self.indexDaTabelaDeTokens += 1
+        if(self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):  # tipo
+            temp.append(self.tokenAtual().tipo)
+            self.indexDaTabelaDeTokens += 1
+            # identificador
+            if(self.tokenAtual().tipo == 'ID' and self.tokenAtual().lexema[0] == 'func'):
+                temp.append(self.tokenAtual().lexema)
+                self.indexDaTabelaDeTokens += 1
+                # (params) TODO: criar metodo
             else:
                 raise Exception(
                     'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
         else:
-            return
-
-    # <declaration_func>
-    def declaration_func_statement(self):
-        if(self.tokenAtual().tipo == 'FUNC'):
-            temp = []
-            temp.append('FUNC')
-            escopoDaFuncao = self.indexEscopoAtual
-            escopoForaDaFunc = self.indexEscopoAtual
-            self.indexToken += 1
-            if(self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):  # tipo
-                temp.append(self.tokenAtual().tipo)
-                self.indexToken += 1
-                # identificador
-                if(self.tokenAtual().tipo == 'ID' and self.tokenAtual().lexema[0] == 'func'):
-                    temp.append(self.tokenAtual().lexema)
-                    self.indexToken += 1
-                    # (params) TODO: criar metodo
-                else:
-                    raise Exception(
-                        'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
-            else:
-                raise Exception(
-                    'Erro sintatico: falta do type na linha ' + str(self.tokenAtual().linha))
-        else:
-            return
+            raise Exception(
+                'Erro sintatico: falta do type na linha ' + str(self.tokenAtual().linha))
 
     # <call_func>
     def call_func_statement(self):
@@ -125,12 +156,12 @@ class AnalisadorSintatico:
             temp.append('CALL')
             escopoDaFuncao = self.indexEscopoAtual
             escopoForaDaFunc = self.indexEscopoAtual
-            self.indexToken += 1
+            self.indexDaTabelaDeTokens += 1
             if(self.tokenAtual().tipo == 'FUNC'):
                 temp.append('FUNC')
                 escopoDaFuncao = self.indexEscopoAtual
                 escopoForaDaFunc = self.indexEscopoAtual
-                self.indexToken += 1
+                self.indexDaTabelaDeTokens += 1
                 # <identifier> (<params_call>)   TODO: fazer metodo
             else:
                 raise Exception(
@@ -145,7 +176,7 @@ class AnalisadorSintatico:
             temp.append('PROC')
             escopoDoProcecimento = self.indexEscopoAtual
             escopoForaDoProc = self.indexEscopoAtual
-            self.indexToken += 1
+            self.indexDaTabelaDeTokens += 1
             # <identifier> (<params>) { <block> } TODO: fazer método
         else:
             return
@@ -157,12 +188,12 @@ class AnalisadorSintatico:
             temp.append('CALL')
             escopoDaFuncao = self.indexEscopoAtual
             escopoForaDaFunc = self.indexEscopoAtual
-            self.indexToken += 1
+            self.indexDaTabelaDeTokens += 1
             if(self.tokenAtual().tipo == 'PROC'):
                 temp.append('PROC')
                 escopoDaFuncao = self.indexEscopoAtual
                 escopoForaDaFunc = self.indexEscopoAtual
-                self.indexToken += 1
+                self.indexDaTabelaDeTokens += 1
                 # <identifier> (<params_call>) TODO: Fazer método
             else:
                 raise Exception(
@@ -177,21 +208,21 @@ class AnalisadorSintatico:
             temp.append('PRINT')
             escopoDaFuncao = self.indexEscopoAtual
             escopoForaDaFunc = self.indexEscopoAtual
-            self.indexToken += 1
+            self.indexDaTabelaDeTokens += 1
             if(self.tokenAtual().tipo == 'PLEFT'):
                 temp.append('PLEFT')
-                self.indexToken += 1
+                self.indexDaTabelaDeTokens += 1
                 if(self.tokenAtual().tipo == ''):  # <params_print>
                     temp.append('')  # <params_print>
-                    self.indexToken += 1
+                    self.indexDaTabelaDeTokens += 1
                     params_print_statement()  # TODO: Criação do método
 
                     if(self.tokenAtual().tipo == 'PRIGHT'):
                         temp.append('PRIGHT')
-                        self.indexToken += 1
+                        self.indexDaTabelaDeTokens += 1
                         if(self.tokenAtual().tipo == 'SEMICOLON'):
                             temp.append('SEMICOLON')
-                            self.indexToken += 1
+                            self.indexDaTabelaDeTokens += 1
                         else:
                             raise Exception(
                                 'Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
@@ -215,36 +246,36 @@ class AnalisadorSintatico:
         if(self.tokenAtual().tipo == 'IF'):
             temp = []
             temp.append('IF')
-            self.indexToken += 1
+            self.indexDaTabelaDeTokens += 1
 
             if(self.tokenAtual().tipo == 'PLEFT'):
-                self.indexToken += 1
+                self.indexDaTabelaDeTokens += 1
                 # <expression> TODO: criar metodo
 
                 if(self.tokenAtual().tipo == 'PRIGHT'):
-                    self.indexToken += 1
+                    self.indexDaTabelaDeTokens += 1
                     if(self.tokenAtual().tipo == 'CLEFT'):
-                        self.indexToken += 1
+                        self.indexDaTabelaDeTokens += 1
 
                         # <block2> TODO: criar metodo
 
                         if(self.tokenAtual().tipo == 'CRIGHT'):
-                            self.indexToken += 1
+                            self.indexDaTabelaDeTokens += 1
 
                             if(self.tokenAtual().tipo == 'ELSE'):
-                                self.indexToken += 1
+                                self.indexDaTabelaDeTokens += 1
 
                                 else_part_statement(self)   # Block do ELSE
 
                                 if(self.tokenAtual().tipo == 'ENDIF'):
-                                    self.indexToken += 1
+                                    self.indexDaTabelaDeTokens += 1
 
                                 else:
                                     raise Exception(
                                         'Erro sintatico: falta de ENDIF ' + str(self.tokenAtual().linha))
 
                             elif(self.tokenAtual().tipo == 'ENDIF'):
-                                self.indexToken += 1
+                                self.indexDaTabelaDeTokens += 1
 
                             else:
                                 raise Exception(
@@ -269,17 +300,17 @@ class AnalisadorSintatico:
         if(self.tokenAtual().tipo == 'ELSE'):
             temp = []
             temp.append('ELSE')
-            self.indexToken += 1
+            self.indexDaTabelaDeTokens += 1
             if(self.tokenAtual().tipo == 'CLEFT'):
-                self.indexToken += 1
+                self.indexDaTabelaDeTokens += 1
 
                 # <block2> TODO: criar metodo
 
                 if(self.tokenAtual().tipo == 'CRIGHT'):
-                    self.indexToken += 1
+                    self.indexDaTabelaDeTokens += 1
 
                     if(self.tokenAtual().tipo == 'ENDELSE'):
-                        self.indexToken += 1
+                        self.indexDaTabelaDeTokens += 1
 
                     else:
                         raise Exception(
@@ -298,22 +329,22 @@ class AnalisadorSintatico:
         if(self.tokenAtual().tipo == 'WHILE'):
             temp = []
             temp.append('WHILE')
-            self.indexToken += 1
+            self.indexDaTabelaDeTokens += 1
             if(self.tokenAtual().tipo == 'PLEFT'):
-                self.indexToken+=1
+                self.indexDaTabelaDeTokens+=1
                 # <expression> TODO: fazer método
 
                 if(self.tokenAtual().tipo == 'PRIGHT'):
-                    self.indexToken+=1
+                    self.indexDaTabelaDeTokens+=1
                     if(self.tokenAtual().tipo == 'CLEFT'):
-                        self.indexToken += 1
+                        self.indexDaTabelaDeTokens += 1
 
                     # Block while TODO: criar metodo com break e continue
 
-                        if (self.tokenAtual().tipo == 'ENDWHILE')
+                        if (self.tokenAtual().tipo == 'ENDWHILE'):
                             temp = []
                             temp.append('WHILE')
-                            self.indexToken += 1
+                            self.indexDaTabelaDeTokens += 1
                         
                         else:
                             raise Exception(
