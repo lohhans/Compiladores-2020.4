@@ -35,7 +35,8 @@ class AnalisadorSintatico:
                 raise Exception(
                     'Erro sintatico: falta do CLEFT na linha ' + str(self.tokenAtual().linha))
         else:
-            # TODO: Tratar erro
+            raise Exception(
+                'Erro sintatico: Código fora do padrão na linha ' + str(self.tokenAtual().linha))
             self.listaEscopos[0].fechar()
             return
 
