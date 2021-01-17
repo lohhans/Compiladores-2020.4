@@ -1,4 +1,7 @@
 # Compiladores-2020.4
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/792d9261ca8941bcaf3c8feff6f4d2cf)](https://app.codacy.com/gh/lohhans/Compiladores-2020.4?utm_source=github.com&utm_medium=referral&utm_content=lohhans/Compiladores-2020.4&utm_campaign=Badge_Grade)
+
 Projeto de Compiladores - 2020.4
 
 CARACTERÍSTICAS DA GRAMÁTICA BNF:
