@@ -89,7 +89,7 @@
 
 <return_statement> ::= return <return_statement2> ;
 
-<return_statement2> ::= <call_func> | <identifier> | <num> | <boolean> | <call_op> 
+<return_statement2> ::= <call_func> | <identifier> | <num> | <boolean>
 
 # ----------------- Print ------------------------------------------------------
 
