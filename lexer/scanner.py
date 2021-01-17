@@ -1,5 +1,6 @@
 from lexer.token import Token
 
+
 class Scanner:
 
     # Construtor da classe
@@ -38,12 +39,12 @@ class Scanner:
             elif char == '(' or char == ')' or char == '{' or char == '}':
                 self.tokens.append(
                     Token(self.delimitadoresToken(char), self.programa[self.inicio:self.atual], self.linha))
-            
+
             # Verificar se são tokens de operações aritméticas ("+", "-", "*", "/")
             elif char == '+' or char == '-' or char == '*' or char == '/':
-                self.tokens.append(
-                    Token(self.opAritmeticaToken(char), self.programa[self.inicio:self.atual], self.linha)) 
-            
+                self.tokens.append(Token(self.opAritmeticaToken(
+                    char), self.programa[self.inicio:self.atual], self.linha))
+
             # Verificar se são tokens de operações booleanas ("=". "==", "!=", ">", "<", ">=", "<=")
             elif char == '=' or char == '!' or char == '<' or char == '>':
                 self.tokens.append(
@@ -122,20 +123,20 @@ class Scanner:
                 return "DIFF"
 
         elif char == '<':  # Menor ou igual, menor
-            if self.lookAhead() == '=': # ("<= ")
+            if self.lookAhead() == '=':  # ("<= ")
                 self.atual += 1
                 return "LESSEQUAL"
-                
+
             else:   # ("<")
                 return "LESS"
 
         elif char == '>':  # Maior ou igual, Maior
-            if self.lookAhead() == '=': #(">=")
+            if self.lookAhead() == '=':  # (">=")
                 self.atual += 1
                 return "GREATEREQUAL"
-            else:   #(">")
+            else:  # (">")
                 return "GREATER"
-                
+
     def scanReserved(self):
         for i in self.tokens:
             if(i.tipo == 'ID'):
@@ -218,6 +219,6 @@ class Scanner:
     # Verifica o simbolo a frente e se está no final do programa
     def lookAhead(self):
         if(self.atual < len(self.programa)):
-            return self.programa[self.atual]  
+            return self.programa[self.atual]
         else:
             return '\0'

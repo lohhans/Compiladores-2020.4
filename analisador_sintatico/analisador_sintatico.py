@@ -37,7 +37,8 @@ class AnalisadorSintatico:
         else:
             raise Exception(
                 'Erro sintatico: Código fora do padrão na linha ' + str(self.tokenAtual().linha))
-            self.listaEscopos[0].fechar()
+            # self.listaEscopos[0].fechar()
+            # Inalcançado
             return
 
     # TODO: Falta - <call_op>
@@ -88,7 +89,7 @@ class AnalisadorSintatico:
 
         # <while_statement>
         elif (self.tokenAtual().tipo == 'WHILE'):
-            self.while_statement(self)
+            self.while_statement()
 
         # <identifier>
         elif (self.tokenAtual().tipo == 'ID'):
@@ -403,7 +404,7 @@ class AnalisadorSintatico:
                         self.indexDaTabelaDeTokens += 1
                         if(self.tokenAtual().tipo == 'ELSE'):
                             self.indexDaTabelaDeTokens += 1
-                            else_part_statement(self)   # Block do ELSE
+                            self.else_part_statement()   # Block do ELSE
                             if(self.tokenAtual().tipo == 'ENDIF'):
                                 self.indexDaTabelaDeTokens += 1
                             else:

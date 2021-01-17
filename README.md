@@ -1,4 +1,3 @@
-
 # Compiladores-2020.4
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/b2473ced6948471386eb0d3564a336f2)](https://www.codacy.com/gh/lohhans/Compiladores-2020.4/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=lohhans/Compiladores-2020.4&amp;utm_campaign=Badge_Grade)
@@ -14,7 +13,7 @@
 
 ## Projeto de Compiladores - 2020.4
 
-Implementação de um compilador para a disciplina de "[Compiladores][COMP]", no curso de [Ciência da Computação na Universidade Federal do Agreste de Pernambuco][UFAPE]. Estruturas desenvolvidas conforme orientação da [Prof. Dra. Maria Aparecida A. Sibaldo][professora].
+Implementação de um compilador para a disciplina de "[Compiladores][compiladores]", no curso de [Ciência da Computação na Universidade Federal do Agreste de Pernambuco][ufape]. Estruturas desenvolvidas conforme orientação da [Prof. Dra. Maria Aparecida A. Sibaldo][professora].
 
 ## Sobre o projeto
 
@@ -56,10 +55,10 @@ Além disso, a linguagem deve cobrir os seguintes aspectos:
 
 ### Gramática BNF desenvolvida para o projeto
 
-Para acessar a gramática, [clique aqui][GRAM]
+Para acessar a gramática, [clique aqui][gramatica]
 
 <!-- Links -->
-[COMP]: https://sites.google.com/site/maasibaldo/home/compiladores-uag-ufrpe
-[UFAPE]: http://www.ufape.edu.br/br/node/409
+[compiladores]: https://sites.google.com/site/maasibaldo/home/compiladores-uag-ufrpe
+[ufape]: http://www.ufape.edu.br/br/node/409
 [professora]: https://sites.google.com/site/maasibaldo/home
-[GRAM]: https://github.com/lohhans/Compiladores-2020.4/blob/main/Gram%C3%A1tica.bnf
+[gramatica]: https://github.com/lohhans/Compiladores-2020.4/blob/main/Gram%C3%A1tica.bnf
