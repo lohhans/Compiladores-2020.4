@@ -154,13 +154,13 @@ class AnalisadorSintatico:
                     self.indexDaTabelaDeTokens += 1
                 else:
                     raise Exception(
-                        'Erro sintatico: falta do ponto e vírgula ' + str(self.tokenAtual().linha))
+                        'Erro sintatico: falta do ponto e vírgula na linha ' + str(self.tokenAtual().linha))
             else:
                 raise Exception(
-                    'Erro sintatico: variável não atribuída ' + str(self.tokenAtual().linha))
+                    'Erro sintatico: variável não atribuída na linha ' + str(self.tokenAtual().linha))
         else:
             raise Exception(
-                'Erro sintatico: símbolo de atribuição não encontrado ' + str(self.tokenAtual().linha))
+                'Erro sintatico: símbolo de atribuição não encontrado na linha ' + str(self.tokenAtual().linha))
 
     # <declaration_func>
 
@@ -179,6 +179,14 @@ class AnalisadorSintatico:
                         self.indexDaTabelaDeTokens += 1
                         # <block> <return_statement> TODO: criar metodos
 
+                        if(self.tokenAtual().tipo == 'RETURN'):
+                            self.return_statement()
+                            self.indexDaTabelaDeTokens += 1
+
+                        else:
+                            raise Exception(
+                                'Erro sintatico: falta do retorno na linha ' + str(self.tokenAtual().linha))
+
                     else:
                         raise Exception(
                             'Erro sintatico: falta do chave esquerda na linha ' + str(self.tokenAtual().linha))
@@ -191,6 +199,32 @@ class AnalisadorSintatico:
         else:
             raise Exception(
                 'Erro sintatico: falta do type na linha ' + str(self.tokenAtual().linha))
+
+    # <return_statement>
+    def return_statement(self):
+        self.indexDaTabelaDeTokens += 1
+
+        # Se for chamada de função
+        if (self.TokenAtual().tipo == 'CALL'):
+            self.indexDaTabelaDeTokens += 1
+            if(self.TokenAtual().tipo == 'FUNC'):
+                self.call_func_statement()
+                self.indexDaTabelaDeTokens += 1
+            else:
+                raise Exception(
+                    'Erro sintatico: Erro de chamada, só é permitido chamada de funções na linha ' + str(self.tokenAtual().linha))
+
+        # Se for chamada de variavel/num/bool
+        if ((self.tokenAtual().tipo == 'NUM') or (self.tokenAtual().tipo == 'BOOLEAN') or (self.tokenAtual().tipo == 'ID')):
+            self.indexDaTabelaDeTokens += 1
+            if(self.TokenAtual().tipo == 'SEMICOLON'):
+                self.indexDaTabelaDeTokens += 1
+            else:
+                raise Exception(
+                    'Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
+        else:
+            raise Exception(
+                'Erro sintatico: Retorno errado na linha ' + str(self.tokenAtual().linha))
 
     # <call_func>
     def call_func_statement(self):
@@ -335,7 +369,7 @@ class AnalisadorSintatico:
                     self.indexDaTabelaDeTokens += 1
                 else:
                     raise Exception(
-                        'Erro sintatico: falta de ENDIF ' + str(self.tokenAtual().linha))
+                        'Erro sintatico: falta de ENDIF na linha ' + str(self.tokenAtual().linha))
             else:
                 raise Exception(
                     'Erro sintatico: falta do CRIGHT na linha ' + str(self.tokenAtual().linha))
@@ -360,7 +394,7 @@ class AnalisadorSintatico:
 
                     else:
                         raise Exception(
-                            'Erro sintatico: falta de ENDWHILE ' + str(self.tokenAtual().linha))
+                            'Erro sintatico: falta de ENDWHILE na linha ' + str(self.tokenAtual().linha))
                 else:
                     raise Exception(
                         'Erro sintatico: falta do CRIGHT na linha ' + str(self.tokenAtual().linha))
@@ -374,6 +408,5 @@ class AnalisadorSintatico:
     # TODO: funções que faltam
     # def params
     # <params_call>
-    # def <return_statement>
     # <expression>
     # <unconditional_branch>
