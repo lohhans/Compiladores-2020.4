@@ -4,4 +4,10 @@ program {
     int num2 = 2;
     bool b = False;
 
+    num1 = 0;
+    b = True;
+    num1 = num2;
+
+    int num3 = num1;
+    
  } end

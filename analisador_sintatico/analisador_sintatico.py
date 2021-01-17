@@ -73,7 +73,11 @@ class AnalisadorSintatico:
 
         # <while_statement>
         elif (self.tokenAtual().tipo == 'WHILE'):
-            while_statement(self):
+            self.while_statement(self)
+
+        # <identifier>
+        elif (self.tokenAtual().tipo == 'ID'):
+            self.call_var_statement()
 
         # TODO: Colocar os outros métodos
 
@@ -106,7 +110,7 @@ class AnalisadorSintatico:
             if (self.tokenAtual().tipo == 'FUNC'):
                 self.call_func_statement()
                 self.indexDaTabelaDeTokens += 1
-             # <call_proc>
+            # <call_proc>
             elif (self.tokenAtual().tipo == 'PROC'):
                 self.call_proc_statement()
                 self.indexDaTabelaDeTokens += 1
@@ -115,7 +119,7 @@ class AnalisadorSintatico:
                     'Erro sintatico: chamada de função ou procedimento erroneamente na linha ' + str(self.tokenAtual().linha))
 
         # <boolean>
-        if (self.tokenAtual().tipo == "BOOLEAN"):
+        if (self.tokenAtual().tipo == 'BOOLEAN'):
             if (self.tokenAtual().lexema == 'True' or self.tokenAtual().lexema == 'False'):
                 self.indexDaTabelaDeTokens += 1
                 return
@@ -123,8 +127,8 @@ class AnalisadorSintatico:
                 raise Exception(
                     'Erro sintatico: boolean atribuido erroneamente na linha ' + str(self.tokenAtual().linha))
         # <num>
-        if (self.tokenAtual().tipo == "NUM"):
-            if (self.tokenAtuaal().lexema >= '0' and self.tokenAtual().lexema <= '9'):
+        if (self.tokenAtual().tipo == 'NUM'):
+            if (self.tokenAtual().lexema >= '0' and self.tokenAtual().lexema <= '9'):
                 self.indexDaTabelaDeTokens += 1
                 return
             else:
@@ -133,27 +137,33 @@ class AnalisadorSintatico:
 
          # <identifier>
         if (self.tokenAtual().tipo == 'ID'):
-            self.identifier_statement()
             self.indexDaTabelaDeTokens += 1
 
         else:
             raise Exception(
                 'Erro sintatico: atribuição de variavel erroneamente na linha ' + str(self.tokenAtual().linha))
 
-    # <identifier>
-    def identifier_statement(self):
-        # <letter>
-        if (self.tokenAtual().tipo == "NUM"):
-            if (self.tokenAtual().lexema >= '0' and self.tokenAtual().lexema <= '9'):
+    # Chamada de variavel
+    def call_var_statement(self):
+        self.indexDaTabelaDeTokens += 1
+        if(self.tokenAtual().tipo == 'ATB'):  # atribuicao
+            self.indexDaTabelaDeTokens += 1
+            if ((self.tokenAtual().tipo == 'NUM') or (self.tokenAtual().tipo == 'BOOLEAN') or (self.tokenAtual().tipo == 'ID')):
                 self.indexDaTabelaDeTokens += 1
-                return
+                if(self.tokenAtual().tipo == 'SEMICOLON'):
+                    self.indexDaTabelaDeTokens += 1
+                else:
+                    raise Exception(
+                        'Erro sintatico: falta do ponto e vírgula ' + str(self.tokenAtual().linha))
             else:
                 raise Exception(
-                    'Erro sintatico: int atribuido erroneamente na linha ' + str(self.tokenAtual().linha))
-        return
-        # <identifier> ::= <letter> (<letter> | <num>)*
+                    'Erro sintatico: variável não atribuída ' + str(self.tokenAtual().linha))
+        else:
+            raise Exception(
+                'Erro sintatico: símbolo de atribuição não encontrado ' + str(self.tokenAtual().linha))
 
     # <declaration_func>
+
     def declaration_func_statement(self):
         self.indexDaTabelaDeTokens += 1
         if(self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):  # tipo
@@ -170,9 +180,11 @@ class AnalisadorSintatico:
                         # <block> <return_statement> TODO: criar metodos
 
                     else:
-                        raise Exception('Erro sintatico: falta do chave esquerda na linha ' + str(self.tokenAtual().linha))
+                        raise Exception(
+                            'Erro sintatico: falta do chave esquerda na linha ' + str(self.tokenAtual().linha))
                 else:
-                    raise Exception('Erro sintatico: falta do parentese esquerdo na linha ' + str(self.tokenAtual().linha))
+                    raise Exception(
+                        'Erro sintatico: falta do parentese esquerdo na linha ' + str(self.tokenAtual().linha))
             else:
                 raise Exception(
                     'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
@@ -191,12 +203,15 @@ class AnalisadorSintatico:
                 if(self.tokenAtual().tipo == 'SEMICOLON'):
                     self.indexDaTabelaDeTokens += 1
                 else:
-                    raise Exception('Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
+                    raise Exception(
+                        'Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
             else:
-                raise Exception('Erro sintatico: falta do parentese esquerdo na linha ' + str(self.tokenAtual().linha))
+                raise Exception(
+                    'Erro sintatico: falta do parentese esquerdo na linha ' + str(self.tokenAtual().linha))
         else:
-            raise Exception('Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
-        
+            raise Exception(
+                'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
+
     # <declaration_proc>
     def declaration_proc_statement(self):
         # <declaration_proc> ::= proc <identifier> (<params>) { <block> }
@@ -213,9 +228,11 @@ class AnalisadorSintatico:
                     # <block> TODO: colocar o bloco
 
                 else:
-                    raise Exception('Erro sintatico: falta do chave esquerda na linha ' + str(self.tokenAtual().linha))
+                    raise Exception(
+                        'Erro sintatico: falta do chave esquerda na linha ' + str(self.tokenAtual().linha))
             else:
-                raise Exception('Erro sintatico: falta do parentese esquerdo na linha ' + str(self.tokenAtual().linha))
+                raise Exception(
+                    'Erro sintatico: falta do parentese esquerdo na linha ' + str(self.tokenAtual().linha))
         else:
             raise Exception(
                 'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
@@ -231,11 +248,14 @@ class AnalisadorSintatico:
                 if(self.tokenAtual().tipo == 'SEMICOLON'):
                     self.indexDaTabelaDeTokens += 1
                 else:
-                    raise Exception('Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
+                    raise Exception(
+                        'Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
             else:
-                raise Exception('Erro sintatico: falta do parentese esquerdo na linha ' + str(self.tokenAtual().linha))
+                raise Exception(
+                    'Erro sintatico: falta do parentese esquerdo na linha ' + str(self.tokenAtual().linha))
         else:
-            raise Exception('Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
+            raise Exception(
+                'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
 
     # <print_statement>
     def print_statement(self):
@@ -355,6 +375,5 @@ class AnalisadorSintatico:
     # def params
     # <params_call>
     # def <return_statement>
-    # <identifier> (variavel)
     # <expression>
     # <unconditional_branch>
