@@ -26,14 +26,10 @@
 
 # ----------------- Parametros ------------------------------------------------------
 
-<params> ::= <type> <identifier> <params2> | <empty>
-
-<params2> ::= , <params> | <empty>
+<params_call> ::= <identifier> (, <params_call> | <empty>)*
 
 # parametros para chamada de função pois não precisa passar o type
-<params_call> ::= <identifier> <params_call2> | <empty>
-
-<params_call2> ::= , <params_call>
+<params_call> ::= <identifier> (, <params_call> | <empty>)*
 
 # ----------------- Função ------------------------------------------------------
 

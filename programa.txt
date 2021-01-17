@@ -15,4 +15,10 @@ program {
     print(1);
     print(False);
 
+    call proc proc1(a, b, c);
+    call proc proc1();
+
+    call func proc1(a, b, c);
+    call func proc1();
+
  } end

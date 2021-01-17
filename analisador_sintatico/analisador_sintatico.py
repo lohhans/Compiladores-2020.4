@@ -245,27 +245,6 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: Retorno errado na linha ' + str(self.tokenAtual().linha))
 
-    # TODO: Falta - params_call, colocar bloco
-    # <call_func>
-    def call_func_statement(self):
-        self.indexDaTabelaDeTokens += 1
-        if(self.tokenAtual().tipo == 'ID'):
-            self.indexDaTabelaDeTokens += 1
-            if(self.tokenAtual().tipo == 'PLEFT'):
-                self.indexDaTabelaDeTokens += 1
-                # (params_call) TODO: criar metodo
-                if(self.tokenAtual().tipo == 'PRIGHT'):
-                    self.indexDaTabelaDeTokens += 1
-                else:
-                    raise Exception(
-                        'Erro sintatico: falta do parentese direito na linha ' + str(self.tokenAtual().linha))
-            else:
-                raise Exception(
-                    'Erro sintatico: falta do parentese esquerdo na linha ' + str(self.tokenAtual().linha))
-        else:
-            raise Exception(
-                'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
-
     # TODO: Falta - params, colocar bloco
     # <declaration_proc>
     def declaration_proc_statement(self):
@@ -292,26 +271,80 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
 
-    # TODO: Falta - params_call
-    # <call_proc>
+    # <call_proc> OK
     def call_proc_statement(self):
         self.indexDaTabelaDeTokens += 1
         if(self.tokenAtual().tipo == 'ID'):
             self.indexDaTabelaDeTokens += 1
             if(self.tokenAtual().tipo == 'PLEFT'):
                 self.indexDaTabelaDeTokens += 1
-                # (params_call) TODO: criar metodo
-                if(self.tokenAtual().tipo == 'PRIGHT'):
+                if(self.tokenAtual().tipo == 'ID'):
                     self.indexDaTabelaDeTokens += 1
+                    if(self.tokenAtual().tipo == 'COMMA'):
+                        self.params_call_statement()
+                    elif(self.tokenAtual().tipo == 'PRIGHT'):
+                        self.indexDaTabelaDeTokens += 1
+                    else:
+                        raise Exception(
+                            'Erro sintatico: falta do parentese direito na linha ' + str(self.tokenAtual().linha))
                 else:
-                    raise Exception(
-                        'Erro sintatico: falta do parentese direito na linha ' + str(self.tokenAtual().linha))
+                    if(self.tokenAtual().tipo == 'PRIGHT'):
+                        self.indexDaTabelaDeTokens += 1
+                    else:
+                        raise Exception(
+                            'Erro sintatico: falta do parentese direito na linha ' + str(self.tokenAtual().linha))
             else:
                 raise Exception(
                     'Erro sintatico: falta do parentese esquerdo na linha ' + str(self.tokenAtual().linha))
         else:
             raise Exception(
                 'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
+
+    # <call_func> OK
+    def call_func_statement(self):
+        self.indexDaTabelaDeTokens += 1
+        if(self.tokenAtual().tipo == 'ID'):
+            self.indexDaTabelaDeTokens += 1
+            if(self.tokenAtual().tipo == 'PLEFT'):
+                self.indexDaTabelaDeTokens += 1
+                if(self.tokenAtual().tipo == 'ID'):
+                    self.indexDaTabelaDeTokens += 1
+                    if(self.tokenAtual().tipo == 'COMMA'):
+                        self.params_call_statement()
+                    elif(self.tokenAtual().tipo == 'PRIGHT'):
+                        self.indexDaTabelaDeTokens += 1
+                    else:
+                        raise Exception(
+                            'Erro sintatico: falta do parentese direito na linha ' + str(self.tokenAtual().linha))
+                else:
+                    if(self.tokenAtual().tipo == 'PRIGHT'):
+                        self.indexDaTabelaDeTokens += 1
+                    else:
+                        raise Exception(
+                            'Erro sintatico: falta do parentese direito na linha ' + str(self.tokenAtual().linha))
+            else:
+                raise Exception(
+                    'Erro sintatico: falta do parentese esquerdo na linha ' + str(self.tokenAtual().linha))
+        else:
+            raise Exception(
+                'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
+
+    # <params_call> OK
+    def params_call_statement(self):
+        self.indexDaTabelaDeTokens += 1
+        if(self.tokenAtual().tipo == 'ID'):
+            self.indexDaTabelaDeTokens += 1
+            if(self.tokenAtual().tipo == 'COMMA'):
+                self.params_call_statement()
+            elif(self.tokenAtual().tipo == 'ID'):
+                raise Exception(
+                    'Erro sintatico: falta vírgula na linha ' + str(self.tokenAtual().linha))
+            else:
+                self.indexDaTabelaDeTokens += 1
+                return
+        else:
+            raise Exception('Erro sintatico: é necessário informar alguma váriavel na linha ' +
+                            str(self.tokenAtual().linha))
 
     # <print_statement> OK
     def print_statement(self):
@@ -415,7 +448,7 @@ class AnalisadorSintatico:
                 'Erro sintatico: falta do CLEFT na linha ' + str(self.tokenAtual().linha))
 
     # TODO: <expression>, <block2>
-    # <while_statement> ::= while(<expression>){<block2>}endwhile
+    # <while_statement>
     def while_statement(self):
         self.indexDaTabelaDeTokens += 1
         if(self.tokenAtual().tipo == 'PLEFT'):
@@ -445,7 +478,8 @@ class AnalisadorSintatico:
 
     # TODO: funções que faltam
     # def params
-    # <params_call>
     # <expression>
     # <call_op>
     # <unconditional_branch>
+    # <block2>
+    # <block3>
