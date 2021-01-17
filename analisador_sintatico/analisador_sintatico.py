@@ -61,9 +61,19 @@ class AnalisadorSintatico:
             # <call_func>
             if (self.tokenAtual().tipo == 'FUNC'):
                 self.call_func_statement()
+                if(self.tokenAtual().tipo == 'SEMICOLON'):
+                    self.indexDaTabelaDeTokens += 1
+                else:
+                    raise Exception(
+                        'Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
             # <call_proc>
             elif (self.tokenAtual().tipo == 'PROC'):
                 self.call_proc_statement()
+                if(self.tokenAtual().tipo == 'SEMICOLON'):
+                    self.indexDaTabelaDeTokens += 1
+                else:
+                    raise Exception(
+                        'Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
             else:
                 raise Exception(
                     'Erro sintatico: falta de PROC ou FUNC' + str(self.tokenAtual().linha))
@@ -239,16 +249,16 @@ class AnalisadorSintatico:
     # <call_func>
     def call_func_statement(self):
         self.indexDaTabelaDeTokens += 1
-        if(self.tokenAtual().tipo == 'ID' and self.tokenAtual().lexema[0] == 'func'):
+        if(self.tokenAtual().tipo == 'ID'):
             self.indexDaTabelaDeTokens += 1
             if(self.tokenAtual().tipo == 'PLEFT'):
                 self.indexDaTabelaDeTokens += 1
                 # (params_call) TODO: criar metodo
-                if(self.tokenAtual().tipo == 'SEMICOLON'):
+                if(self.tokenAtual().tipo == 'PRIGHT'):
                     self.indexDaTabelaDeTokens += 1
                 else:
                     raise Exception(
-                        'Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
+                        'Erro sintatico: falta do parentese direito na linha ' + str(self.tokenAtual().linha))
             else:
                 raise Exception(
                     'Erro sintatico: falta do parentese esquerdo na linha ' + str(self.tokenAtual().linha))
@@ -286,16 +296,16 @@ class AnalisadorSintatico:
     # <call_proc>
     def call_proc_statement(self):
         self.indexDaTabelaDeTokens += 1
-        if(self.tokenAtual().tipo == 'ID' and self.tokenAtual().lexema[0] == 'proc'):
+        if(self.tokenAtual().tipo == 'ID'):
             self.indexDaTabelaDeTokens += 1
             if(self.tokenAtual().tipo == 'PLEFT'):
                 self.indexDaTabelaDeTokens += 1
                 # (params_call) TODO: criar metodo
-                if(self.tokenAtual().tipo == 'SEMICOLON'):
+                if(self.tokenAtual().tipo == 'PRIGHT'):
                     self.indexDaTabelaDeTokens += 1
                 else:
                     raise Exception(
-                        'Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
+                        'Erro sintatico: falta do parentese direito na linha ' + str(self.tokenAtual().linha))
             else:
                 raise Exception(
                     'Erro sintatico: falta do parentese esquerdo na linha ' + str(self.tokenAtual().linha))
@@ -303,33 +313,46 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
 
-    # TODO: Falta - params_print_statement()
-    # <print_statement>
+    # <print_statement> OK
     def print_statement(self):
         self.indexDaTabelaDeTokens += 1
         if(self.tokenAtual().tipo == 'PLEFT'):
-            self.indexDaTabelaDeTokens += 1
-            if(self.tokenAtual().tipo == ''):  # <params_print>
+            self.params_print_statement()
+            if(self.tokenAtual().tipo == 'PRIGHT'):
                 self.indexDaTabelaDeTokens += 1
-                # params_print_statement()  # TODO: Criação do método
-                if(self.tokenAtual().tipo == 'PRIGHT'):
+                if(self.tokenAtual().tipo == 'SEMICOLON'):
                     self.indexDaTabelaDeTokens += 1
-                    if(self.tokenAtual().tipo == 'SEMICOLON'):
-                        self.indexDaTabelaDeTokens += 1
-                    else:
-                        raise Exception(
-                            'Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
+                    return
                 else:
+                    # TODO: SOLVE BUG DE CONTAGEM DE LINHAS
                     raise Exception(
-                        'Erro sintatico: falta do Parentese direito na linha ' + str(self.tokenAtual().linha))
+                        'Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
             else:
                 raise Exception(
-                    'Erro sintatico: sem argumento no Print na linha ' + str(self.tokenAtual().linha))
+                    'Erro sintatico: falta do Parentese direito na linha ' + str(self.tokenAtual().linha))
         else:
             raise Exception(
                 'Erro sintatico: falta do Parentese esquerdo na linha  ' + str(self.tokenAtual().linha))
 
-        # <print_statement> ::= print (<params_print>) ; <block>
+    # <print_statement> OK
+    def params_print_statement(self):
+        self.indexDaTabelaDeTokens += 1
+        if(self.tokenAtual().tipo == 'CALL'):
+            self.indexDaTabelaDeTokens += 1
+            if(self.tokenAtual().tipo == 'FUNC'):
+                self.call_func_statement()
+            elif(self.tokenAtual().tipo == 'PROC'):
+                self.call_proc_statement()
+            else:
+                raise Exception(
+                    'Erro sintatico: chamada incorreta de função ou procedimento na linha ' + str(self.tokenAtual().linha))
+
+        elif((self.tokenAtual().tipo == 'NUM') or (self.tokenAtual().tipo == 'BOOLEAN') or (self.tokenAtual().tipo == 'ID')):
+            self.indexDaTabelaDeTokens += 1
+
+        else:
+            raise Exception(
+                'Erro sintatico: uso incorreto dos parametros na linha ' + str(self.tokenAtual().linha))
 
     # TODO: Falta - <expression>, <block2>
     # <if_statement>
@@ -394,10 +417,6 @@ class AnalisadorSintatico:
     # TODO: <expression>, <block2>
     # <while_statement> ::= while(<expression>){<block2>}endwhile
     def while_statement(self):
-        def while_statement(self):
-        self.indexDaTabelaDeTokens += 1
-        self.indexDaTabelaDeTokens += 1
-        self.indexDaTabelaDeTokens += 1
         self.indexDaTabelaDeTokens += 1
         if(self.tokenAtual().tipo == 'PLEFT'):
             self.indexDaTabelaDeTokens += 1

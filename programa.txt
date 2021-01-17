@@ -1,4 +1,4 @@
-praogram {
+program {
 
     int num1 = 1;
     int num2 = 2;
@@ -9,5 +9,10 @@ praogram {
     num1 = num2;
 
     int num3 = num1;
-    
+
+    print(call func soma());
+    print(a);
+    print(1);
+    print(False);
+
  } end
