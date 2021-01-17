@@ -93,14 +93,13 @@
 
 # ----------------- Print ------------------------------------------------------
 
-<print_statement> ::= print (<params_print>) ; <block>
+<print_statement> ::= print (<params_print>) ;
 
 <params_print> ::= <identifier> | <call_func> | <call_op> | <boolean> | <num>
 
 # ----------------- Blocos ------------------------------------------------------
 
-<block> ::= <declaration_func> | <declaration_proc> | <declaration_var> | <call_proc> | <call_func> | <identifier> | <if_statement> | <while_statement> | <print_statement> | 
-<call_op> | <empty> 
+<block> ::= <declaration_var> | <declaration_func> | <declaration_proc> | <call_func> | <call_proc> | <print_statement> | <if_statement> | <while_statement> | <identifier> | <call_op> | <empty> 
 
 # block2 é o bloco que contém break/continue que só pode ser chamado dentro de um while
 <block2> ::= <declaration_var> | <call_proc> | <call_func> | <identifier> | <if_statement2> | <while_statement> | <unconditional_branch> | <call_op> | <print_statement> 

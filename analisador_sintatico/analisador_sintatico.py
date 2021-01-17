@@ -40,17 +40,21 @@ class AnalisadorSintatico:
             self.listaEscopos[0].fechar()
             return
 
+    # TODO: Falta - <call_op>
     # <block>
     def block_statement(self):
         # <declaration_var>
         if (self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):
             self.declaration_var_statement()
+
         # <declaration_func>
         elif (self.tokenAtual().tipo == 'FUNC'):
             self.declaration_func_statement()
+
         # <declaration_proc>
         elif (self.tokenAtual().tipo == 'PROC'):
             self.declaration_proc_statement()
+
         # Chamadas de função e procedimentos
         elif (self.tokenAtual().tipo == 'CALL'):
             self.indexDaTabelaDeTokens += 1
@@ -80,9 +84,13 @@ class AnalisadorSintatico:
         elif (self.tokenAtual().tipo == 'ID'):
             self.call_var_statement()
 
-        # TODO: Colocar os outros métodos
+        # <call_op>
+        # elif (self.tokenAtual())
 
-    # <declaration_var>
+        else:
+            return
+
+    # <declaration_var> OK
     def declaration_var_statement(self):
         self.indexDaTabelaDeTokens += 1
         if(self.tokenAtual().tipo == 'ID'):
@@ -102,7 +110,7 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
 
-    # <end_var>
+    # <end_var> OK
     def end_var_statement(self):
         #  <call_func> | <call_op>
         if (self.tokenAtual().tipo == 'CALL'):
@@ -144,7 +152,7 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: atribuição de variavel erroneamente na linha ' + str(self.tokenAtual().linha))
 
-    # Chamada de variavel
+    # Chamada de variavel OK
     def call_var_statement(self):
         self.indexDaTabelaDeTokens += 1
         if(self.tokenAtual().tipo == 'ATB'):  # atribuicao
@@ -163,8 +171,8 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: símbolo de atribuição não encontrado na linha ' + str(self.tokenAtual().linha))
 
+    # TODO: Falta - params, colocar bloco
     # <declaration_func>
-
     def declaration_func_statement(self):
         self.indexDaTabelaDeTokens += 1
         if(self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):  # tipo
@@ -178,7 +186,7 @@ class AnalisadorSintatico:
 
                     if(self.tokenAtual().tipo == 'CLEFT'):
                         self.indexDaTabelaDeTokens += 1
-                        # <block> <return_statement> TODO: criar metodos
+                        # <block>  TODO: colocar block
 
                         if(self.tokenAtual().tipo == 'RETURN'):
                             self.return_statement()
@@ -201,7 +209,7 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: falta do type na linha ' + str(self.tokenAtual().linha))
 
-    # <return_statement>
+    # <return_statement> OK
     def return_statement(self):
         self.indexDaTabelaDeTokens += 1
 
@@ -227,6 +235,7 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: Retorno errado na linha ' + str(self.tokenAtual().linha))
 
+    # TODO: Falta - params_call, colocar bloco
     # <call_func>
     def call_func_statement(self):
         self.indexDaTabelaDeTokens += 1
@@ -247,6 +256,7 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
 
+    # TODO: Falta - params, colocar bloco
     # <declaration_proc>
     def declaration_proc_statement(self):
         # <declaration_proc> ::= proc <identifier> (<params>) { <block> }
@@ -272,6 +282,7 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
 
+    # TODO: Falta - params_call
     # <call_proc>
     def call_proc_statement(self):
         self.indexDaTabelaDeTokens += 1
@@ -292,6 +303,7 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
 
+    # TODO: Falta - params_print_statement()
     # <print_statement>
     def print_statement(self):
         self.indexDaTabelaDeTokens += 1
@@ -318,8 +330,8 @@ class AnalisadorSintatico:
                 'Erro sintatico: falta do Parentese esquerdo na linha  ' + str(self.tokenAtual().linha))
 
         # <print_statement> ::= print (<params_print>) ; <block>
-        # <params_print> ::= <identifier> | <call_func> | <call_op> | <boolean> | <num>
 
+    # TODO: Falta - <expression>, <block2>
     # <if_statement>
     def if_statement(self):
         self.indexDaTabelaDeTokens += 1
@@ -359,6 +371,7 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: falta do Parentese esquerdo na linha  ' + str(self.tokenAtual().linha))
 
+    # TODO: Falta - colocar block2
     # <else_part>
     def else_part_statement(self):
         if(self.tokenAtual().tipo == 'CLEFT'):
@@ -378,8 +391,13 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: falta do CLEFT na linha ' + str(self.tokenAtual().linha))
 
+    # TODO: <expression>, <block2>
     # <while_statement> ::= while(<expression>){<block2>}endwhile
     def while_statement(self):
+        def while_statement(self):
+        self.indexDaTabelaDeTokens += 1
+        self.indexDaTabelaDeTokens += 1
+        self.indexDaTabelaDeTokens += 1
         self.indexDaTabelaDeTokens += 1
         if(self.tokenAtual().tipo == 'PLEFT'):
             self.indexDaTabelaDeTokens += 1
@@ -410,4 +428,5 @@ class AnalisadorSintatico:
     # def params
     # <params_call>
     # <expression>
+    # <call_op>
     # <unconditional_branch>
