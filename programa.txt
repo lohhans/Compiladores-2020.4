@@ -37,4 +37,9 @@ program {
         return 1;
     };
 
+    while(){
+        int var = 1;
+        continue;
+    }endwhile
+
  } end
