@@ -35,7 +35,7 @@ Além disso, a linguagem deve cobrir os seguintes aspectos:
 
 - [x] Declaração de procedimentos e funções (sem e com parâmetros)
 
-- [ ] Comandos de atribuição
+- [x] Comandos de atribuição
 
 - [x] Chamada de procedimentos e funções
 
@@ -47,7 +47,7 @@ Além disso, a linguagem deve cobrir os seguintes aspectos:
 
 - [x] Comandos de desvio incondicional (break e continue)
 
-- [ ] Comando de impressão de constante e variável na tela
+- [x] Comando de impressão de constante e variável na tela
 
 - [ ] Expressões aritméticas (+, -, * e /)
 
