@@ -92,7 +92,7 @@ class AnalisadorSintatico:
         # <identifier>
         if (self.tokenAtual().tipo == 'ID'):
             self.call_var_statement()
-
+        
         else:
             return
 
@@ -148,7 +148,6 @@ class AnalisadorSintatico:
         else:
             return
 
-    # TODO: Falta - <call_op>
     # block3 é o bloco do if/else, que não pode declarar função e procedimento dentro
     def block3_statement(self):
         # <declaration_var>
@@ -205,6 +204,7 @@ class AnalisadorSintatico:
             if(self.tokenAtual().tipo == 'ATB'):  # atribuicao
                 self.indexDaTabelaDeTokens += 1
                 self.end_var_statement()        # o que tem dentro da variavel
+                
                 if(self.tokenAtual().tipo == 'SEMICOLON'):
                     self.indexDaTabelaDeTokens += 1
                 else:
@@ -241,17 +241,22 @@ class AnalisadorSintatico:
                     'Erro sintatico: boolean atribuido erroneamente na linha ' + str(self.tokenAtual().linha))
         # <num>
         if (self.tokenAtual().tipo == 'NUM'):
-            if (self.tokenAtual().lexema >= '0' and self.tokenAtual().lexema <= '9'):
-                self.indexDaTabelaDeTokens += 1
+            self.indexDaTabelaDeTokens += 1
+            if(self.tokenAtual().tipo == 'ADD' or self.tokenAtual().tipo == 'SUB' or self.tokenAtual().tipo == 'MULT' or self.tokenAtual().tipo == 'DIV'):
+                self.call_op_statement()
                 return
             else:
-                raise Exception(
-                    'Erro sintatico: int atribuido erroneamente na linha ' + str(self.tokenAtual().linha))
+                return
 
          # <identifier>
         if (self.tokenAtual().tipo == 'ID'):
             self.indexDaTabelaDeTokens += 1
-
+            # <call_op>
+            if(self.tokenAtual().tipo == 'ADD' or self.tokenAtual().tipo == 'SUB' or self.tokenAtual().tipo == 'MULT' or self.tokenAtual().tipo == 'DIV'):
+                self.call_op_statement()
+                return
+            else:
+                return
         else:
             raise Exception(
                 'Erro sintatico: atribuição de variavel erroneamente na linha ' + str(self.tokenAtual().linha))
@@ -841,5 +846,15 @@ class AnalisadorSintatico:
         else:
             raise Exception('Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
     
-    # TODO: funções que faltam
     # <call_op>
+    def call_op_statement(self):
+        self.indexDaTabelaDeTokens += 1
+        if(self.tokenAtual().tipo == 'ID' or self.tokenAtual().tipo == 'NUM'):
+            self.indexDaTabelaDeTokens += 1
+            if(self.tokenAtual().tipo == 'ADD' or self.tokenAtual().tipo == 'SUB' or self.tokenAtual().tipo == 'MULT' or self.tokenAtual().tipo == 'DIV'):
+                self.call_op_statement()
+            else:
+                return
+        else:
+            raise Exception('Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
+
