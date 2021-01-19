@@ -326,7 +326,6 @@ class AnalisadorSintatico:
                 'Erro sintatico: Retorno errado na linha ' + str(self.tokenAtual().linha))
 
     # <params> OK
-    # Parametros só aceita variável
     def params_statement(self):
         self.indexDaTabelaDeTokens += 1
         if(self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):
