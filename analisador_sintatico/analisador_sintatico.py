@@ -217,8 +217,7 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
 
-    # TODO: CALL_op
-    # <end_var> 
+    # <end_var> OK
     def end_var_statement(self):
         #  <call_func> | <call_op>
         if (self.tokenAtual().tipo == 'CALL'):
@@ -637,7 +636,6 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: falta do Parentese esquerdo na linha  ' + str(self.tokenAtual().linha))
 
-    # TODO: Falta - <call_op>
     # <params_print_statement> OK
     def params_print_statement(self):
         self.indexDaTabelaDeTokens += 1
@@ -655,7 +653,11 @@ class AnalisadorSintatico:
 
         elif((self.tokenAtual().tipo == 'NUM') or (self.tokenAtual().tipo == 'BOOLEAN') or (self.tokenAtual().tipo == 'ID')):
             self.indexDaTabelaDeTokens += 1
-
+            if(self.tokenAtual().tipo == 'ADD' or self.tokenAtual().tipo == 'SUB' or self.tokenAtual().tipo == 'MULT' or self.tokenAtual().tipo == 'DIV'):
+                self.call_op_statement()
+                return
+            else:
+                return
         else:
             raise Exception(
                 'Erro sintatico: uso incorreto dos parametros na linha ' + str(self.tokenAtual().linha))
@@ -857,4 +859,3 @@ class AnalisadorSintatico:
                 return
         else:
             raise Exception('Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
-
