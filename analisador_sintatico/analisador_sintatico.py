@@ -44,7 +44,6 @@ class AnalisadorSintatico:
     # <block>
     def block_statement(self):
         # <declaration_var>
-        # print('Entrou... Tipo: %s, na linha: %s' % (self.tokenAtual().tipo, self.tokenAtual().linha))
         if (self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):
             self.declaration_var_statement()
 
@@ -182,52 +181,132 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: símbolo de atribuição não encontrado na linha ' + str(self.tokenAtual().linha))
 
-    # TODO: Falta - params, colocar bloco
-    # <declaration_func>
+    # <declaration_func> OK
     def declaration_func_statement(self):
         self.indexDaTabelaDeTokens += 1
         if(self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):  # tipo
             self.indexDaTabelaDeTokens += 1
             # identificador
-            if(self.tokenAtual().tipo == 'ID' and self.tokenAtual().lexema[0] == 'func'):
+            if(self.tokenAtual().tipo == 'ID'):
                 self.indexDaTabelaDeTokens += 1
                 if(self.tokenAtual().tipo == 'PLEFT'):
                     self.indexDaTabelaDeTokens += 1
-                    # (params) TODO: criar metodo
 
-                    if(self.tokenAtual().tipo == 'CLEFT'):
+                    if(self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):
                         self.indexDaTabelaDeTokens += 1
-                        # <block>  TODO: colocar block
-
-                        if(self.tokenAtual().tipo == 'RETURN'):
-                            self.return_statement()
+                        if(self.tokenAtual().tipo == 'ID' or self.tokenAtual().lexema == 'True' or self.tokenAtual().lexema == 'False'):
                             self.indexDaTabelaDeTokens += 1
+                            if(self.tokenAtual().tipo == 'COMMA'):
+                                self.params_statement()
+                                if(self.tokenAtual().tipo == 'PRIGHT'):
+                                    self.indexDaTabelaDeTokens += 1
+                                    if(self.tokenAtual().tipo == 'CLEFT'):
+                                        self.indexDaTabelaDeTokens += 1
+                                        # BLOCK
+                                        self.block_statement()
 
+                                        if(self.tokenAtual().tipo == 'RETURN'):
+
+                                            # RETURN
+                                            self.return_statement()
+
+                                            if(self.tokenAtual().tipo == 'CRIGHT'):
+                                                self.indexDaTabelaDeTokens += 1
+
+                                                if(self.tokenAtual().tipo == 'SEMICOLON'):
+                                                    self.indexDaTabelaDeTokens += 1                                                                   
+                                                else:
+                                                    raise Exception('Erro sintatico: falta do ponto e vírgula na linha ' + str(self.tokenAtual().linha))  
+                                            else:
+                                                raise Exception('Erro sintatico: falta da chave direita na linha ' + str(self.tokenAtual().linha))
+                                        else:
+                                            raise Exception('Erro sintatico: falta do retorno na linha ' + str(self.tokenAtual().linha))
+                                        
+                                    else:
+                                        raise Exception('Erro sintatico: falta da chave esquerda na linha ' + str(self.tokenAtual().linha))
+                                else:
+                                    raise Exception('Erro sintatico: falta do parentese direito na linha ' + str(self.tokenAtual().linha))           
+                            
+                            elif(self.tokenAtual().tipo == 'PRIGHT'):
+    
+                                if(self.tokenAtual().tipo == 'PRIGHT'):
+                                    self.indexDaTabelaDeTokens += 1
+                                    if(self.tokenAtual().tipo == 'CLEFT'):
+                                        self.indexDaTabelaDeTokens += 1
+                                        # BLOCK
+                                        self.block_statement()
+                                        # RETURN
+                                        if(self.tokenAtual().tipo == 'RETURN'):
+                                            self.return_statement()
+                                            if(self.tokenAtual().tipo == 'CRIGHT'):
+                                                self.indexDaTabelaDeTokens += 1
+                                                if(self.tokenAtual().tipo == 'SEMICOLON'):
+                                                    self.indexDaTabelaDeTokens += 1                                                                   
+                                                else:
+                                                    raise Exception('Erro sintatico: falta do ponto e vírgula na linha ' + str(self.tokenAtual().linha))  
+                                            else:
+                                                raise Exception('Erro sintatico: falta da chave direita na linha ' + str(self.tokenAtual().linha))
+                                        else:
+                                            raise Exception('Erro sintatico: falta do retorno na linha ' + str(self.tokenAtual().linha))
+                                    else:
+                                        raise Exception(
+                                            'Erro sintatico: falta da chave esquerda na linha ' + str(self.tokenAtual().linha))
+                                else:
+                                    raise Exception(
+                                        'Erro sintatico: falta do parentese direito na linha ' + str(self.tokenAtual().linha))                        
+                            else:
+                                # TODO: resolver exceção
+                                raise Exception(
+                                    'Erro sintatico: falta da virgula linha ' + str(self.tokenAtual().linha))
                         else:
                             raise Exception(
-                                'Erro sintatico: falta do retorno na linha ' + str(self.tokenAtual().linha))
-
+                                'Erro sintatico: falta o ID na linha ' + str(self.tokenAtual().linha))
+                            
                     else:
-                        raise Exception(
-                            'Erro sintatico: falta do chave esquerda na linha ' + str(self.tokenAtual().linha))
+                        if(self.tokenAtual().tipo == 'PRIGHT'):
+                            self.indexDaTabelaDeTokens += 1
+                            if(self.tokenAtual().tipo == 'CLEFT'):
+                                self.indexDaTabelaDeTokens += 1
+
+                                # BLOCK 
+                                self.block_statement()
+                                
+                                 # RETURN
+                                if(self.tokenAtual().tipo == 'RETURN'):
+                                    self.return_statement()
+
+                                    if(self.tokenAtual().tipo == 'CRIGHT'):
+                                        self.indexDaTabelaDeTokens += 1
+                                        if(self.tokenAtual().tipo == 'SEMICOLON'):
+                                            self.indexDaTabelaDeTokens += 1                                                                   
+                                        else:
+                                            raise Exception('Erro sintatico: falta do ponto e vírgula na linha ' + str(self.tokenAtual().linha))  
+                                    else:
+                                        raise Exception('Erro sintatico: falta da chave direita na linha ' + str(self.tokenAtual().linha))
+                                else:
+                                    raise Exception('Erro sintatico: falta do retorno na linha ' + str(self.tokenAtual().linha))
+                                
+                            else:
+                                raise Exception(
+                                    'Erro sintatico: falta da chave esquerda na linha ' + str(self.tokenAtual().linha))
+                        else:
+                            raise Exception(
+                                'Erro sintatico: falta do parentese direito na linha ' + str(self.tokenAtual().linha))
                 else:
                     raise Exception(
                         'Erro sintatico: falta do parentese esquerdo na linha ' + str(self.tokenAtual().linha))
             else:
                 raise Exception(
-                    'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
-        else:
-            raise Exception(
-                'Erro sintatico: falta do type na linha ' + str(self.tokenAtual().linha))
-
+                    'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))                                   
+                                    
     # <return_statement> OK
     def return_statement(self):
         self.indexDaTabelaDeTokens += 1
 
         # Se for chamada de função
-        if (self.TokenAtual().tipo == 'CALL'):
+        if (self.tokenAtual().tipo == 'CALL'):
             self.indexDaTabelaDeTokens += 1
-            if(self.TokenAtual().tipo == 'FUNC'):
+            if(self.tokenAtual().tipo == 'FUNC'):
                 self.call_func_statement()
                 self.indexDaTabelaDeTokens += 1
             else:
@@ -237,7 +316,7 @@ class AnalisadorSintatico:
         # Se for chamada de variavel/num/bool
         if ((self.tokenAtual().tipo == 'NUM') or (self.tokenAtual().tipo == 'BOOLEAN') or (self.tokenAtual().tipo == 'ID')):
             self.indexDaTabelaDeTokens += 1
-            if(self.TokenAtual().tipo == 'SEMICOLON'):
+            if(self.tokenAtual().tipo == 'SEMICOLON'):
                 self.indexDaTabelaDeTokens += 1
             else:
                 raise Exception(
@@ -252,7 +331,7 @@ class AnalisadorSintatico:
         self.indexDaTabelaDeTokens += 1
         if(self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):
             self.indexDaTabelaDeTokens += 1
-            if(self.tokenAtual().tipo == 'ID'):
+            if(self.tokenAtual().tipo == 'ID' or self.tokenAtual().lexema == 'True' or self.tokenAtual().lexema == 'False'):
                 self.indexDaTabelaDeTokens += 1
                 if(self.tokenAtual().tipo == 'COMMA'):
                     self.params_statement()
@@ -268,8 +347,7 @@ class AnalisadorSintatico:
             raise Exception('Erro sintatico: é necessário informar um tipo na linha ' +
                                 str(self.tokenAtual().linha))
 
-    # TODO: Falta - colocar bloco
-    # <declaration_proc>
+    # <declaration_proc> OK
     def declaration_proc_statement(self):
         self.indexDaTabelaDeTokens += 1
         # identificador
@@ -279,7 +357,7 @@ class AnalisadorSintatico:
                 self.indexDaTabelaDeTokens += 1
                 if(self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):
                     self.indexDaTabelaDeTokens += 1  
-                    if(self.tokenAtual().tipo == 'ID'):
+                    if(self.tokenAtual().tipo == 'ID' or self.tokenAtual().lexema == 'True' or self.tokenAtual().lexema == 'False'):
                         self.indexDaTabelaDeTokens += 1
                         if(self.tokenAtual().tipo == 'COMMA'):
                             self.params_statement()
@@ -287,7 +365,7 @@ class AnalisadorSintatico:
                                 self.indexDaTabelaDeTokens += 1
                                 if(self.tokenAtual().tipo == 'CLEFT'):
                                     self.indexDaTabelaDeTokens += 1
-                                    # <block> TODO:
+                                    # <block> 
                                     self.block_statement()
                                     if(self.tokenAtual().tipo == 'CRIGHT'):
                                         self.indexDaTabelaDeTokens += 1
@@ -298,16 +376,20 @@ class AnalisadorSintatico:
                                     else:
                                         raise Exception(
                                             'Erro sintatico: falta da chave direito na linha ' + str(self.tokenAtual().linha))
+                                else:
+                                    raise Exception(
+                                        'Erro sintatico: falta da chave esquerda na linha ' + str(self.tokenAtual().linha))
                             else:
                                 raise Exception(
-                                    'Erro sintatico: falta da chave esquerda na linha ' + str(self.tokenAtual().linha))
-                        
+                                    'Erro sintatico: falta do parentese direito na linha ' + str(self.tokenAtual().linha))
+                            
                         elif(self.tokenAtual().tipo == 'PRIGHT'):
+
                             if(self.tokenAtual().tipo == 'PRIGHT'):
                                 self.indexDaTabelaDeTokens += 1
                                 if(self.tokenAtual().tipo == 'CLEFT'):
                                     self.indexDaTabelaDeTokens += 1
-                                    # <block> TODO: colocar o bloco
+                                    # <block> 
                                     self.block_statement()
                                     if(self.tokenAtual().tipo == 'CRIGHT'):
                                         self.indexDaTabelaDeTokens += 1
@@ -318,9 +400,12 @@ class AnalisadorSintatico:
                                     else:
                                         raise Exception(
                                             'Erro sintatico: falta da chave direito na linha ' + str(self.tokenAtual().linha))
+                                else:
+                                    raise Exception(
+                                        'Erro sintatico: falta da chave esquerda na linha ' + str(self.tokenAtual().linha))
                             else:
                                 raise Exception(
-                                    'Erro sintatico: falta da chave esquerda na linha ' + str(self.tokenAtual().linha))
+                                    'Erro sintatico: falta do parentese direito na linha ' + str(self.tokenAtual().linha))                        
                         else:
                             # TODO: resolver exceção
                             raise Exception(
@@ -365,7 +450,7 @@ class AnalisadorSintatico:
             self.indexDaTabelaDeTokens += 1
             if(self.tokenAtual().tipo == 'PLEFT'):
                 self.indexDaTabelaDeTokens += 1
-                if(self.tokenAtual().tipo == 'ID'):
+                if(self.tokenAtual().tipo == 'ID' or self.tokenAtual().lexema == 'True' or self.tokenAtual().lexema == 'False'):
                     self.indexDaTabelaDeTokens += 1
                     if(self.tokenAtual().tipo == 'COMMA'):
                         self.params_call_statement()
@@ -394,7 +479,7 @@ class AnalisadorSintatico:
             self.indexDaTabelaDeTokens += 1
             if(self.tokenAtual().tipo == 'PLEFT'):
                 self.indexDaTabelaDeTokens += 1
-                if(self.tokenAtual().tipo == 'ID'):
+                if(self.tokenAtual().tipo == 'ID' or self.tokenAtual().lexema == 'True' or self.tokenAtual().lexema == 'False'):
                     self.indexDaTabelaDeTokens += 1
                     if(self.tokenAtual().tipo == 'COMMA'):
                         self.params_call_statement()
@@ -419,12 +504,11 @@ class AnalisadorSintatico:
     # <params_call> OK
     def params_call_statement(self):
         self.indexDaTabelaDeTokens += 1
-        # Parametros só aceita variável
-        if(self.tokenAtual().tipo == 'ID'):
+        if(self.tokenAtual().tipo == 'ID' or self.tokenAtual().lexema == 'True' or self.tokenAtual().lexema == 'False'):
             self.indexDaTabelaDeTokens += 1
             if(self.tokenAtual().tipo == 'COMMA'):
                 self.params_call_statement()
-            elif(self.tokenAtual().tipo == 'ID'):
+            elif(self.tokenAtual().tipo == 'ID' or self.tokenAtual().lexema == 'True' or self.tokenAtual().lexema == 'False'):
                 raise Exception(
                     'Erro sintatico: falta vírgula na linha ' + str(self.tokenAtual().linha))
             else:
@@ -565,7 +649,6 @@ class AnalisadorSintatico:
                 'Erro sintatico: falta do PLEFT na linha ' + str(self.tokenAtual().linha))
 
     # TODO: funções que faltam
-    # def params
     # <expression>
     # <call_op>
     # <unconditional_branch>

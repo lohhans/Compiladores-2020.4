@@ -3,6 +3,8 @@ program {
     int num1 = 1;
     int num2 = 2;
     bool b = False;
+    bool false = false;
+    bool true = True;
 
     num1 = 0;
     b = True;
@@ -20,8 +22,19 @@ program {
 
     call func proc1(a, b, c);
     call func proc1();
+    call func func1b(False);
+    call func func2b(true);
 
     proc proc1(int a, bool b, int c){};
 
+    func int funcaoTeste1(){
+        return 1;
+    };
+    func int funcaoTeste1(bool true){
+        return 1;
+    };
+    func int funcaoTeste(int a, int b, bool c){
+        return 1;
+    };
 
  } end
