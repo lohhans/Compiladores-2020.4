@@ -22,6 +22,8 @@
 
 <declaration_var> ::= <type> <identifier> = <end_var>;
 
+# TODO: int a = call func soma(); 
+
 <end_var> ::= = <call_func> | <boolean> | <call_op> | <num> | <identifier>
 
 # ----------------- Parametros ------------------------------------------------------
@@ -59,11 +61,11 @@
 
 # ----------------- Expression ------------------------------------------------------
 
-<expression> ::= <identifier> <expression2> | <call_func> <expression2> | <num> <expression2>
+<expression> ::= <identifier> <expression2> | <num> <expression2>
 
-<expression2> ::= <op_boolean> <expression3> | <empty>
+<expression2> ::= <op_boolean> <expression3> 
 
-<expression3> ::= <identifier> | <call_func> | <num>
+<expression3> ::= <identifier> | <num>
 
 # ----------------- Condicional ------------------------------------------------------
 
@@ -97,10 +99,10 @@
 
 # ----------------- Blocos ------------------------------------------------------
 
-<block> ::= <declaration_var> | <declaration_func> | <declaration_proc> | <call_func> | <call_proc> | <print_statement> | <if_statement> | <while_statement> | <identifier> | <call_op> | <empty> 
+<block> ::= <declaration_var> | <declaration_func> | <declaration_proc> | <call_func> | <call_proc> | <print_statement> | <if_statement> | <while_statement> | <identifier> | <empty> 
 
 # block2 é o bloco que contém break/continue que só pode ser chamado dentro de um while
-<block2> ::= <declaration_var> | <call_proc> | <call_func> | <identifier> | <if_statement2> | <while_statement> | <unconditional_branch> | <call_op> | <print_statement> 
+<block2> ::= <declaration_var> | <call_proc> | <call_func> | <identifier> | <if_statement2> | <while_statement> | <unconditional_branch> | <print_statement> 
 
 # block3 é o bloco do if/else, que não pode declarar função e procedimento dentro
-<block3> ::= <declaration_var> | <call_proc> | <call_func> | <identifier> | <if_statement> | <while_statement> | <call_op> | <print_statement> 
+<block3> ::= <declaration_var> | <call_proc> | <call_func> | <identifier> | <if_statement> | <while_statement> | <print_statement> 
