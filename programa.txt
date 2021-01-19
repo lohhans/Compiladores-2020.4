@@ -42,4 +42,6 @@ program {
         continue;
     }endwhile
 
+    int a = 1 + 2 + 3;
+
  } end
