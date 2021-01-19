@@ -39,9 +39,9 @@ Além disso, a linguagem deve cobrir os seguintes aspectos:
 
 - [x] Chamada de procedimentos e funções
 
-- [ ] Comando de desvio condicional (if e else)
+- [x] Comando de desvio condicional (if e else)
 
-- [ ] Comando de laço (while)
+- [x] Comando de laço (while)
 
 - [x] Comando de retorno de valor
 
@@ -51,7 +51,7 @@ Além disso, a linguagem deve cobrir os seguintes aspectos:
 
 - [ ] Expressões aritméticas (+, -, * e /)
 
-- [ ] Expressões booleanas (==, !=, >, >=, < e <=)
+- [x] Expressões booleanas (==, !=, >, >=, < e <=)
 
 ### Gramática BNF desenvolvida para o projeto
 
