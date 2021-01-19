@@ -100,6 +100,62 @@ class AnalisadorSintatico:
         else:
             return
 
+    # TODO: CALLOP
+    # block2 é o bloco que contém break/continue que só pode ser chamado dentro de um while
+    def block2_statement(self):
+        # <declaration_var>
+        if (self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):
+            self.declaration_var_statement()
+
+        # Chamadas de função e procedimentos
+        if (self.tokenAtual().tipo == 'CALL'):
+            self.indexDaTabelaDeTokens += 1
+            # <call_func>
+            if (self.tokenAtual().tipo == 'FUNC'):
+                self.call_func_statement()
+                if(self.tokenAtual().tipo == 'SEMICOLON'):
+                    self.indexDaTabelaDeTokens += 1
+                else:
+                    raise Exception(
+                        'Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
+            # <call_proc>
+            elif (self.tokenAtual().tipo == 'PROC'):
+                self.call_proc_statement()
+                if(self.tokenAtual().tipo == 'SEMICOLON'):
+                    self.indexDaTabelaDeTokens += 1
+                else:
+                    raise Exception(
+                        'Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
+            else:
+                raise Exception(
+                    'Erro sintatico: falta de PROC ou FUNC' + str(self.tokenAtual().linha))
+
+        # <print_statement>
+        if (self.tokenAtual().tipo == 'PRINT'):
+            self.print_statement()
+
+        # <if_statement>
+        if (self.tokenAtual().tipo == 'IF'):
+            self.if_statement()
+
+        # <while_statement>
+        if (self.tokenAtual().tipo == 'WHILE'):
+            self.while_statement()
+
+        # <identifier>
+        if (self.tokenAtual().tipo == 'ID'):
+            self.call_var_statement()
+
+        # <call_op>
+        # if (self.tokenAtual())
+
+        # <unconditional_branch>
+        if (self.tokenAtual().tipo == 'BREAK' or self.tokenAtual().tipo == 'CONTINUE'):
+            self.unconditional_branch_statement()
+
+        else:
+            return
+
     # <declaration_var> OK
     def declaration_var_statement(self):
         self.indexDaTabelaDeTokens += 1
@@ -618,7 +674,7 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: falta do CLEFT na linha ' + str(self.tokenAtual().linha))
 
-    # TODO: <expression>, <block2>
+    # TODO: <expression>
     # <while_statement>
     def while_statement(self):
         self.indexDaTabelaDeTokens += 1
@@ -629,27 +685,45 @@ class AnalisadorSintatico:
                 self.indexDaTabelaDeTokens += 1
                 if(self.tokenAtual().tipo == 'CLEFT'):
                     self.indexDaTabelaDeTokens += 1
-
-                    # Block while TODO: criar metodo com break e continue
-                    if (self.tokenAtual().tipo == 'ENDWHILE'):
+                    # BLOCK
+                    self.block2_statement()
+                    
+                    if(self.tokenAtual().tipo == 'CRIGHT'):
                         self.indexDaTabelaDeTokens += 1
-
+                        if (self.tokenAtual().tipo == 'ENDWHILE'):
+                            self.indexDaTabelaDeTokens += 1
+                        else:
+                            raise Exception(
+                                'Erro sintatico: falta de ENDWHILE na linha ' + str(self.tokenAtual().linha))
                     else:
                         raise Exception(
-                            'Erro sintatico: falta de ENDWHILE na linha ' + str(self.tokenAtual().linha))
+                            'Erro sintatico: falta do CRIGHT na linha ' + str(self.tokenAtual().linha))
                 else:
-                    raise Exception(
-                        'Erro sintatico: falta do CRIGHT na linha ' + str(self.tokenAtual().linha))
+                    raise Exception('Erro sintatico: falta do CLEFT na linha ' + str(self.tokenAtual().linha))
             else:
                 raise Exception(
                     'Erro sintatico: falta do PRIGHT na linha ' + str(self.tokenAtual().linha))
         else:
             raise Exception(
                 'Erro sintatico: falta do PLEFT na linha ' + str(self.tokenAtual().linha))
+    
+    # <unconditional_branch>
+    def unconditional_branch_statement(self):
+        if(self.tokenAtual().tipo == 'CONTINUE'):
+            self.indexDaTabelaDeTokens += 1
+            if(self.tokenAtual().tipo == 'SEMICOLON'):
+                self.indexDaTabelaDeTokens += 1
+            else:
+                raise Exception('Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
+            
+        if(self.tokenAtual().tipo == 'BREAK'):
+            self.indexDaTabelaDeTokens += 1
+            if(self.tokenAtual().tipo == 'SEMICOLON'):
+                self.indexDaTabelaDeTokens += 1
+            else:
+                raise Exception('Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
 
     # TODO: funções que faltam
     # <expression>
     # <call_op>
-    # <unconditional_branch>
-    # <block2>
     # <block3>
