@@ -21,4 +21,7 @@ program {
     call func proc1(a, b, c);
     call func proc1();
 
+    proc proc1(int a, bool b, int c){};
+
+
  } end

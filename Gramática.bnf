@@ -26,20 +26,20 @@
 
 # ----------------- Parametros ------------------------------------------------------
 
-<params_call> ::= <identifier> (, <params_call> | <empty>)*
+<params> ::= <type> <identifier> (, <params> | <empty>)*
 
 # parametros para chamada de função pois não precisa passar o type
 <params_call> ::= <identifier> (, <params_call> | <empty>)*
 
 # ----------------- Função ------------------------------------------------------
 
-<declaration_func> ::= func <type> <identifier> (<params>) { <block> <return_statement>}
+<declaration_func> ::= func <type> <identifier> (<params>) { <block> <return_statement>};
 
 <call_func> ::= call func <identifier> (<params_call>);
 
 # ----------------- Procedimento ------------------------------------------------------
 
-<declaration_proc> ::= proc <identifier> (<params>) { <block> }
+<declaration_proc> ::= proc <identifier> (<params>) { <block> };
 
 <call_proc> ::= call proc <identifier> (<params_call>);
 
