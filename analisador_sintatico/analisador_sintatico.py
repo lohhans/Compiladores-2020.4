@@ -39,9 +39,6 @@ class AnalisadorSintatico:
         else:
             raise Exception(
                 'Erro sintatico: Código fora do padrão na linha ' + str(self.tokenAtual().linha))
-            # self.listaEscopos[0].fechar()
-            # Inalcançado
-            return
 
     # TODO: Falta - <call_op>
     # <block>
