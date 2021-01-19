@@ -283,7 +283,6 @@ class AnalisadorSintatico:
                         self.indexDaTabelaDeTokens += 1
                         if(self.tokenAtual().tipo == 'COMMA'):
                             self.params_statement()
-                            
                             if(self.tokenAtual().tipo == 'PRIGHT'):
                                 self.indexDaTabelaDeTokens += 1
                                 if(self.tokenAtual().tipo == 'CLEFT'):
@@ -295,8 +294,7 @@ class AnalisadorSintatico:
                                         if(self.tokenAtual().tipo == 'SEMICOLON'):
                                             self.indexDaTabelaDeTokens += 1                                                                   
                                         else:
-                                            raise Exception(
-                                                'Erro sintatico: falta do ponto e vírgula na linha ' + str(self.tokenAtual().linha))                                    
+                                            raise Exception('Erro sintatico: falta do ponto e vírgula na linha ' + str(self.tokenAtual().linha))                                    
                                     else:
                                         raise Exception(
                                             'Erro sintatico: falta da chave direito na linha ' + str(self.tokenAtual().linha))
@@ -316,8 +314,7 @@ class AnalisadorSintatico:
                                         if(self.tokenAtual().tipo == 'SEMICOLON'):
                                             self.indexDaTabelaDeTokens += 1                                                                   
                                         else:
-                                            raise Exception(
-                                                'Erro sintatico: falta do ponto e vírgula na linha ' + str(self.tokenAtual().linha))                                    
+                                            raise Exception('Erro sintatico: falta do ponto e vírgula na linha ' + str(self.tokenAtual().linha))                                    
                                     else:
                                         raise Exception(
                                             'Erro sintatico: falta da chave direito na linha ' + str(self.tokenAtual().linha))
