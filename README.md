@@ -31,27 +31,27 @@ Gramáticas LL(1) podem ser analisadas por um simples parser descentente recursi
 
 Além disso, a linguagem deve cobrir os seguintes aspectos:
 
-    Declaração de variáveis de tipo inteiro e booleano
+- [x] Declaração de variáveis de tipo inteiro e booleano
 
-    Declaração de procedimentos e funções (sem e com parâmetros)
+- [x] Declaração de procedimentos e funções (sem e com parâmetros)
 
-    Comandos de atribuição
+- [ ] Comandos de atribuição
 
-    Chamada de procedimentos e funções
+- [x] Chamada de procedimentos e funções
 
-    Comando de desvio condicional (if e else)
+- [ ] Comando de desvio condicional (if e else)
 
-    Comando de laço (while)
+- [ ] Comando de laço (while)
 
-    Comando de retorno de valor
+- [x] Comando de retorno de valor
 
-    Comandos de desvio incondicional (break e continue)
+- [x] Comandos de desvio incondicional (break e continue)
 
-    Comando de impressão de constante e variável na tela
+- [ ] Comando de impressão de constante e variável na tela
 
-    Expressões aritméticas (+, -, * e /)
+- [ ] Expressões aritméticas (+, -, * e /)
 
-    Expressões booleanas (==, !=, >, >=, < e <=)
+- [ ] Expressões booleanas (==, !=, >, >=, < e <=)
 
 ### Gramática BNF desenvolvida para o projeto
 
