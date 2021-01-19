@@ -7,7 +7,7 @@
 [![Armstrong L. M. G. Q.](https://avatars0.githubusercontent.com/u/30741312?s=64&v=4)](https://github.com/lohhans) |  [![Antônio A. S. N.](https://avatars1.githubusercontent.com/u/44072239?s=64&v=4)](https://github.com/laisy) |  
 |-------------------|-------------------
 | **Armstrong L. M. G. Q.** | **Laisy C. F. S.** |  |
-| <a href="https://github.com/lohhans/Compiladores-2020.4/commits?author=lohhans" title="Commits de @lohhans">💻 @lohhans</a> | <a href="https://github.com/lohhans/Compiladores-2020.4/commits?author=laisy" title="Commits de @laisy">💻 @laisy</a> |
+| <p style="text-align: center;><a href="https://github.com/lohhans/Compiladores-2020.4/commits?author=lohhans" title="Commits de @lohhans"></p>💻 @lohhans</a> | <a href="https://github.com/lohhans/Compiladores-2020.4/commits?author=laisy" title="Commits de @laisy">💻 @laisy</a> |
 
 ---
 
