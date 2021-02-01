@@ -40,7 +40,15 @@ program {
 
     while(1 != 0){
         int var = 1;
-        continue;
+        int var = 1;
+        a = b;
+        if(a == b){
+            if(a == b){
+                if(a == b){
+                    int elseEstaBugado = 0;
+                }endif
+            }endif
+        }endif
     }endwhile
 
     int a = 1 + 2 + 3 * 3;

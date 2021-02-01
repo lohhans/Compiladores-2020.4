@@ -1,16 +1,24 @@
 #print('Entrou... Tipo: %s, lexema: %s, na linha: %s' % (self.tokenAtual().tipo, self.tokenAtual().lexema, self.tokenAtual().linha))
+from lexer.scanner import Scanner
 
 class AnalisadorSintatico:
-    def __init__(self, tabelaDeTokens):
+    def __init__(self, tabelaDeTokens, programa):
         self.tabelaDeTokens = tabelaDeTokens
         self.indexDaTabelaDeTokens = 0
+        self.indexLookAhead = 0
+        self.programa = programa
 
     def tokenAtual(self):
         return self.tabelaDeTokens[self.indexDaTabelaDeTokens]
+    
+    def tokenLookAhead(self):
+        self.indexLookAhead = self.indexDaTabelaDeTokens + 2
+        return self.tabelaDeTokens[self.indexLookAhead]
 
     def start(self):
         self.statement_list()
         return
+
 
     def statement_list(self):
         if(self.tokenAtual().tipo == "PROGRAM"):
@@ -101,7 +109,7 @@ class AnalisadorSintatico:
         # <declaration_var>
         if (self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):
             self.declaration_var_statement()
-
+            return
         # Chamadas de função e procedimentos
         if (self.tokenAtual().tipo == 'CALL'):
             self.indexDaTabelaDeTokens += 1
@@ -132,7 +140,7 @@ class AnalisadorSintatico:
         # <if_statement>
         if (self.tokenAtual().tipo == 'IF'):
             self.if_statement2()
-
+           
         # <while_statement>
         if (self.tokenAtual().tipo == 'WHILE'):
             self.while_statement()
@@ -734,7 +742,8 @@ class AnalisadorSintatico:
                 self.indexDaTabelaDeTokens += 1
                 if(self.tokenAtual().tipo == 'CLEFT'):
                     self.indexDaTabelaDeTokens += 1
-                    self.block2_statement()
+                    while(self.tokenAtual().tipo != 'CRIGHT' and self.tokenLookAhead().tipo != 'ENDIF'):
+                        self.block2_statement()
                     if(self.tokenAtual().tipo == 'CRIGHT'):
                         self.indexDaTabelaDeTokens += 1
                         if(self.tokenAtual().tipo == 'ELSE'):
@@ -776,7 +785,7 @@ class AnalisadorSintatico:
                     self.indexDaTabelaDeTokens += 1
                 else:
                     raise Exception(
-                        'Erro sintatico: falta de ENDIF na linha ' + str(self.tokenAtual().linha))
+                        'Erro sintatico: falta de ENDELSE na linha ' + str(self.tokenAtual().linha))
             else:
                 raise Exception(
                     'Erro sintatico: falta do CRIGHT na linha ' + str(self.tokenAtual().linha))
@@ -785,7 +794,7 @@ class AnalisadorSintatico:
                 'Erro sintatico: falta do CLEFT na linha ' + str(self.tokenAtual().linha))
 
     # <while_statement> OK
-    def while_statement(self):
+    def while_statement(self):        
         self.indexDaTabelaDeTokens += 1
         if(self.tokenAtual().tipo == 'PLEFT'):
             self.indexDaTabelaDeTokens += 1
@@ -795,9 +804,11 @@ class AnalisadorSintatico:
                 self.indexDaTabelaDeTokens += 1
                 if(self.tokenAtual().tipo == 'CLEFT'):
                     self.indexDaTabelaDeTokens += 1
-                    # BLOCK
-                    self.block2_statement()
                     
+                    # BLOCK
+                    while(self.tokenAtual().tipo != 'CRIGHT' and self.tokenLookAhead().tipo != 'ENDWHILE'):
+                        self.block2_statement()
+
                     if(self.tokenAtual().tipo == 'CRIGHT'):
                         self.indexDaTabelaDeTokens += 1
                         if (self.tokenAtual().tipo == 'ENDWHILE'):

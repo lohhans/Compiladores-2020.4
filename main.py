@@ -22,14 +22,16 @@ if __name__ == '__main__':
     # for i in tabelaDeTokens:
     #     print(i.lexema)
 
+    '''
     for i in tabelaDeTokens:
         print(i)
         tabelaDeSimbolos.append(i.lexema)
-        
+    '''
+    
     print('Tabela de símbolos:\n')
     print(tabelaDeSimbolos)
 
-    analisadorSintatico = AnalisadorSintatico(tabelaDeTokens)
+    analisadorSintatico = AnalisadorSintatico(tabelaDeTokens, programa)
     print('\n--- PÓS LEXER ---\n')
 
     try:
