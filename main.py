@@ -27,7 +27,7 @@ if __name__ == '__main__':
         print(i)
         tabelaDeSimbolos.append(i.lexema)
     '''
-    
+
     print('Tabela de símbolos:\n')
     print(tabelaDeSimbolos)
 
