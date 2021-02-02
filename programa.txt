@@ -38,16 +38,35 @@ program {
         return 1;
     };
 
+    if(a == b){
+        a = b;
+        if(a > b){
+            a = 2;
+        }endif
+        if(a<b){
+            a = 3;
+        }endif
+        else{
+            a = 1;
+        }endelse
+    }endif
+    else{
+        a = b;
+    }endelse
+
     while(1 != 0){
         int var = 1;
         int var = 1;
         a = b;
         if(a == b){
+            a = b;
             if(a == b){
-                if(a == b){
-                    int elseEstaBugado = 0;
-                }endif
+                a = b;
             }endif
+            else{
+                a = b;
+
+            }endelse
         }endif
     }endwhile
 

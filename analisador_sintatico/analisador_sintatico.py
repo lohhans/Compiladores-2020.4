@@ -136,31 +136,41 @@ class AnalisadorSintatico:
         # <print_statement>
         if (self.tokenAtual().tipo == 'PRINT'):
             self.print_statement()
+            return
 
         # <if_statement>
         if (self.tokenAtual().tipo == 'IF'):
             self.if_statement2()
-           
+            return
+        
+        # Tratamento de erro ELSE
+        if (self.tokenAtual().tipo == 'ELSE'):
+            raise Exception('Erro sintatico: ELSE adicionado de maneira incorreta ' + str(self.tokenAtual().linha))
+
         # <while_statement>
         if (self.tokenAtual().tipo == 'WHILE'):
             self.while_statement()
+            return
 
         # <identifier>
         if (self.tokenAtual().tipo == 'ID'):
             self.call_var_statement()
-
+            return
+        
         # <unconditional_branch>
         if (self.tokenAtual().tipo == 'BREAK' or self.tokenAtual().tipo == 'CONTINUE'):
             self.unconditional_branch_statement()
-
-        else:
             return
 
+        else:
+            raise Exception('Erro sintatico: bloco vazio na linha ' + str(self.tokenAtual().linha))
+
     # block3 é o bloco do if/else, que não pode declarar função e procedimento dentro
-    def block3_statement(self):
+    def block3_statement(self):        
         # <declaration_var>
         if (self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):
             self.declaration_var_statement()
+            return
 
         # Chamadas de função e procedimentos
         if (self.tokenAtual().tipo == 'CALL'):
@@ -188,21 +198,28 @@ class AnalisadorSintatico:
         # <print_statement>
         if (self.tokenAtual().tipo == 'PRINT'):
             self.print_statement()
+            return
 
         # <if_statement>
         if (self.tokenAtual().tipo == 'IF'):
             self.if_statement()
+            return
+
+        # Tratamento de erro ELSE
+        if (self.tokenAtual().tipo == 'ELSE'):
+            raise Exception('Erro sintatico: ELSE adicionado de maneira incorreta ' + str(self.tokenAtual().linha))
 
         # <while_statement>
         if (self.tokenAtual().tipo == 'WHILE'):
             self.while_statement()
-
+            return
+        
         # <identifier>
         if (self.tokenAtual().tipo == 'ID'):
             self.call_var_statement()
-
-        else:
             return
+        else:
+            raise Exception('Erro sintatico: bloco vazio na linha ' + str(self.tokenAtual().linha))
 
     # <declaration_var> OK
     def declaration_var_statement(self):
@@ -678,22 +695,21 @@ class AnalisadorSintatico:
             #Expression
             self.expression_statement()
             if(self.tokenAtual().tipo == 'PRIGHT'):
+                olhaAfrente = self.tokenLookAhead()
                 self.indexDaTabelaDeTokens += 1
-                if(self.tokenAtual().tipo == 'CLEFT'):
+                if(self.tokenAtual().tipo == 'CLEFT' and olhaAfrente.tipo != 'CRIGHT'):
                     self.indexDaTabelaDeTokens += 1
-                    self.block3_statement()
+                    while(self.tokenAtual().tipo != 'CRIGHT' and self.tokenLookAhead().tipo != 'ENDIF'):
+                        self.block3_statement()
                     if(self.tokenAtual().tipo == 'CRIGHT'):
                         self.indexDaTabelaDeTokens += 1
-                        if(self.tokenAtual().tipo == 'ELSE'):
+                        if(self.tokenAtual().tipo == 'ENDIF'):
                             self.indexDaTabelaDeTokens += 1
-                            self.else_part_statement()   # ELSE
-                            if(self.tokenAtual().tipo == 'ENDIF'):
-                                self.indexDaTabelaDeTokens += 1
+                            if(self.tokenAtual().tipo == 'ELSE'):
+                                
+                                self.else_part_statement()   # ELSE
                             else:
-                                raise Exception(
-                                    'Erro sintatico: falta de ENDIF ' + str(self.tokenAtual().linha))
-                        elif(self.tokenAtual().tipo == 'ENDIF'):
-                            self.indexDaTabelaDeTokens += 1
+                                return
                         else:
                             raise Exception(
                                 'Erro sintatico: falta de ENDIF ' + str(self.tokenAtual().linha))
@@ -702,7 +718,7 @@ class AnalisadorSintatico:
                             'Erro sintatico: falta do CRIGHT na linha ' + str(self.tokenAtual().linha))
                 else:
                     raise Exception(
-                        'Erro sintatico: falta do CLEFT na linha ' + str(self.tokenAtual().linha))
+                        'Erro sintatico: falta do CLEFT ou bloco vazio na linha ' + str(self.tokenAtual().linha))
             else:
                 raise Exception(
                     'Erro sintatico: falta do Parentese direito na linha  ' + str(self.tokenAtual().linha))
@@ -712,73 +728,13 @@ class AnalisadorSintatico:
 
     # <else_part> OK
     def else_part_statement(self):
-        if(self.tokenAtual().tipo == 'CLEFT'):
-            self.indexDaTabelaDeTokens += 1
-            # Block
-            self.block3_statement()
-            if(self.tokenAtual().tipo == 'CRIGHT'):
-                self.indexDaTabelaDeTokens += 1
-                if(self.tokenAtual().tipo == 'ENDELSE'):
-                    self.indexDaTabelaDeTokens += 1
-                else:
-                    raise Exception(
-                        'Erro sintatico: falta de ENDIF na linha ' + str(self.tokenAtual().linha))
-            else:
-                raise Exception(
-                    'Erro sintatico: falta do CRIGHT na linha ' + str(self.tokenAtual().linha))
-        else:
-            raise Exception(
-                'Erro sintatico: falta do CLEFT na linha ' + str(self.tokenAtual().linha))
-
-    # <if_statement2> OK
-    # IF chamado somente dentro do while, pois dentro dele pode ter BREAK E CONTINUE (block2)
-    def if_statement2(self):
+        olhaAfrente = self.tokenLookAhead()
         self.indexDaTabelaDeTokens += 1
-        if(self.tokenAtual().tipo == 'PLEFT'):
+        if(self.tokenAtual().tipo == 'CLEFT' and olhaAfrente.tipo != 'CRIGHT'):
             self.indexDaTabelaDeTokens += 1
-            #Expression
-            self.expression_statement()
-            if(self.tokenAtual().tipo == 'PRIGHT'):
-                self.indexDaTabelaDeTokens += 1
-                if(self.tokenAtual().tipo == 'CLEFT'):
-                    self.indexDaTabelaDeTokens += 1
-                    while(self.tokenAtual().tipo != 'CRIGHT' and self.tokenLookAhead().tipo != 'ENDIF'):
-                        self.block2_statement()
-                    if(self.tokenAtual().tipo == 'CRIGHT'):
-                        self.indexDaTabelaDeTokens += 1
-                        if(self.tokenAtual().tipo == 'ELSE'):
-                            self.indexDaTabelaDeTokens += 1
-                            self.else_part_statement2()   # ELSE
-                            if(self.tokenAtual().tipo == 'ENDIF'):
-                                self.indexDaTabelaDeTokens += 1
-                            else:
-                                raise Exception(
-                                    'Erro sintatico: falta de ENDIF ' + str(self.tokenAtual().linha))
-                        elif(self.tokenAtual().tipo == 'ENDIF'):
-                            self.indexDaTabelaDeTokens += 1
-                        else:
-                            raise Exception(
-                                'Erro sintatico: falta de ENDIF ' + str(self.tokenAtual().linha))
-                    else:
-                        raise Exception(
-                            'Erro sintatico: falta do CRIGHT na linha ' + str(self.tokenAtual().linha))
-                else:
-                    raise Exception(
-                        'Erro sintatico: falta do CLEFT na linha ' + str(self.tokenAtual().linha))
-            else:
-                raise Exception(
-                    'Erro sintatico: falta do Parentese direito na linha  ' + str(self.tokenAtual().linha))
-        else:
-            raise Exception(
-                'Erro sintatico: falta do Parentese esquerdo na linha  ' + str(self.tokenAtual().linha))
-
-    # ELSE chamado somente dentro do while, pois dentro dele pode ter BREAK E CONTINUE (block2)
-    # <else_part2> OK
-    def else_part_statement2(self):
-        if(self.tokenAtual().tipo == 'CLEFT'):
-            self.indexDaTabelaDeTokens += 1
-            # Block
-            self.block2_statement()
+            while(self.tokenAtual().tipo != 'CRIGHT' and self.tokenLookAhead().tipo != 'ENDELSE'): 
+                # Block
+                self.block3_statement()
             if(self.tokenAtual().tipo == 'CRIGHT'):
                 self.indexDaTabelaDeTokens += 1
                 if(self.tokenAtual().tipo == 'ENDELSE'):
@@ -791,7 +747,71 @@ class AnalisadorSintatico:
                     'Erro sintatico: falta do CRIGHT na linha ' + str(self.tokenAtual().linha))
         else:
             raise Exception(
-                'Erro sintatico: falta do CLEFT na linha ' + str(self.tokenAtual().linha))
+                'Erro sintatico: falta do CLEFT ou bloco vazio na linha ' + str(self.tokenAtual().linha))
+
+    # <if_statement2> OK
+    # IF chamado somente dentro do while, pois dentro dele pode ter BREAK E CONTINUE (block2)
+    def if_statement2(self):
+        self.indexDaTabelaDeTokens += 1
+        if(self.tokenAtual().tipo == 'PLEFT'):
+            self.indexDaTabelaDeTokens += 1
+            #Expression
+            self.expression_statement()
+            if(self.tokenAtual().tipo == 'PRIGHT'):
+                olhaAfrente = self.tokenLookAhead()
+                self.indexDaTabelaDeTokens += 1
+                if(self.tokenAtual().tipo == 'CLEFT' and olhaAfrente.tipo != 'CRIGHT'):
+                    self.indexDaTabelaDeTokens += 1
+                    while(self.tokenAtual().tipo != 'CRIGHT' and self.tokenLookAhead().tipo != 'ENDIF'):
+                        self.block2_statement()
+                    
+                    if(self.tokenAtual().tipo == 'CRIGHT'):
+                        self.indexDaTabelaDeTokens += 1
+                        if(self.tokenAtual().tipo == 'ENDIF'):
+                            self.indexDaTabelaDeTokens += 1
+                            if(self.tokenAtual().tipo == 'ELSE'):
+                                self.else_part_statement2()   # ELSE
+                            else:
+                                return
+                        else:
+                            raise Exception('Erro sintatico: falta de ENDIF ' + str(self.tokenAtual().linha))
+                    else:
+                        raise Exception(
+                            'Erro sintatico: falta do CRIGHT na linha ' + str(self.tokenAtual().linha))
+                else:
+                    raise Exception(
+                        'Erro sintatico: falta do CLEFT ou Bloco vazio na linha ' + str(self.tokenAtual().linha))
+            else:
+                raise Exception(
+                    'Erro sintatico: falta do Parentese direito na linha  ' + str(self.tokenAtual().linha))
+        else:
+            raise Exception(
+                'Erro sintatico: falta do Parentese esquerdo na linha  ' + str(self.tokenAtual().linha))
+
+    # ELSE chamado somente dentro do while, pois dentro dele pode ter BREAK E CONTINUE (block2)
+    # <else_part2> OK
+    def else_part_statement2(self):
+        olhaAfrente = self.tokenLookAhead()
+        self.indexDaTabelaDeTokens += 1
+        if(self.tokenAtual().tipo == 'CLEFT' and olhaAfrente.tipo != 'CRIGHT'):
+            self.indexDaTabelaDeTokens += 1
+            # Block
+            while(self.tokenAtual().tipo != 'CRIGHT' and self.tokenLookAhead().tipo != 'ENDELSE'):     
+                self.block2_statement()
+
+            if(self.tokenAtual().tipo == 'CRIGHT'):
+                self.indexDaTabelaDeTokens += 1
+                if(self.tokenAtual().tipo == 'ENDELSE'):
+                    self.indexDaTabelaDeTokens += 1
+                else:
+                    raise Exception(
+                        'Erro sintatico: falta de ENDELSE na linha ' + str(self.tokenAtual().linha))
+            else:
+                raise Exception(
+                    'Erro sintatico: falta do CRIGHT na linha ' + str(self.tokenAtual().linha))
+        else:
+            raise Exception(
+                'Erro sintatico: falta do CLEFT ou bloco vazio na linha ' + str(self.tokenAtual().linha))
 
     # <while_statement> OK
     def while_statement(self):        
