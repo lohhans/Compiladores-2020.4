@@ -10,7 +10,7 @@ program {
     b = True;
     num1 = num2;
 
-    int num3 = num1;
+    int num3 = call func soma();
 
     print(call func soma());
     print(a);
@@ -32,6 +32,7 @@ program {
         return 1;
     };
     func int funcaoTeste1(bool true){
+        call func soma();
         return 1;
     };
     func int funcaoTeste(int a, int b, bool c){
