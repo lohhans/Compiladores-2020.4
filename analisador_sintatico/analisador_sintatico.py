@@ -1,4 +1,7 @@
+from analisador_sintatico.escopo import Escopo
+
 #print('Entrou... Tipo: %s, lexema: %s, na linha: %s' % (self.tokenAtual().tipo, self.tokenAtual().lexema, self.tokenAtual().linha))
+
 
 class AnalisadorSintatico:
     def __init__(self, tabelaDeTokens, programa):
@@ -6,6 +9,9 @@ class AnalisadorSintatico:
         self.indexDaTabelaDeTokens = 0
         self.indexLookAhead = 0
         self.programa = programa
+        self.listaEscopos = []
+        self.indexEscopoAtual = -1
+        self.tabelaDeSimbolos = []
 
     def tokenAtual(self):
         return self.tabelaDeTokens[self.indexDaTabelaDeTokens]
@@ -15,10 +21,21 @@ class AnalisadorSintatico:
         return self.tabelaDeTokens[self.indexLookAhead]
 
     def start(self):
+        escopoInicial = Escopo(self.indexEscopoAtual+1, self.indexEscopoAtual)
+        self.listaEscopos.append(escopoInicial)
         self.statement_list()
         return
 
     def statement_list(self):
+        if(self.tokenAtual().tipo == "END"):
+            self.listaEscopos[0].fechar()
+            return
+        else:
+            self.statement()
+            self.statement_list()
+            return
+
+    def statement(self):
         if(self.tokenAtual().tipo == "PROGRAM"):
             self.indexDaTabelaDeTokens += 1
             if(self.tokenAtual().tipo == "CLEFT"):

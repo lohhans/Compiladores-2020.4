@@ -17,19 +17,18 @@ if __name__ == '__main__':
     lexer = Scanner(programa)
 
     tabelaDeTokens = lexer.scan()
-    tabelaDeSimbolos = []
+    # tabelaDeSimbolos = []
 
     # for i in tabelaDeTokens:
     #     print(i.lexema)
 
-    '''
+    print('Tabela de tokens:\n')
     for i in tabelaDeTokens:
         print(i)
-        tabelaDeSimbolos.append(i.lexema)
-    '''
+        # tabelaDeSimbolos.append(i.lexema)
 
-    print('Tabela de símbolos:\n')
-    print(tabelaDeSimbolos)
+    # print('Tabela de símbolos:\n')
+    # print(tabelaDeSimbolos)
 
     analisadorSintatico = AnalisadorSintatico(tabelaDeTokens, programa)
     print('\n--- PÓS LEXER ---\n')
