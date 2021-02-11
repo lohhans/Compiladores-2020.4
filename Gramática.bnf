@@ -22,8 +22,6 @@
 
 <declaration_var> ::= <type> <identifier> = <end_var>;
 
-# TODO: int a = call func soma(); 
-
 <end_var> ::= = <call_func> | <boolean> | <call_op> | <num> | <identifier>
 
 # ----------------- Parametros ------------------------------------------------------
@@ -77,8 +75,7 @@
 
 # IF chamado somente dentro do while, pois dentro dele pode ter BREAK E CONTINUE (block2)
 <if_statement2> ::= if(<expression>){<block2>} <else_part> endif
-# ELSE chamado somente dentro do while, pois dentro dele pode ter BREAK E CONTINUE (block2)
-<else_part2> ::= else { <block2> } endelse | <empty>
+❯ python3 main.py programa.txt
 
 # ----------------- Incondicional ------------------------------------------------------
 
