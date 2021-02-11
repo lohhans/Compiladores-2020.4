@@ -11,7 +11,7 @@ class AnalisadorSintatico:
         return self.tabelaDeTokens[self.indexDaTabelaDeTokens]
 
     def tokenLookAhead(self):
-        self.indexLookAhead = self.indexDaTabelaDeTokens + 2
+        self.indexLookAhead = self.indexDaTabelaDeTokens + 1
         return self.tabelaDeTokens[self.indexLookAhead]
 
     def start(self):
