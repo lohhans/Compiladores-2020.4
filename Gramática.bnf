@@ -74,9 +74,10 @@
 <while_statement> ::= while(<expression>){<block2>}endwhile
 
 # IF chamado somente dentro do while, pois dentro dele pode ter BREAK E CONTINUE (block2)
-<if_statement2> ::= if(<expression>){<block2>} <else_part> endif
-❯ python3 main.py programa.txt
+<if_statement2> ::= if(<expression>){<block2>} <else_part2> endif
 
+# ELSE chamado somente dentro do while, pois dentro dele pode ter BREAK E CONTINUE (block2)
+<else_part2> ::= else { <block2> } endelse | <empty>
 # ----------------- Incondicional ------------------------------------------------------
 
 # somente pode está dentro de um WHILE, e no IF/ELSE dentro do WHILE

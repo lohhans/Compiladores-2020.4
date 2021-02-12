@@ -31,10 +31,11 @@ if __name__ == '__main__':
     # print(tabelaDeSimbolos)
 
     analisadorSintatico = AnalisadorSintatico(tabelaDeTokens, programa)
-    print('\n--- PÓS LEXER ---\n')
 
     try:
         analisadorSintatico.start()
+        print('\n--- PÓS LEXER ---\n')
+        print(analisadorSintatico.tabelaDeSimbolos)
     except Exception as e:
         print(e)
 

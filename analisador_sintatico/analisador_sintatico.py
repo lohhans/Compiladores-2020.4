@@ -1,6 +1,17 @@
 from analisador_sintatico.escopo import Escopo
+import re
 
 #print('Entrou... Tipo: %s, lexema: %s, na linha: %s' % (self.tokenAtual().tipo, self.tokenAtual().lexema, self.tokenAtual().linha))
+
+# func int funcaoTeste1(bool true){
+#     call func soma();
+#     return 1;
+# };
+
+# [
+# [0, VAR, INT, 1, Num1],
+# [0, FUNC, func, int, funcaoTeste1, [VAR, bool, true], ],
+# ]
 
 
 class AnalisadorSintatico:
@@ -9,9 +20,12 @@ class AnalisadorSintatico:
         self.indexDaTabelaDeTokens = 0
         self.indexLookAhead = 0
         self.programa = programa
-        self.listaEscopos = []
+        # self.listaEscopos = []
         self.indexEscopoAtual = -1
         self.tabelaDeSimbolos = []
+        # Pra saber na semantica qual declaracao de variavel no codigo tá sendo checada
+        self.indexDaDeclaracaoDaVariavelAtual = -1
+        self.indexEscopoAntesDaFuncao = 0
 
     def tokenAtual(self):
         return self.tabelaDeTokens[self.indexDaTabelaDeTokens]
@@ -21,14 +35,15 @@ class AnalisadorSintatico:
         return self.tabelaDeTokens[self.indexLookAhead]
 
     def start(self):
-        escopoInicial = Escopo(self.indexEscopoAtual+1, self.indexEscopoAtual)
-        self.listaEscopos.append(escopoInicial)
+        self.indexEscopoAtual += 1
+        # escopoInicial = Escopo(self.indexEscopoAtual+1, self.indexEscopoAtual)
+        # self.listaEscopos.append(escopoInicial)
         self.statement_list()
         return
 
     def statement_list(self):
         if(self.tokenAtual().tipo == "END"):
-            self.listaEscopos[0].fechar()
+            # self.listaEscopos[0].fechar()
             return
         else:
             self.statement()
@@ -48,7 +63,7 @@ class AnalisadorSintatico:
                     self.indexDaTabelaDeTokens += 1
 
                     if(self.tokenAtual().tipo == "END"):
-                        print('FIM DO PROGRAMA - DEU CERTO :)')
+                        print('FIM DA ANÁLISE SINTÁTICA - DEU CERTO :)')
                         # Deu certo
                     else:
                         raise Exception(
@@ -71,7 +86,32 @@ class AnalisadorSintatico:
 
         # <declaration_func>
         if (self.tokenAtual().tipo == 'FUNC'):
-            self.declaration_func_statement()
+            # Ordem: [escopo, tipo, tipoDoRetorno, id, [[params], [params], [params]]]
+            # Obs: Params pode ser >= 0
+            temp = []
+            temp.append(self.indexEscopoAtual)
+            # temp.append('FUNC')
+            temp.append(self.tokenAtual().tipo)
+
+            '''
+            global = 0
+            antesFunc = 0
+
+           
+            
+            program {
+                # 0
+                func int funcaoTeste1(){
+                    # 1
+                    func int funcaoTeste2(){
+                        return 1;
+                    };
+                    return 1;
+                };
+            } end
+            '''
+
+            self.declaration_func_statement(temp)
 
         # <declaration_proc>
         if (self.tokenAtual().tipo == 'PROC'):
@@ -324,25 +364,64 @@ class AnalisadorSintatico:
                 'Erro sintatico: símbolo de atribuição não encontrado na linha ' + str(self.tokenAtual().linha))
 
     # <declaration_func> OK
-    def declaration_func_statement(self):
+    def declaration_func_statement(self, temp):
         self.indexDaTabelaDeTokens += 1
         if(self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):  # tipo
+            # Salvando o tipo do retorno
+            temp.append(self.tokenAtual().tipo)
             self.indexDaTabelaDeTokens += 1
             # identificador
             if(self.tokenAtual().tipo == 'ID'):
+                # Salvando o id
+                temp.append(self.tokenAtual().lexema)
                 self.indexDaTabelaDeTokens += 1
                 if(self.tokenAtual().tipo == 'PLEFT'):
-                    self.indexDaTabelaDeTokens += 1
+                    # (int a, bool b)
+                    # [[params], [params]]
+                    # [] -> lista do que tem dewntro dos parenteses do parametro
+                    # [[escopo, int, a], [escopo, bool, var]]
 
+                    tempParenteses = []
+                    self.indexDaTabelaDeTokens += 1
                     if(self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):
+                        tempParentesesParamAtual = []
+                        # Ordem dos params: [[escopo, tipo, id], [escopo, tipo, id]]
+                        # Fazendo com que o escopo fique correto
+                        tempParentesesParamAtual.append(
+                            self.indexEscopoAtual + 1)
+
+                        # Salvando o tipo do parametro atual
+                        tempParentesesParamAtual.append(self.tokenAtual().tipo)
+
                         self.indexDaTabelaDeTokens += 1
-                        if(self.tokenAtual().tipo == 'ID' or self.tokenAtual().lexema == 'True' or self.tokenAtual().lexema == 'False'):
+                        if(self.tokenAtual().tipo == 'ID'):
+                            # Salvando o tipo do parametro atual
+                            tempParentesesParamAtual.append(
+                                self.tokenAtual().lexema)
+
+                            # [escopo, int, a] -> antes
+
+                            tempParenteses.append(tempParentesesParamAtual)
+
+                            # [[escopo, int, a]] -> depois
+
                             self.indexDaTabelaDeTokens += 1
                             if(self.tokenAtual().tipo == 'COMMA'):
-                                self.params_statement()
+
+                                # [[escopo, int, a]] -> antes
+                                tempParenteses.append(
+                                    self.params_statement(tempParenteses))
+                                tempParenteses.pop()  # Remoção do None que fica ao fim
+                                # [[escopo, int, a], i1, i2, i3 ... in]
+
+                                temp.append(tempParenteses)
+
                                 if(self.tokenAtual().tipo == 'PRIGHT'):
                                     self.indexDaTabelaDeTokens += 1
                                     if(self.tokenAtual().tipo == 'CLEFT'):
+                                        # Armazendando o escopo antes de entrar na função
+                                        self.indexEscopoAntesDaFuncao = self.indexEscopoAtual
+                                        self.indexEscopoAtual += 1
                                         self.indexDaTabelaDeTokens += 1
                                         # BLOCK
                                         self.block_statement()
@@ -353,10 +432,15 @@ class AnalisadorSintatico:
                                             self.return_statement()
 
                                             if(self.tokenAtual().tipo == 'CRIGHT'):
+                                                # Retornando o valor do escopo antes de entrar na função
+                                                self.indexEscopoAtual = self.indexEscopoAntesDaFuncao
                                                 self.indexDaTabelaDeTokens += 1
 
                                                 if(self.tokenAtual().tipo == 'SEMICOLON'):
                                                     self.indexDaTabelaDeTokens += 1
+                                                    # Adiciona na tabela de símbolos
+                                                    self.tabelaDeSimbolos.append(
+                                                        temp)
                                                 else:
                                                     raise Exception(
                                                         'Erro sintatico: falta do ponto e vírgula na linha ' + str(self.tokenAtual().linha))
@@ -479,19 +563,26 @@ class AnalisadorSintatico:
                 'Erro sintatico: Retorno errado na linha ' + str(self.tokenAtual().linha))
 
     # <params> OK
-    def params_statement(self):
+    def params_statement(self, tempParenteses):
+        # [[escopo, int, a], adsfasd, asdasd]
         self.indexDaTabelaDeTokens += 1
         if(self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):
+            tempParentesesParamAtual = []
+            tempParentesesParamAtual.append(self.indexEscopoAtual + 1)
+            tempParentesesParamAtual.append(self.tokenAtual().tipo)
             self.indexDaTabelaDeTokens += 1
-            if(self.tokenAtual().tipo == 'ID' or self.tokenAtual().lexema == 'True' or self.tokenAtual().lexema == 'False'):
+            if(self.tokenAtual().tipo == 'ID'):
+                tempParentesesParamAtual.append(
+                    self.tokenAtual().lexema)
+                tempParenteses.append(tempParentesesParamAtual)
                 self.indexDaTabelaDeTokens += 1
                 if(self.tokenAtual().tipo == 'COMMA'):
-                    self.params_statement()
+                    self.params_statement(tempParenteses)
                 elif(self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):
                     raise Exception(
                         'Erro sintatico: falta vírgula na linha ' + str(self.tokenAtual().linha))
                 else:
-                    return
+                    return tempParenteses
             else:
                 raise Exception('Erro sintatico: é necessário informar alguma váriavel na linha ' +
                                 str(self.tokenAtual().linha))
@@ -499,6 +590,7 @@ class AnalisadorSintatico:
             raise Exception('Erro sintatico: é necessário informar um tipo na linha ' +
                             str(self.tokenAtual().linha))
 
+    # TODO: finalizar lista do escopo
     # <declaration_proc> OK
     def declaration_proc_statement(self):
         self.indexDaTabelaDeTokens += 1
@@ -506,13 +598,20 @@ class AnalisadorSintatico:
         if(self.tokenAtual().tipo == 'ID'):
             self.indexDaTabelaDeTokens += 1
             if(self.tokenAtual().tipo == 'PLEFT'):
+                tempParenteses = []
                 self.indexDaTabelaDeTokens += 1
                 if(self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):
+                    tempParentesesParamAtual = []
+                    tempParentesesParamAtual.append(self.indexEscopoAtual + 1)
+                    tempParentesesParamAtual.append(self.tokenAtual().tipo)
                     self.indexDaTabelaDeTokens += 1
-                    if(self.tokenAtual().tipo == 'ID' or self.tokenAtual().lexema == 'True' or self.tokenAtual().lexema == 'False'):
+                    if(self.tokenAtual().tipo == 'ID'):
+                        tempParentesesParamAtual.append(
+                            self.tokenAtual().lexema)
+                        tempParenteses.append(tempParentesesParamAtual)
                         self.indexDaTabelaDeTokens += 1
                         if(self.tokenAtual().tipo == 'COMMA'):
-                            self.params_statement()
+                            self.params_statement(tempParenteses)
                             if(self.tokenAtual().tipo == 'PRIGHT'):
                                 self.indexDaTabelaDeTokens += 1
                                 if(self.tokenAtual().tipo == 'CLEFT'):
@@ -930,3 +1029,30 @@ class AnalisadorSintatico:
         else:
             raise Exception(
                 'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
+
+    '''
+    
+    \/ Análise Semântica \/
+    
+    '''
+
+    # checa semantica, se tiver tudo OK return True
+    def checkSemantica(self, tipo, index):
+        if(tipo == 'VARDEC'):  # checa semantica de declaração de Variável
+            simbAtual = self.tabSimbolos[index]
+            if(simbAtual[1] == 'INT'):
+                if(simbAtual[3].isnumeric() or bool(re.match("[0-9A-Za-a]*( ){0,}([+-/*]( ){0,}[0-9A-Za-a]*( ){0,})*", simbAtual[3]))):
+                    return True
+                else:
+                    # linha do ponto e virgula que é a mesma
+                    raise Exception(
+                        "Erro Semântico, variavel do tipo inteiro nao recebe inteiro na linha: "+str(self.tokenAtual().linha))
+            if(simbAtual[1] == 'TBOOLEAN'):
+                if(simbAtual[3] == 'true' or simbAtual[3] == 'false'):
+                    return True
+                else:
+                    # linha do ponto e virgula que é a mesma
+                    raise Exception(
+                        "Erro Semântico, variavel do tipo boolean nao recebe boolean na linha: "+str(self.tokenAtual().linha))
+        self.indexDecVarAtual += 1
+        # elif(outros tipos)

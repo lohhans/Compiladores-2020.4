@@ -5,7 +5,7 @@ class Escopo():
         self.escopoAberto = True
 
     def fechar(self):
-        self.aberto = False
+        self.escopoAberto = False
 
     def __str__(self):
-        return "Index: %s\n Escopo atual: %s\n Está aberto?:%s\n" % (str(self.index), str(self.pai), str(self.aberto))
+        return "Index: %s\n Escopo atual: %s\n Está aberto?:%s\n" % (str(self.index), str(self.escopoAtual), str(self.escopoAberto))
