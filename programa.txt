@@ -1,10 +1,7 @@
 program {
 
-    int num1 = 1 + 2;
-    int num2 = 2;
+    int num1 = 1;
     bool b = False;
-    bool false = false;
-    bool true = True;
 
     num1 = 0;
     b = True;
@@ -19,12 +16,10 @@ program {
     print(False);
 
     call proc proc1(a, b, c);
-    call proc proc1();
+    call proc proc2();
 
-    call func proc1(a, b, c);
-    call func proc1();
-    call func func1b(False);
-    call func func2b(true);
+    call func func1b(a);
+    call func func2b(true, b);
 
     proc proc1(){};
     proc proc2(int pão){};

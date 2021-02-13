@@ -1,5 +1,6 @@
 from lexer.scanner import Scanner
 from analisador_sintatico.analisador_sintatico import AnalisadorSintatico
+from pprint import pprint
 
 import sys
 
@@ -35,7 +36,7 @@ if __name__ == '__main__':
     try:
         analisadorSintatico.start()
         print('\n--- PÓS LEXER ---\n')
-        print(analisadorSintatico.tabelaDeSimbolos)
+        pprint(analisadorSintatico.tabelaDeSimbolos)
     except Exception as e:
         print(e)
 
