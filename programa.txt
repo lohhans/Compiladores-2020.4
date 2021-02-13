@@ -15,9 +15,11 @@ program {
     print(1+12*3/4);
     print(False);
 
-    call proc proc1(a, b, c);
-    call proc proc2();
-
+    call proc proc0();
+    call proc proc1(x);
+    call proc proc2(a, b, c);
+    
+    call func func0b();
     call func func1b(a);
     call func func2b(true, b);
 
@@ -32,7 +34,7 @@ program {
         call func soma();
         return 1;
     };
-    func int funcaoTeste3(int a, int b, bool c){
+    func int funcaoTeste3(int a, int b){
         return 1;
     };
 
