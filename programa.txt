@@ -1,10 +1,7 @@
 program {
 
-    int num1 = 1 + 2;
-    int num2 = 2;
+    int num1 = 1;
     bool b = False;
-    bool false = false;
-    bool true = True;
 
     num1 = 0;
     b = True;

@@ -3,17 +3,6 @@ import re
 
 #print('Entrou... Tipo: %s, lexema: %s, na linha: %s' % (self.tokenAtual().tipo, self.tokenAtual().lexema, self.tokenAtual().linha))
 
-# func int funcaoTeste1(bool true){
-#     call func soma();
-#     return 1;
-# };
-
-# [
-# [0, VAR, INT, 1, Num1],
-# [0, FUNC, func, int, funcaoTeste1, [VAR, bool, true], ],
-# ]
-
-
 class AnalisadorSintatico:
     def __init__(self, tabelaDeTokens, programa):
         self.tabelaDeTokens = tabelaDeTokens
@@ -146,7 +135,10 @@ class AnalisadorSintatico:
 
         # <identifier>
         if (self.tokenAtual().tipo == 'ID'):
-            self.call_var_statement()
+            temp = []
+            temp.append(self.indexEscopoAtual)
+            temp.append(self.tokenAtual().lexema)
+            self.call_var_statement(temp)
 
         else:
             return
@@ -155,6 +147,9 @@ class AnalisadorSintatico:
     def block2_statement(self):
         # <declaration_var>
         if (self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):
+            temp = []
+            temp.append(self.indexEscopoAtual)
+            temp.append(self.tokenAtual().tipo)
             self.declaration_var_statement(temp)
             return
         # Chamadas de função e procedimentos
@@ -205,7 +200,10 @@ class AnalisadorSintatico:
 
         # <identifier>
         if (self.tokenAtual().tipo == 'ID'):
-            self.call_var_statement()
+            temp = []
+            temp.append(self.indexEscopoAtual)
+            temp.append(self.tokenAtual().lexema)
+            self.call_var_statement(temp)
             return
 
         # <unconditional_branch>
@@ -221,6 +219,9 @@ class AnalisadorSintatico:
     def block3_statement(self):
         # <declaration_var>
         if (self.tokenAtual().tipo == 'INT' or self.tokenAtual().tipo == 'BOOL'):
+            temp = []
+            temp.append(self.indexEscopoAtual)
+            temp.append(self.tokenAtual().tipo)
             self.declaration_var_statement(temp)
             return
 
@@ -272,7 +273,10 @@ class AnalisadorSintatico:
 
         # <identifier>
         if (self.tokenAtual().tipo == 'ID'):
-            self.call_var_statement()
+            temp = []
+            temp.append(self.indexEscopoAtual)
+            temp.append(self.tokenAtual().lexema)
+            self.call_var_statement(temp)
             return
         else:
             raise Exception(
@@ -355,14 +359,17 @@ class AnalisadorSintatico:
                 'Erro sintatico: atribuição de variavel erroneamente na linha ' + str(self.tokenAtual().linha))
 
     # Chamada de variavel OK
-    def call_var_statement(self):
+    def call_var_statement(self, temp):
         self.indexDaTabelaDeTokens += 1
         if(self.tokenAtual().tipo == 'ATB'):  # atribuicao
+            temp.append(self.tokenAtual().lexema)
             self.indexDaTabelaDeTokens += 1
             if ((self.tokenAtual().tipo == 'NUM') or (self.tokenAtual().tipo == 'BOOLEAN') or (self.tokenAtual().tipo == 'ID')):
+                temp.append(self.tokenAtual().lexema)
                 self.indexDaTabelaDeTokens += 1
                 if(self.tokenAtual().tipo == 'SEMICOLON'):
                     self.indexDaTabelaDeTokens += 1
+                    self.tabelaDeSimbolos.append(temp)
                 else:
                     raise Exception(
                         'Erro sintatico: falta do ponto e vírgula na linha ' + str(self.tokenAtual().linha))
