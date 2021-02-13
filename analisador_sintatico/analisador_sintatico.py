@@ -92,30 +92,16 @@ class AnalisadorSintatico:
             temp.append(self.indexEscopoAtual)
             # temp.append('FUNC')
             temp.append(self.tokenAtual().tipo)
-
-            '''
-            global = 0
-            antesFunc = 0
-
-           
             
-            program {
-                # 0
-                func int funcaoTeste1(){
-                    # 1
-                    func int funcaoTeste2(){
-                        return 1;
-                    };
-                    return 1;
-                };
-            } end
-            '''
-
             self.declaration_func_statement(temp)
 
         # <declaration_proc>
         if (self.tokenAtual().tipo == 'PROC'):
-            self.declaration_proc_statement()
+            temp = []
+            temp.append(self.indexEscopoAtual)
+            # temp.append('PROC')
+            temp.append(self.tokenAtual().tipo)
+            self.declaration_proc_statement(temp)
 
         # Chamadas de função e procedimentos
         if (self.tokenAtual().tipo == 'CALL'):
@@ -363,6 +349,14 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: símbolo de atribuição não encontrado na linha ' + str(self.tokenAtual().linha))
 
+    '''
+    [
+        [0, 'FUNC', 'INT', 'funcaoTeste1', []], 
+        [0, 'FUNC', 'INT', 'funcaoTeste2', [[1, 'BOOL', 'true']]], 
+        [0, 'FUNC', 'INT', 'funcaoTeste', [[1, 'INT', 'a'], [1, 'INT', 'b'], [1, 'BOOL', ',c']]]
+    ]
+    '''
+
     # <declaration_func> OK
     def declaration_func_statement(self, temp):
         self.indexDaTabelaDeTokens += 1
@@ -460,9 +454,12 @@ class AnalisadorSintatico:
 
                             elif(self.tokenAtual().tipo == 'PRIGHT'):
 
+                                temp.append(tempParenteses)
                                 if(self.tokenAtual().tipo == 'PRIGHT'):
                                     self.indexDaTabelaDeTokens += 1
                                     if(self.tokenAtual().tipo == 'CLEFT'):
+                                        self.indexEscopoAntesDaFuncao = self.indexEscopoAtual
+                                        self.indexEscopoAtual += 1
                                         self.indexDaTabelaDeTokens += 1
                                         # BLOCK
                                         self.block_statement()
@@ -470,9 +467,13 @@ class AnalisadorSintatico:
                                         if(self.tokenAtual().tipo == 'RETURN'):
                                             self.return_statement()
                                             if(self.tokenAtual().tipo == 'CRIGHT'):
+                                                self.indexEscopoAtual = self.indexEscopoAntesDaFuncao
                                                 self.indexDaTabelaDeTokens += 1
                                                 if(self.tokenAtual().tipo == 'SEMICOLON'):
                                                     self.indexDaTabelaDeTokens += 1
+                                                    # Adiciona na tabela de símbolos
+                                                    self.tabelaDeSimbolos.append(
+                                                        temp)
                                                 else:
                                                     raise Exception(
                                                         'Erro sintatico: falta do ponto e vírgula na linha ' + str(self.tokenAtual().linha))
@@ -498,8 +499,11 @@ class AnalisadorSintatico:
 
                     else:
                         if(self.tokenAtual().tipo == 'PRIGHT'):
+                            temp.append(tempParenteses)
                             self.indexDaTabelaDeTokens += 1
                             if(self.tokenAtual().tipo == 'CLEFT'):
+                                self.indexEscopoAntesDaFuncao = self.indexEscopoAtual
+                                self.indexEscopoAtual += 1
                                 self.indexDaTabelaDeTokens += 1
 
                                 # BLOCK
@@ -510,9 +514,12 @@ class AnalisadorSintatico:
                                     self.return_statement()
 
                                     if(self.tokenAtual().tipo == 'CRIGHT'):
+                                        self.indexEscopoAtual = self.indexEscopoAntesDaFuncao
                                         self.indexDaTabelaDeTokens += 1
                                         if(self.tokenAtual().tipo == 'SEMICOLON'):
                                             self.indexDaTabelaDeTokens += 1
+                                            # Adiciona na tabela de símbolos
+                                            self.tabelaDeSimbolos.append(temp)
                                         else:
                                             raise Exception(
                                                 'Erro sintatico: falta do ponto e vírgula na linha ' + str(self.tokenAtual().linha))
@@ -592,7 +599,7 @@ class AnalisadorSintatico:
 
     # TODO: finalizar lista do escopo
     # <declaration_proc> OK
-    def declaration_proc_statement(self):
+    def declaration_proc_statement(self, temp):
         self.indexDaTabelaDeTokens += 1
         # identificador
         if(self.tokenAtual().tipo == 'ID'):
