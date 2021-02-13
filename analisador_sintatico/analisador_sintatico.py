@@ -168,7 +168,7 @@ class AnalisadorSintatico:
             # <call_func>
             if (self.tokenAtual().tipo == 'FUNC'):
                 temp.append(self.tokenAtual().tipo)
-                self.call_func_statement(temp)
+                temp = self.call_func_statement(temp)
                 if(self.tokenAtual().tipo == 'SEMICOLON'):
                     self.tabelaDeSimbolos.append(temp)
                     self.indexDaTabelaDeTokens += 1
@@ -178,7 +178,7 @@ class AnalisadorSintatico:
             # <call_proc>
             elif (self.tokenAtual().tipo == 'PROC'):
                 temp.append(self.tokenAtual().tipo)
-                self.call_proc_statement(temp)
+                temp = self.call_proc_statement(temp)
                 if(self.tokenAtual().tipo == 'SEMICOLON'):
                     self.tabelaDeSimbolos.append(temp)
                     self.indexDaTabelaDeTokens += 1
@@ -248,7 +248,7 @@ class AnalisadorSintatico:
             # <call_func>
             if (self.tokenAtual().tipo == 'FUNC'):
                 temp.append(self.tokenAtual().tipo)
-                self.call_func_statement(temp)
+                temp = self.call_func_statement(temp)
                 if(self.tokenAtual().tipo == 'SEMICOLON'):
                     self.tabelaDeSimbolos.append(temp)
                     self.indexDaTabelaDeTokens += 1
@@ -258,7 +258,7 @@ class AnalisadorSintatico:
             # <call_proc>
             elif (self.tokenAtual().tipo == 'PROC'):
                 temp.append(self.tokenAtual().tipo)
-                self.call_proc_statement(temp)
+                temp = self.call_proc_statement(temp)
                 if(self.tokenAtual().tipo == 'SEMICOLON'):
                     self.tabelaDeSimbolos.append(temp)
                     self.indexDaTabelaDeTokens += 1
