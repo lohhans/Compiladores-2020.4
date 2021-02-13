@@ -104,16 +104,17 @@ class AnalisadorSintatico:
             # <call_func>
             if (self.tokenAtual().tipo == 'FUNC'):
                 temp.append(self.tokenAtual().tipo)
-                self.call_func_statement(temp)
+                temp = self.call_func_statement(temp)
                 if(self.tokenAtual().tipo == 'SEMICOLON'):
                     self.indexDaTabelaDeTokens += 1
+                    self.tabelaDeSimbolos.append(temp)
                 else:
                     raise Exception(
                         'Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
             # <call_proc>
             elif (self.tokenAtual().tipo == 'PROC'):
                 temp.append(self.tokenAtual().tipo)
-                self.call_proc_statement(temp)
+                temp = self.call_proc_statement(temp)
                 if(self.tokenAtual().tipo == 'SEMICOLON'):
                     self.indexDaTabelaDeTokens += 1
                     self.tabelaDeSimbolos.append(temp)
@@ -167,8 +168,9 @@ class AnalisadorSintatico:
             # <call_func>
             if (self.tokenAtual().tipo == 'FUNC'):
                 temp.append(self.tokenAtual().tipo)
-                self.call_func_statement(temp)
+                temp = self.call_func_statement(temp)
                 if(self.tokenAtual().tipo == 'SEMICOLON'):
+                    self.tabelaDeSimbolos.append(temp)
                     self.indexDaTabelaDeTokens += 1
                 else:
                     raise Exception(
@@ -176,8 +178,9 @@ class AnalisadorSintatico:
             # <call_proc>
             elif (self.tokenAtual().tipo == 'PROC'):
                 temp.append(self.tokenAtual().tipo)
-                self.call_proc_statement(temp)
+                temp = self.call_proc_statement(temp)
                 if(self.tokenAtual().tipo == 'SEMICOLON'):
+                    self.tabelaDeSimbolos.append(temp)
                     self.indexDaTabelaDeTokens += 1
                 else:
                     raise Exception(
@@ -245,8 +248,9 @@ class AnalisadorSintatico:
             # <call_func>
             if (self.tokenAtual().tipo == 'FUNC'):
                 temp.append(self.tokenAtual().tipo)
-                self.call_func_statement(temp)
+                temp = self.call_func_statement(temp)
                 if(self.tokenAtual().tipo == 'SEMICOLON'):
+                    self.tabelaDeSimbolos.append(temp)
                     self.indexDaTabelaDeTokens += 1
                 else:
                     raise Exception(
@@ -254,8 +258,9 @@ class AnalisadorSintatico:
             # <call_proc>
             elif (self.tokenAtual().tipo == 'PROC'):
                 temp.append(self.tokenAtual().tipo)
-                self.call_proc_statement(temp)
+                temp = self.call_proc_statement(temp)
                 if(self.tokenAtual().tipo == 'SEMICOLON'):
+                    self.tabelaDeSimbolos.append(temp)
                     self.indexDaTabelaDeTokens += 1
                 else:
                     raise Exception(
@@ -777,15 +782,20 @@ class AnalisadorSintatico:
                         temp.append(tempParams)
                         #  [0, 'CALL', 'PROC', 'proc1', ['a', 'b', 'c']],
                         #  [0, 'CALL', 'PROC', 'proc1', [['a'], ['b'], ['c']]],
+                        return temp
                     elif(self.tokenAtual().tipo == 'PRIGHT'):
-                        self.tabelaDeSimbolos.append(temp)
                         self.indexDaTabelaDeTokens += 1
+                        temp.append(tempParams)
+                        return temp
                     else:
                         raise Exception(
                             'Erro sintatico: falta da virgula na linha ' + str(self.tokenAtual().linha))
                 else:
+                    temp.append(tempParams)
                     if(self.tokenAtual().tipo == 'PRIGHT'):
+                        
                         self.indexDaTabelaDeTokens += 1
+                        return temp
                     else:
                         raise Exception(
                             'Erro sintatico: falta do parentese direito na linha ' + str(self.tokenAtual().linha))
@@ -800,22 +810,33 @@ class AnalisadorSintatico:
     def call_func_statement(self, temp):
         self.indexDaTabelaDeTokens += 1
         if(self.tokenAtual().tipo == 'ID'):
+            temp.append(self.tokenAtual().lexema)
             self.indexDaTabelaDeTokens += 1
             if(self.tokenAtual().tipo == 'PLEFT'):
                 self.indexDaTabelaDeTokens += 1
+                tempParams = []
                 if(self.tokenAtual().tipo == 'ID' or self.tokenAtual().lexema == 'True' or self.tokenAtual().lexema == 'False'):
+                    tempParams.append(self.tokenAtual().lexema)
                     self.indexDaTabelaDeTokens += 1
                     if(self.tokenAtual().tipo == 'COMMA'):
-                        tempParams = []
-                        self.params_call_statement(tempParams)
+                        tempParams.append(self.params_call_statement(tempParams))
+                        tempParams.pop()
+                        temp.append(tempParams)
+                        return temp
                     elif(self.tokenAtual().tipo == 'PRIGHT'):
                         self.indexDaTabelaDeTokens += 1
+                        temp.append(tempParams)
+                        return temp
                     else:
                         raise Exception(
                             'Erro sintatico: falta do parentese direito na linha ' + str(self.tokenAtual().linha))
+
                 else:
+                    temp.append(tempParams)
                     if(self.tokenAtual().tipo == 'PRIGHT'):
                         self.indexDaTabelaDeTokens += 1
+                        
+                        return temp
                     else:
                         raise Exception(
                             'Erro sintatico: falta do parentese direito na linha ' + str(self.tokenAtual().linha))
@@ -839,7 +860,7 @@ class AnalisadorSintatico:
                     'Erro sintatico: falta vírgula na linha ' + str(self.tokenAtual().linha))
             else:
                 self.indexDaTabelaDeTokens += 1
-                return
+                return tempParams
         else:
             raise Exception('Erro sintatico: é necessário informar alguma váriavel na linha ' +
                             str(self.tokenAtual().linha))
