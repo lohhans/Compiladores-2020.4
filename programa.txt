@@ -31,11 +31,11 @@ program {
     func int funcaoTeste1(){
         return 1;
     };
-    func int funcaoTeste1(bool true){
+    func int funcaoTeste2(bool true){
         call func soma();
         return 1;
     };
-    func int funcaoTeste(int a, int b, bool c){
+    func int funcaoTeste3(int a, int b, bool c){
         return 1;
     };
 
