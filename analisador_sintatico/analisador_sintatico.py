@@ -603,6 +603,7 @@ class AnalisadorSintatico:
         self.indexDaTabelaDeTokens += 1
         # identificador
         if(self.tokenAtual().tipo == 'ID'):
+            temp.append(self.tokenAtual().lexema)
             self.indexDaTabelaDeTokens += 1
             if(self.tokenAtual().tipo == 'PLEFT'):
                 tempParenteses = []
@@ -613,22 +614,28 @@ class AnalisadorSintatico:
                     tempParentesesParamAtual.append(self.tokenAtual().tipo)
                     self.indexDaTabelaDeTokens += 1
                     if(self.tokenAtual().tipo == 'ID'):
-                        tempParentesesParamAtual.append(
-                            self.tokenAtual().lexema)
+                        tempParentesesParamAtual.append(self.tokenAtual().lexema)
                         tempParenteses.append(tempParentesesParamAtual)
                         self.indexDaTabelaDeTokens += 1
                         if(self.tokenAtual().tipo == 'COMMA'):
-                            self.params_statement(tempParenteses)
+                            tempParenteses.append(self.params_statement(tempParenteses))
+                            tempParenteses.pop()
+                            temp.append(tempParenteses)
                             if(self.tokenAtual().tipo == 'PRIGHT'):
                                 self.indexDaTabelaDeTokens += 1
                                 if(self.tokenAtual().tipo == 'CLEFT'):
+
+                                    self.indexEscopoAntesDaFuncao = self.indexEscopoAtual
+                                    self.indexEscopoAtual += 1
                                     self.indexDaTabelaDeTokens += 1
                                     # <block>
                                     self.block_statement()
                                     if(self.tokenAtual().tipo == 'CRIGHT'):
+                                        self.indexEscopoAtual = self.indexEscopoAntesDaFuncao
                                         self.indexDaTabelaDeTokens += 1
                                         if(self.tokenAtual().tipo == 'SEMICOLON'):
                                             self.indexDaTabelaDeTokens += 1
+                                            self.tabelaDeSimbolos.append(temp)
                                         else:
                                             raise Exception(
                                                 'Erro sintatico: falta do ponto e vírgula na linha ' + str(self.tokenAtual().linha))
@@ -643,17 +650,22 @@ class AnalisadorSintatico:
                                     'Erro sintatico: falta do parentese direito na linha ' + str(self.tokenAtual().linha))
 
                         elif(self.tokenAtual().tipo == 'PRIGHT'):
-
+                            temp.append(tempParenteses)
                             if(self.tokenAtual().tipo == 'PRIGHT'):
                                 self.indexDaTabelaDeTokens += 1
                                 if(self.tokenAtual().tipo == 'CLEFT'):
+
+                                    self.indexEscopoAntesDaFuncao = self.indexEscopoAtual
+                                    self.indexEscopoAtual += 1
                                     self.indexDaTabelaDeTokens += 1
                                     # <block>
                                     self.block_statement()
                                     if(self.tokenAtual().tipo == 'CRIGHT'):
+                                        self.indexEscopoAtual = self.indexEscopoAntesDaFuncao
                                         self.indexDaTabelaDeTokens += 1
                                         if(self.tokenAtual().tipo == 'SEMICOLON'):
                                             self.indexDaTabelaDeTokens += 1
+                                            self.tabelaDeSimbolos.append(temp)
                                         else:
                                             raise Exception(
                                                 'Erro sintatico: falta do ponto e vírgula na linha ' + str(self.tokenAtual().linha))
@@ -675,14 +687,19 @@ class AnalisadorSintatico:
                             'Erro sintatico: falta o ID na linha ' + str(self.tokenAtual().linha))
                 else:
                     if(self.tokenAtual().tipo == 'PRIGHT'):
+                        temp.append(tempParenteses)
                         self.indexDaTabelaDeTokens += 1
                         if(self.tokenAtual().tipo == 'CLEFT'):
+                            self.indexEscopoAntesDaFuncao = self.indexEscopoAtual
+                            self.indexEscopoAtual += 1
                             self.indexDaTabelaDeTokens += 1
                             self.block_statement()
                             if(self.tokenAtual().tipo == 'CRIGHT'):
+                                self.indexEscopoAtual = self.indexEscopoAntesDaFuncao
                                 self.indexDaTabelaDeTokens += 1
                                 if(self.tokenAtual().tipo == 'SEMICOLON'):
                                     self.indexDaTabelaDeTokens += 1
+                                    self.tabelaDeSimbolos.append(temp)
                                 else:
                                     raise Exception(
                                         'Erro sintatico: falta do ponto e vírgula na linha ' + str(self.tokenAtual().linha))

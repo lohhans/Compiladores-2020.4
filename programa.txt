@@ -26,7 +26,9 @@ program {
     call func func1b(False);
     call func func2b(true);
 
-    proc proc1(int a, bool b, int c){};
+    proc proc1(){};
+    proc proc2(int pão){};
+    proc proc3(int a, bool b, int c){};
 
     func int funcaoTeste1(){
         return 1;
