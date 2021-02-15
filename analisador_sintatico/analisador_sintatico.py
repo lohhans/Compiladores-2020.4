@@ -495,11 +495,19 @@ class AnalisadorSintatico:
                                         # BLOCK
                                         self.block_statement()
 
+                                        tempReturn = []
                                         if(self.tokenAtual().tipo == 'RETURN'):
-
+                                            tempReturn.append(
+                                                self.indexEscopoAtual)
+                                            tempReturn.append(
+                                                self.tokenAtual().tipo)
                                             # RETURN
-                                            self.return_statement(temp)
+                                            tempReturnParms = []
+                                            tempReturnParms = self.return_statement(
+                                                tempReturnParms)
 
+                                            tempReturn.append(tempReturnParms)
+                                            temp.append(tempReturn)
                                             if(self.tokenAtual().tipo == 'CRIGHT'):
                                                 # Retornando o valor do escopo antes de entrar na função
                                                 self.indexEscopoAtual = self.indexEscopoAntesDaFuncao
@@ -538,9 +546,20 @@ class AnalisadorSintatico:
                                         self.indexDaTabelaDeTokens += 1
                                         # BLOCK
                                         self.block_statement()
+                                        tempReturn = []
                                         # RETURN
                                         if(self.tokenAtual().tipo == 'RETURN'):
-                                            self.return_statement(temp)
+                                            tempReturn.append(
+                                                self.indexEscopoAtual)
+                                            tempReturn.append(
+                                                self.tokenAtual().tipo)
+                                            # RETURN
+                                            tempReturnParms = []
+                                            tempReturnParms = self.return_statement(
+                                                tempReturnParms)
+
+                                            tempReturn.append(tempReturnParms)
+                                            temp.append(tempReturn)
                                             if(self.tokenAtual().tipo == 'CRIGHT'):
                                                 self.indexEscopoAtual = self.indexEscopoAntesDaFuncao
                                                 self.indexDaTabelaDeTokens += 1
@@ -584,10 +603,20 @@ class AnalisadorSintatico:
                                 # BLOCK
                                 self.block_statement()
 
+                                tempReturn = []
                                 # RETURN
                                 if(self.tokenAtual().tipo == 'RETURN'):
-                                    self.return_statement(temp)
+                                    tempReturn.append(
+                                        self.indexEscopoAtual)
+                                    tempReturn.append(
+                                        self.tokenAtual().tipo)
+                                    # RETURN
+                                    tempReturnParms = []
+                                    tempReturnParms = self.return_statement(
+                                        tempReturnParms)
 
+                                    tempReturn.append(tempReturnParms)
+                                    temp.append(tempReturn)
                                     if(self.tokenAtual().tipo == 'CRIGHT'):
                                         self.indexEscopoAtual = self.indexEscopoAntesDaFuncao
                                         self.indexDaTabelaDeTokens += 1
@@ -618,26 +647,31 @@ class AnalisadorSintatico:
                 raise Exception(
                     'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
 
-    # TODO: ESCOPO DO RETURN
+    # ESCOPO OK
     # <return_statement> OK
-    def return_statement(self, temp):
+    def return_statement(self, tempReturnParms):
         self.indexDaTabelaDeTokens += 1
 
         # Se for chamada de função
         if (self.tokenAtual().tipo == 'CALL'):
+            tempReturnParms.append(self.tokenAtual().tipo)
             self.indexDaTabelaDeTokens += 1
             if(self.tokenAtual().tipo == 'FUNC'):
-                self.call_func_statement(temp)
+                tempReturnParms.append(self.tokenAtual().tipo)
+                self.call_func_statement(tempReturnParms)
                 self.indexDaTabelaDeTokens += 1
+                return tempReturnParms
             else:
                 raise Exception(
                     'Erro sintatico: Erro de chamada, só é permitido chamada de funções na linha ' + str(self.tokenAtual().linha))
 
         # Se for chamada de variavel/num/bool
         if ((self.tokenAtual().tipo == 'NUM') or (self.tokenAtual().tipo == 'BOOLEAN') or (self.tokenAtual().tipo == 'ID')):
+            tempReturnParms.append(self.tokenAtual().lexema)
             self.indexDaTabelaDeTokens += 1
             if(self.tokenAtual().tipo == 'SEMICOLON'):
                 self.indexDaTabelaDeTokens += 1
+                return tempReturnParms
             else:
                 raise Exception(
                     'Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))

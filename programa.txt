@@ -28,7 +28,7 @@ program {
     proc proc3(int a, bool b, int c){};
 
     func int funcaoTeste1(){
-        return 1;
+        return call func funcaoTeste2();
     };
     func int funcaoTeste2(bool true){
         call func soma();
