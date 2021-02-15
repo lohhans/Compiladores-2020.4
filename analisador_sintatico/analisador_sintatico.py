@@ -246,7 +246,7 @@ class AnalisadorSintatico:
             self.call_var_statement(temp)
             return temp
 
-        # TODO: ESCOPO DO UNCONDITIONAL BRANCH DO BLOCK 2
+        # TODO: (0) ESCOPO DO UNCONDITIONAL BRANCH DO BLOCK 2
         # <unconditional_branch>
         if (self.tokenAtual().tipo == 'BREAK' or self.tokenAtual().tipo == 'CONTINUE'):
             self.unconditional_branch_statement()
@@ -600,9 +600,9 @@ class AnalisadorSintatico:
                                     raise Exception(
                                         'Erro sintatico: falta do parentese direito na linha ' + str(self.tokenAtual().linha))
                             else:
-                                # TODO: resolver exceção
+                                # TODO: (5 - falta descobrir) resolver exceção
                                 raise Exception(
-                                    'Erro sintatico: falta da virgula linha ' + str(self.tokenAtual().linha))
+                                    'Erro sintatico: falta da virgula na linha ' + str(self.tokenAtual().linha))
                         else:
                             raise Exception(
                                 'Erro sintatico: falta o ID na linha ' + str(self.tokenAtual().linha))
@@ -808,9 +808,9 @@ class AnalisadorSintatico:
                                 raise Exception(
                                     'Erro sintatico: falta do parentese direito na linha ' + str(self.tokenAtual().linha))
                         else:
-                            # TODO: resolver exceção
+                            # TODO: (5 - falta descobrir) resolver exceção
                             raise Exception(
-                                'Erro sintatico: falta da virgula linha ' + str(self.tokenAtual().linha))
+                                'Erro sintatico: falta da virgula na linha ' + str(self.tokenAtual().linha))
                     else:
                         raise Exception(
                             'Erro sintatico: falta o ID na linha ' + str(self.tokenAtual().linha))
@@ -969,7 +969,7 @@ class AnalisadorSintatico:
                     self.indexDaTabelaDeTokens += 1
                     return
                 else:
-                    # TODO: SOLVE BUG DE CONTAGEM DE LINHAS
+                    # TODO: (4) SOLVE BUG DE CONTAGEM DE LINHAS
                     raise Exception(
                         'Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
             else:
@@ -1183,13 +1183,12 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: falta do CLEFT ou bloco vazio na linha ' + str(self.tokenAtual().linha))
 
-    # TODO: ESCOPO DO WHILE
+    # TODO: (0) ESCOPO DO WHILE
     # <while_statement>
     def while_statement(self, temp):
         self.indexDaTabelaDeTokens += 1
         if(self.tokenAtual().tipo == 'PLEFT'):
             self.indexDaTabelaDeTokens += 1
-            # TODO: Temporário
             tempExpression = []
             # Expression
             tempExpression = self.expression_statement(tempExpression)
@@ -1223,7 +1222,7 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: falta do PLEFT na linha ' + str(self.tokenAtual().linha))
 
-    # TODO: ESCOPO DO UNCONDITIONAL BRANCH
+    # TODO: (0) ESCOPO DO UNCONDITIONAL BRANCH
     # <unconditional_branch>
     def unconditional_branch_statement(self):
         if(self.tokenAtual().tipo == 'CONTINUE'):
@@ -1287,7 +1286,7 @@ class AnalisadorSintatico:
     
     '''
 
-    # TODO: CORRIGIR
+    # TODO: (1) CORRIGIR
     # checa semantica, se tiver tudo OK return True
     def checkSemantica(self, tipo, index):
         if(tipo == 'VARDEC'):  # checa semantica de declaração de Variável
