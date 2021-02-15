@@ -1,4 +1,3 @@
-from analisador_sintatico.escopo import Escopo
 import re
 
 #print('Entrou... Tipo: %s, lexema: %s, na linha: %s' % (self.tokenAtual().tipo, self.tokenAtual().lexema, self.tokenAtual().linha))
@@ -26,14 +25,11 @@ class AnalisadorSintatico:
 
     def start(self):
         self.indexEscopoAtual += 1
-        # escopoInicial = Escopo(self.indexEscopoAtual+1, self.indexEscopoAtual)
-        # self.listaEscopos.append(escopoInicial)
         self.statement_list()
         return
 
     def statement_list(self):
         if(self.tokenAtual().tipo == "END"):
-            # self.listaEscopos[0].fechar()
             return
         else:
             self.statement()
@@ -141,7 +137,10 @@ class AnalisadorSintatico:
         # TODO: ESCOPO DO IF BLOCK 1
         # <if_statement>
         if (self.tokenAtual().tipo == 'IF'):
-            self.if_statement()
+            temp = []
+            temp.append(self.indexEscopoAtual)
+            temp.append(self.tokenAtual().tipo)
+            self.if_statement(temp)
 
         # TODO: ESCOPO DO WHILE BLOCK 1
         # <while_statement>
@@ -996,12 +995,15 @@ class AnalisadorSintatico:
 
     # TODO: ESCOPO DO IF
     # <if_statement>
-    def if_statement(self):
+    def if_statement(self, temp):
         self.indexDaTabelaDeTokens += 1
         if(self.tokenAtual().tipo == 'PLEFT'):
             self.indexDaTabelaDeTokens += 1
+            tempExpression = []
             # Expression
-            self.expression_statement()
+            tempExpression = self.expression_statement(tempExpression)
+            temp.append(tempExpression)
+
             if(self.tokenAtual().tipo == 'PRIGHT'):
                 olhaAfrente = self.tokenLookAhead()
                 self.indexDaTabelaDeTokens += 1
@@ -1183,13 +1185,17 @@ class AnalisadorSintatico:
 
     # TODO: ESCOPO DO EXPRESSION STATEMENT
     # <expression>
-    def expression_statement(self):
+    def expression_statement(self, tempExpression):
         if(self.tokenAtual().tipo == 'ID' or self.tokenAtual().tipo == 'NUM'):
+            tempExpression.append(self.tokenAtual().lexema)
             self.indexDaTabelaDeTokens += 1
             if(self.tokenAtual().tipo == 'EQUAL' or self.tokenAtual().tipo == 'DIFF' or self.tokenAtual().tipo == 'LESSEQUAL' or self.tokenAtual().tipo == 'LESS' or self.tokenAtual().tipo == 'GREATEREQUAL' or self.tokenAtual().tipo == 'GREATER'):
+                tempExpression.append(self.tokenAtual().lexema)
                 self.indexDaTabelaDeTokens += 1
                 if(self.tokenAtual().tipo == 'ID' or self.tokenAtual().tipo == 'NUM'):
+                    tempExpression.append(self.tokenAtual().lexema)
                     self.indexDaTabelaDeTokens += 1
+                    return tempExpression
                 else:
                     raise Exception(
                         'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
@@ -1200,7 +1206,7 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: falta do ID na linha ' + str(self.tokenAtual().linha))
 
-    # TODO: ESCOPO DO CALL OP
+    # ESCOPO OK
     # <call_op> ok - Operações aritméticas
     def call_op_statement(self, tempEndVar):
         self.indexDaTabelaDeTokens += 1
