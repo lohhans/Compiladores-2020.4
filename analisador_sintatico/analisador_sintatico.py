@@ -134,7 +134,7 @@ class AnalisadorSintatico:
             temp.append(self.tokenAtual().tipo)
             self.print_statement(temp)
 
-        # TODO: ESCOPO DO IF BLOCK 1
+        # ESCOPO ok
         # <if_statement>
         if (self.tokenAtual().tipo == 'IF'):
             temp = []
@@ -142,10 +142,13 @@ class AnalisadorSintatico:
             temp.append(self.tokenAtual().tipo)
             self.if_statement(temp)
 
-        # TODO: ESCOPO DO WHILE BLOCK 1
+        # ESCOPO ok
         # <while_statement>
         if (self.tokenAtual().tipo == 'WHILE'):
-            self.while_statement()
+            temp = []
+            temp.append(self.indexEscopoAtual)
+            temp.append(self.tokenAtual().tipo)
+            self.while_statement(temp)
 
         # ESCOPO OK
         # <identifier>
@@ -167,7 +170,7 @@ class AnalisadorSintatico:
             temp.append(self.indexEscopoAtual)
             temp.append(self.tokenAtual().tipo)
             self.declaration_var_statement(temp)
-            return
+            return temp
 
         # ESCOPO OK
         # Chamadas de função e procedimentos
@@ -183,6 +186,7 @@ class AnalisadorSintatico:
                 if(self.tokenAtual().tipo == 'SEMICOLON'):
                     self.tabelaDeSimbolos.append(temp)
                     self.indexDaTabelaDeTokens += 1
+                    return temp
                 else:
                     raise Exception(
                         'Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
@@ -193,6 +197,7 @@ class AnalisadorSintatico:
                 if(self.tokenAtual().tipo == 'SEMICOLON'):
                     self.tabelaDeSimbolos.append(temp)
                     self.indexDaTabelaDeTokens += 1
+                    return temp
                 else:
                     raise Exception(
                         'Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
@@ -207,25 +212,30 @@ class AnalisadorSintatico:
             temp.append(self.indexEscopoAtual)
             temp.append(self.tokenAtual().tipo)
             self.print_statement(temp)
-            return
+            return temp
 
-        # TODO: ESCOPO IF DO BLOCK 2
+        # ESCOPO OK
         # <if_statement>
         if (self.tokenAtual().tipo == 'IF'):
-            self.if_statement2()
-            return
+            temp = []
+            temp.append(self.indexEscopoAtual)
+            temp.append(self.tokenAtual().tipo)
+            self.if_statement2(temp)
+            return temp
 
-        # TODO: ESCOPO DO ELSE DO BLOCK 2
         # Tratamento de erro ELSE
         if (self.tokenAtual().tipo == 'ELSE'):
             raise Exception(
                 'Erro sintatico: ELSE adicionado de maneira incorreta ' + str(self.tokenAtual().linha))
 
-        # TODO: ESCOPO DO WHILE DO BLOCK 2
+        # ESCOPO OK
         # <while_statement>
         if (self.tokenAtual().tipo == 'WHILE'):
-            self.while_statement()
-            return
+            temp = []
+            temp.append(self.indexEscopoAtual)
+            temp.append(self.tokenAtual().tipo)
+            self.while_statement(temp)
+            return temp
 
         # ESCOPO OK
         # <identifier>
@@ -234,13 +244,13 @@ class AnalisadorSintatico:
             temp.append(self.indexEscopoAtual)
             temp.append(self.tokenAtual().lexema)
             self.call_var_statement(temp)
-            return
+            return temp
 
         # TODO: ESCOPO DO UNCONDITIONAL BRANCH DO BLOCK 2
         # <unconditional_branch>
         if (self.tokenAtual().tipo == 'BREAK' or self.tokenAtual().tipo == 'CONTINUE'):
             self.unconditional_branch_statement()
-            return
+            return temp
 
         else:
             raise Exception(
@@ -255,7 +265,7 @@ class AnalisadorSintatico:
             temp.append(self.indexEscopoAtual)
             temp.append(self.tokenAtual().tipo)
             self.declaration_var_statement(temp)
-            return
+            return temp
 
         # ESCOPO OK
         # Chamadas de função e procedimentos
@@ -271,6 +281,7 @@ class AnalisadorSintatico:
                 if(self.tokenAtual().tipo == 'SEMICOLON'):
                     self.tabelaDeSimbolos.append(temp)
                     self.indexDaTabelaDeTokens += 1
+                    return temp
                 else:
                     raise Exception(
                         'Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
@@ -281,6 +292,7 @@ class AnalisadorSintatico:
                 if(self.tokenAtual().tipo == 'SEMICOLON'):
                     self.tabelaDeSimbolos.append(temp)
                     self.indexDaTabelaDeTokens += 1
+                    return temp
                 else:
                     raise Exception(
                         'Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
@@ -295,25 +307,30 @@ class AnalisadorSintatico:
             temp.append(self.indexEscopoAtual)
             temp.append(self.tokenAtual().tipo)
             self.print_statement(temp)
-            return
+            return temp
 
-        # TODO: ESCOPO DO IF BLOCK 3
+        # ESCOPO Ok
         # <if_statement>
         if (self.tokenAtual().tipo == 'IF'):
-            self.if_statement()
-            return
+            temp = []
+            temp.append(self.indexEscopoAtual)
+            temp.append(self.tokenAtual().tipo)
+            self.if_statement(temp)
+            return temp
 
-        # TODO: ESCOPO DO ELSE BLOCK 3
         # Tratamento de erro ELSE
         if (self.tokenAtual().tipo == 'ELSE'):
             raise Exception(
                 'Erro sintatico: ELSE adicionado de maneira incorreta ' + str(self.tokenAtual().linha))
 
-        # TODO: ESCOPO DO WHILE BLOCK 3
+        # ESCOPO OK
         # <while_statement>
         if (self.tokenAtual().tipo == 'WHILE'):
-            self.while_statement()
-            return
+            temp = []
+            temp.append(self.indexEscopoAtual)
+            temp.append(self.tokenAtual().tipo)
+            self.while_statement(temp)
+            return temp
 
         # ESCOPO OK
         # <identifier>
@@ -322,7 +339,7 @@ class AnalisadorSintatico:
             temp.append(self.indexEscopoAtual)
             temp.append(self.tokenAtual().lexema)
             self.call_var_statement(temp)
-            return
+            return temp
 
         else:
             raise Exception(
@@ -501,11 +518,11 @@ class AnalisadorSintatico:
                                             tempReturn.append(
                                                 self.tokenAtual().tipo)
                                             # RETURN
-                                            tempReturnParms = []
-                                            tempReturnParms = self.return_statement(
-                                                tempReturnParms)
+                                            tempReturnParams = []
+                                            tempReturnParams = self.return_statement(
+                                                tempReturnParams)
 
-                                            tempReturn.append(tempReturnParms)
+                                            tempReturn.append(tempReturnParams)
                                             temp.append(tempReturn)
                                             if(self.tokenAtual().tipo == 'CRIGHT'):
                                                 # Retornando o valor do escopo antes de entrar na função
@@ -648,29 +665,29 @@ class AnalisadorSintatico:
 
     # ESCOPO OK
     # <return_statement> OK
-    def return_statement(self, tempReturnParms):
+    def return_statement(self, tempReturnParams):
         self.indexDaTabelaDeTokens += 1
 
         # Se for chamada de função
         if (self.tokenAtual().tipo == 'CALL'):
-            tempReturnParms.append(self.tokenAtual().tipo)
+            tempReturnParams.append(self.tokenAtual().tipo)
             self.indexDaTabelaDeTokens += 1
             if(self.tokenAtual().tipo == 'FUNC'):
-                tempReturnParms.append(self.tokenAtual().tipo)
-                self.call_func_statement(tempReturnParms)
+                tempReturnParams.append(self.tokenAtual().tipo)
+                self.call_func_statement(tempReturnParams)
                 self.indexDaTabelaDeTokens += 1
-                return tempReturnParms
+                return tempReturnParams
             else:
                 raise Exception(
                     'Erro sintatico: Erro de chamada, só é permitido chamada de funções na linha ' + str(self.tokenAtual().linha))
 
         # Se for chamada de variavel/num/bool
         if ((self.tokenAtual().tipo == 'NUM') or (self.tokenAtual().tipo == 'BOOLEAN') or (self.tokenAtual().tipo == 'ID')):
-            tempReturnParms.append(self.tokenAtual().lexema)
+            tempReturnParams.append(self.tokenAtual().lexema)
             self.indexDaTabelaDeTokens += 1
             if(self.tokenAtual().tipo == 'SEMICOLON'):
                 self.indexDaTabelaDeTokens += 1
-                return tempReturnParms
+                return tempReturnParams
             else:
                 raise Exception(
                     'Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
@@ -993,7 +1010,7 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: uso incorreto dos parametros na linha ' + str(self.tokenAtual().linha))
 
-    # TODO: ESCOPO DO IF
+    # ESCOPO OK
     # <if_statement>
     def if_statement(self, temp):
         self.indexDaTabelaDeTokens += 1
@@ -1009,16 +1026,32 @@ class AnalisadorSintatico:
                 self.indexDaTabelaDeTokens += 1
                 if(self.tokenAtual().tipo == 'CLEFT' and olhaAfrente.tipo != 'CRIGHT'):
                     self.indexDaTabelaDeTokens += 1
+                    self.indexEscopoAtual += 1
+                    tempBlock = []
                     while(self.tokenAtual().tipo != 'CRIGHT' and self.tokenLookAhead().tipo != 'ENDIF'):
-                        self.block3_statement()
+                        tempBlock.append(self.block3_statement())
+
+                    temp.append(tempBlock)
                     if(self.tokenAtual().tipo == 'CRIGHT'):
                         self.indexDaTabelaDeTokens += 1
                         if(self.tokenAtual().tipo == 'ENDIF'):
+                            temp.append(self.tokenAtual().tipo)
                             self.indexDaTabelaDeTokens += 1
-                            if(self.tokenAtual().tipo == 'ELSE'):
 
-                                self.else_part_statement()   # ELSE
+                            tempElse = []
+                            if(self.tokenAtual().tipo == 'ELSE'):
+                                tempElse.append(self.indexEscopoAtual)
+                                tempElse.append(self.tokenAtual().tipo)
+                                tempElse = self.else_part_statement(
+                                    tempElse)   # ELSE
+
+                                temp.append(tempElse)
+                                self.tabelaDeSimbolos.append(temp)
+                                self.indexEscopoAtual -= 1
                             else:
+                                temp.append(tempElse)
+                                self.tabelaDeSimbolos.append(temp)
+                                self.indexEscopoAtual -= 1
                                 return
                         else:
                             raise Exception(
@@ -1036,20 +1069,24 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: falta do Parentese esquerdo na linha  ' + str(self.tokenAtual().linha))
 
-    # TODO: ESCOPO DO ELSE
+    # ESCOPO OK
     # <else_part>
-    def else_part_statement(self):
+    def else_part_statement(self, tempElse):
         olhaAfrente = self.tokenLookAhead()
         self.indexDaTabelaDeTokens += 1
         if(self.tokenAtual().tipo == 'CLEFT' and olhaAfrente.tipo != 'CRIGHT'):
             self.indexDaTabelaDeTokens += 1
+            tempBlock = []
             while(self.tokenAtual().tipo != 'CRIGHT' and self.tokenLookAhead().tipo != 'ENDELSE'):
                 # Block
-                self.block3_statement()
+                tempBlock.append(self.block3_statement())
+            tempElse.append(tempBlock)
             if(self.tokenAtual().tipo == 'CRIGHT'):
                 self.indexDaTabelaDeTokens += 1
                 if(self.tokenAtual().tipo == 'ENDELSE'):
+                    tempElse.append(self.tokenAtual().tipo)
                     self.indexDaTabelaDeTokens += 1
+                    return tempElse
                 else:
                     raise Exception(
                         'Erro sintatico: falta de ENDELSE na linha ' + str(self.tokenAtual().linha))
@@ -1060,30 +1097,46 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: falta do CLEFT ou bloco vazio na linha ' + str(self.tokenAtual().linha))
 
-    # TODO: ESCOPO DO IF 2
+    # ESCOPO OK
     # <if_statement2>
     # IF chamado somente dentro do while, pois dentro dele pode ter BREAK E CONTINUE (block2)
-    def if_statement2(self):
+    def if_statement2(self, temp):
         self.indexDaTabelaDeTokens += 1
         if(self.tokenAtual().tipo == 'PLEFT'):
             self.indexDaTabelaDeTokens += 1
+            tempExpression = []
             # Expression
-            self.expression_statement()
+            tempExpression = self.expression_statement(tempExpression)
+            temp.append(tempExpression)
             if(self.tokenAtual().tipo == 'PRIGHT'):
                 olhaAfrente = self.tokenLookAhead()
                 self.indexDaTabelaDeTokens += 1
                 if(self.tokenAtual().tipo == 'CLEFT' and olhaAfrente.tipo != 'CRIGHT'):
                     self.indexDaTabelaDeTokens += 1
+                    self.indexEscopoAtual += 1
+                    tempBlock = []
                     while(self.tokenAtual().tipo != 'CRIGHT' and self.tokenLookAhead().tipo != 'ENDIF'):
-                        self.block2_statement()
-
+                        tempBlock.append(self.block2_statement())
+                    temp.append(tempBlock)
                     if(self.tokenAtual().tipo == 'CRIGHT'):
                         self.indexDaTabelaDeTokens += 1
                         if(self.tokenAtual().tipo == 'ENDIF'):
+                            temp.append(self.tokenAtual().tipo)
                             self.indexDaTabelaDeTokens += 1
+                            tempElse = []
                             if(self.tokenAtual().tipo == 'ELSE'):
-                                self.else_part_statement2()   # ELSE
+                                tempElse.append(self.indexEscopoAtual)
+                                tempElse.append(self.tokenAtual().tipo)
+                                tempElse = self.else_part_statement2(
+                                    tempElse)  # ELSE
+
+                                temp.append(tempElse)
+                                self.tabelaDeSimbolos.append(temp)
+                                self.indexEscopoAtual -= 1
                             else:
+                                temp.append(tempElse)
+                                self.tabelaDeSimbolos.append(temp)
+                                self.indexEscopoAtual -= 1
                                 return
                         else:
                             raise Exception(
@@ -1101,22 +1154,25 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: falta do Parentese esquerdo na linha  ' + str(self.tokenAtual().linha))
 
-    # TODO: ESCOPO DO ELSE 2
+    # ESCOPO OK
     # ELSE chamado somente dentro do while, pois dentro dele pode ter BREAK E CONTINUE (block2)
     # <else_part2>
-    def else_part_statement2(self):
+    def else_part_statement2(self, tempElse):
         olhaAfrente = self.tokenLookAhead()
         self.indexDaTabelaDeTokens += 1
         if(self.tokenAtual().tipo == 'CLEFT' and olhaAfrente.tipo != 'CRIGHT'):
             self.indexDaTabelaDeTokens += 1
             # Block
+            tempBlock = []
             while(self.tokenAtual().tipo != 'CRIGHT' and self.tokenLookAhead().tipo != 'ENDELSE'):
-                self.block2_statement()
-
+                tempBlock.append(self.block2_statement())
+            tempElse.append(tempBlock)
             if(self.tokenAtual().tipo == 'CRIGHT'):
                 self.indexDaTabelaDeTokens += 1
                 if(self.tokenAtual().tipo == 'ENDELSE'):
+                    tempElse.append(self.tokenAtual().tipo)
                     self.indexDaTabelaDeTokens += 1
+                    return tempElse
                 else:
                     raise Exception(
                         'Erro sintatico: falta de ENDELSE na linha ' + str(self.tokenAtual().linha))
@@ -1129,12 +1185,15 @@ class AnalisadorSintatico:
 
     # TODO: ESCOPO DO WHILE
     # <while_statement>
-    def while_statement(self):
+    def while_statement(self, temp):
         self.indexDaTabelaDeTokens += 1
         if(self.tokenAtual().tipo == 'PLEFT'):
             self.indexDaTabelaDeTokens += 1
+            # TODO: Temporário
+            tempExpression = []
             # Expression
-            self.expression_statement()
+            tempExpression = self.expression_statement(tempExpression)
+            temp.append(tempExpression)
             if(self.tokenAtual().tipo == 'PRIGHT'):
                 self.indexDaTabelaDeTokens += 1
                 if(self.tokenAtual().tipo == 'CLEFT'):
@@ -1183,7 +1242,7 @@ class AnalisadorSintatico:
                 raise Exception(
                     'Erro sintatico: falta do ponto e virgula na linha ' + str(self.tokenAtual().linha))
 
-    # TODO: ESCOPO DO EXPRESSION STATEMENT
+    # ESCOPO OK
     # <expression>
     def expression_statement(self, tempExpression):
         if(self.tokenAtual().tipo == 'ID' or self.tokenAtual().tipo == 'NUM'):

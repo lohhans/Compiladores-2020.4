@@ -1,0 +1,17 @@
+program {
+    int a = 0;
+    int b = 1;
+
+    if(a < b){
+        c = 2;
+    }endif
+    else{
+        print(c);
+    }endelse
+ } end
+
+ x
+    0
+        1
+    1
+        2

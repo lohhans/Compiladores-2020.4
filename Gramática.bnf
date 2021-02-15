@@ -67,14 +67,14 @@
 
 # ----------------- Condicional ------------------------------------------------------
 
-<if_statement> ::= if(<expression>){<block3>} <else_part> endif
+<if_statement> ::= if(<expression>){<block3>} endif <else_part> 
 
 <else_part> ::= else { <block3> } endelse | <empty>
  
 <while_statement> ::= while(<expression>){<block2>}endwhile
 
 # IF chamado somente dentro do while, pois dentro dele pode ter BREAK E CONTINUE (block2)
-<if_statement2> ::= if(<expression>){<block2>} <else_part2> endif
+<if_statement2> ::= if(<expression>){<block2>} endif <else_part2>
 
 # ELSE chamado somente dentro do while, pois dentro dele pode ter BREAK E CONTINUE (block2)
 <else_part2> ::= else { <block2> } endelse | <empty>
@@ -99,7 +99,7 @@
 
 <block> ::= <declaration_var> | <declaration_func> | <declaration_proc> | <call_func> | <call_proc> | <print_statement> | <if_statement> | <while_statement> | <identifier> | <empty> 
 
-# block2 é o bloco que contém break/continue que só pode ser chamado dentro de um while
+# block2 é o bloco que contém break/continue que só pode ser chamado dentro de um while e não pode declarar função e procedimento dentro
 <block2> ::= <declaration_var> | <call_proc> | <call_func> | <identifier> | <if_statement2> | <while_statement> | <unconditional_branch> | <print_statement> 
 
 # block3 é o bloco do if/else, que não pode declarar função e procedimento dentro
