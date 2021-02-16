@@ -1,8 +1,10 @@
 program {
+    int var = True;
+
     while( a > b){
         int var = 1;
         break;
-        int c = 2;
+        bool c = True;
         continue;
         if(a < b){
             c = 2;
@@ -13,12 +15,6 @@ program {
 
     int a = 2;
  } end
-
- x
-    0
-        1
-    1
-        2
 
     int a = 0;
     int b = 1;

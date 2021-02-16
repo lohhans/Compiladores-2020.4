@@ -1,5 +1,5 @@
 from lexer.scanner import Scanner
-from analisador_sintatico.analisador_sintatico import AnalisadorSintatico
+from parser_compiler.parser import Parser
 from pprint import pprint
 
 import sys
@@ -18,25 +18,19 @@ if __name__ == '__main__':
     lexer = Scanner(programa)
 
     tabelaDeTokens = lexer.scan()
-    # tabelaDeSimbolos = []
-
-    # for i in tabelaDeTokens:
-    #     print(i.lexema)
-
+    
+    parser = Parser(tabelaDeTokens)
+    
+    '''
     print('Tabela de tokens:\n')
     for i in tabelaDeTokens:
         print(i)
         # tabelaDeSimbolos.append(i.lexema)
-
-    # print('Tabela de símbolos:\n')
-    # print(tabelaDeSimbolos)
-
-    analisadorSintatico = AnalisadorSintatico(tabelaDeTokens, programa)
-
+    '''
     try:
-        analisadorSintatico.start()
+        parser.start()
         print('\n--- PÓS LEXER ---\n')
-        pprint(analisadorSintatico.tabelaDeSimbolos)
+        pprint(parser.tabelaDeSimbolos)
     except Exception as e:
         print(e)
 
