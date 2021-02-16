@@ -1,4 +1,25 @@
 program {
+    while( a > b){
+        int var = 1;
+        break;
+        int c = 2;
+        continue;
+        if(a < b){
+            c = 2;
+            break;
+        }endif
+
+    }endwhile
+
+    int a = 2;
+ } end
+
+ x
+    0
+        1
+    1
+        2
+
     int a = 0;
     int b = 1;
 
@@ -8,10 +29,3 @@ program {
     else{
         print(c);
     }endelse
- } end
-
- x
-    0
-        1
-    1
-        2

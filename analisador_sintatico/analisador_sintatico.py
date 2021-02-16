@@ -249,6 +249,9 @@ class AnalisadorSintatico:
         # TODO: (0) ESCOPO DO UNCONDITIONAL BRANCH DO BLOCK 2
         # <unconditional_branch>
         if (self.tokenAtual().tipo == 'BREAK' or self.tokenAtual().tipo == 'CONTINUE'):
+            temp = []
+            temp.append(self.indexEscopoAtual)
+            temp.append(self.tokenAtual().tipo)
             self.unconditional_branch_statement()
             return temp
 
@@ -1183,7 +1186,7 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: falta do CLEFT ou bloco vazio na linha ' + str(self.tokenAtual().linha))
 
-    # TODO: (0) ESCOPO DO WHILE
+    # ESCOPO OK
     # <while_statement>
     def while_statement(self, temp):
         self.indexDaTabelaDeTokens += 1
@@ -1197,15 +1200,21 @@ class AnalisadorSintatico:
                 self.indexDaTabelaDeTokens += 1
                 if(self.tokenAtual().tipo == 'CLEFT'):
                     self.indexDaTabelaDeTokens += 1
-
+                    self.indexEscopoAtual += 1
+                    tempBlock = []
                     # BLOCK
                     while(self.tokenAtual().tipo != 'CRIGHT' and self.tokenLookAhead().tipo != 'ENDWHILE'):
-                        self.block2_statement()
-
+                        tempBlock.append(self.block2_statement())
+                        
+                    temp.append(tempBlock)
+                    
                     if(self.tokenAtual().tipo == 'CRIGHT'):
                         self.indexDaTabelaDeTokens += 1
                         if (self.tokenAtual().tipo == 'ENDWHILE'):
+                            temp.append(self.tokenAtual().tipo)
                             self.indexDaTabelaDeTokens += 1
+                            self.tabelaDeSimbolos.append(temp)
+                            self.indexEscopoAtual -= 1
                         else:
                             raise Exception(
                                 'Erro sintatico: falta de ENDWHILE na linha ' + str(self.tokenAtual().linha))
@@ -1222,7 +1231,7 @@ class AnalisadorSintatico:
             raise Exception(
                 'Erro sintatico: falta do PLEFT na linha ' + str(self.tokenAtual().linha))
 
-    # TODO: (0) ESCOPO DO UNCONDITIONAL BRANCH
+    # ESCOPO OK
     # <unconditional_branch>
     def unconditional_branch_statement(self):
         if(self.tokenAtual().tipo == 'CONTINUE'):
