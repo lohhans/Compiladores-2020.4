@@ -22,7 +22,7 @@
 
 <declaration_var> ::= <type> <identifier> = <end_var>;
 
-<end_var> ::= = <call_func> | <boolean> | <call_op> | <num> | <identifier>
+<end_var> ::= = <call_func> | <boolean> | <num> | <identifier>
 
 # ----------------- Parametros ------------------------------------------------------
 

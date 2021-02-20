@@ -1,27 +1,34 @@
 program {
-    int var = True;
+    int a = call func asd(1, 2);
+    int a = 1;
+    bool d = False;
 
     while( a > b){
-        int var = 1;
+        int var = 2;
         break;
-        bool c = True;
+        int c = False;
         continue;
-        if(a < b){
-            c = 2;
-            break;
-        }endif
-
     }endwhile
 
-    int a = 2;
- } end
+    func int funcaoTeste2(bool true, int a){
+        call func soma();
+        return 1;
+    };
 
-    int a = 0;
-    int b = 1;
+    call proc proc2(a, b, c);
+    call func func2b(true, b);
+    print(call func soma());
 
-    if(a < b){
-        c = 2;
+    proc proc3(int a, bool b, int c){
+        a = c;
+    };
+
+    if(a == b){
+        a = b;
     }endif
     else{
-        print(c);
+        b = b;
     }endelse
+    
+ } end
+
