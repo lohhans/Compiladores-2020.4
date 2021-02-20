@@ -26,6 +26,8 @@ class Parser:
         escopoPai = self.indexEscopoAtual  # (-1 -> início)
         self.indexEscopoAtual += 1
         self.statement_list()  # Análise Sintática
+        # Temporário \/
+        self.checkSemantica()
         return
 
     def statement_list(self):
@@ -81,10 +83,6 @@ class Parser:
             temp.append(self.indexEscopoAtual)
             temp.append(self.tokenAtual().tipo)
             self.declaration_var_statement(temp)
-
-            # Temporário \/
-            self.checkSemantica()
-            self.indexDaTabelaDeTokens += 1
 
         # ESCOPO OK
         # <declaration_func>
@@ -1600,32 +1598,37 @@ class Parser:
     
     """
 
-    # TODO: (1) CORRIGIR
-    # !! Não está genérico - nem finalizado !!
-    # checa semantica, se tiver tudo OK return True
+    # Checa semantica, se tiver tudo OK return True
     def checkSemantica(self):
-        if self.tabelaDeSimbolos[0][1] == "INT" or self.tokenAtual().tipo == "BOOL":
-            self.declaration_var_semantico()
+        for k in range(len(self.tabelaDeSimbolos)):
+            # Se for declaração de Variável
+            if (
+                self.tabelaDeSimbolos[k][1] == "INT"
+                or self.tabelaDeSimbolos[k][1] == "BOOL"
+            ):
+                print("Análise da declaração", k + 1, " -> ", self.tabelaDeSimbolos[k])
+                self.declaration_var_semantico(self.tabelaDeSimbolos[k])
 
-    def declaration_var_semantico(self):
-        self.indexDaTabelaDeTokens -= 1
-        if self.tabelaDeSimbolos[0][1] == "INT":
-            simbolo = self.tabelaDeSimbolos[0][4][0]
-            if simbolo.isnumeric():
-                return True
-            else:
-                raise Exception(
-                    "Erro Semântico, variavel do tipo inteiro nao recebe inteiro na linha: "
-                    + str(self.tokenAtual().linha)
-                )
+            # Outras condições
 
-        if self.tabelaDeSimbolos[1] == "BOOL":
-            for k in range(len(self.tabelaDeSimbolos[4])):
-                simbAtual = self.tabelaDeSimbolos[4][k]
-                if simbAtual == "True" or simbAtual == "False":
+    def declaration_var_semantico(self, tabelaNoIndiceAtual):
+        if tabelaNoIndiceAtual[1] == "INT":
+            for k in range(len(tabelaNoIndiceAtual[1])):
+                simbolo = tabelaNoIndiceAtual[4][0]
+                if simbolo.isnumeric():
                     return True
                 else:
                     raise Exception(
-                        "Erro Semântico, variavel do tipo boolean nao recebe boolean na linha: "
-                        + str(self.tokenAtual().linha)
+                        "Erro Semântico, variável do tipo inteiro não recebe inteiro "
+                    )
+
+        if tabelaNoIndiceAtual[1] == "BOOL":
+            for k in range(len(tabelaNoIndiceAtual[1])):
+                simbolo = tabelaNoIndiceAtual[4][0]
+                if simbolo == "True" or simbolo == "False":
+                    return True
+
+                else:
+                    raise Exception(
+                        "Erro Semântico, variável do tipo boolean não recebe boolean"
                     )
