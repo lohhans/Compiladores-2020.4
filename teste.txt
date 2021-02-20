@@ -1,9 +1,17 @@
 program {
-    int a = call func asd(1, 2);
     int a = 1;
-    bool d = False;
+    a = 2;
 
-    while( a > b){
+    bool b = True;
+    b = False;
+
+    c = False;
+    bool c = True;
+    
+
+ } end
+
+while( a > b){
         int var = 2;
         break;
         int c = False;
@@ -29,6 +37,19 @@ program {
     else{
         b = b;
     }endelse
-    
- } end
 
+    int d = a;
+    int e = a + d;
+    int f = 1 + 2;
+    
+    int c = call func func2b(true, b);
+    
+    a1boca = 2;
+    bool b = False;
+
+    call func soma();
+
+    func int funcaoTeste2(bool true, int a){
+        call func soma();
+        return 1;
+    };
