@@ -29,7 +29,6 @@ if __name__ == "__main__":
     """
     try:
         parser.start()
-        print("\n--- PÓS LEXER ---\n")
         # pprint(parser.tabelaDeSimbolos)
     except Exception as e:
         print(e)

@@ -281,6 +281,7 @@ class Parser:
             temp = []
             temp.append(self.indexEscopoAtual)
             temp.append(self.tokenAtual().linha)
+            temp.append("ID")
             temp.append(self.tokenAtual().lexema)
             self.call_var_statement(temp)
             return temp
@@ -297,7 +298,8 @@ class Parser:
 
         else:
             raise Exception(
-                "Erro sintatico: bloco vazio na linha " + str(self.tokenAtual().linha)
+                "Erro sintatico: bloco vazio na linha " +
+                str(self.tokenAtual().linha)
             )
 
     # block3 é o bloco do if/else, que não pode declarar função e procedimento dentro
@@ -395,13 +397,15 @@ class Parser:
             temp = []
             temp.append(self.indexEscopoAtual)
             temp.append(self.tokenAtual().linha)
+            temp.append("ID")
             temp.append(self.tokenAtual().lexema)
             self.call_var_statement(temp)
             return temp
 
         else:
             raise Exception(
-                "Erro sintatico: bloco vazio na linha " + str(self.tokenAtual().linha)
+                "Erro sintatico: bloco vazio na linha " +
+                str(self.tokenAtual().linha)
             )
 
     # ESCOPO OK
@@ -433,7 +437,8 @@ class Parser:
                 )
         else:
             raise Exception(
-                "Erro sintatico: falta do ID na linha " + str(self.tokenAtual().linha)
+                "Erro sintatico: falta do ID na linha " +
+                str(self.tokenAtual().linha)
             )
 
     # ESCOPO OK
@@ -568,7 +573,8 @@ class Parser:
                         tempParentesesParamAtual = []
                         # Ordem dos params: [[escopo, tipo, id], [escopo, tipo, id]]
                         # Fazendo com que o escopo fique correto
-                        tempParentesesParamAtual.append(self.indexEscopoAtual + 1)
+                        tempParentesesParamAtual.append(
+                            self.indexEscopoAtual + 1)
 
                         # Salvando o tipo do parametro atual
                         tempParentesesParamAtual.append(self.tokenAtual().tipo)
@@ -576,7 +582,8 @@ class Parser:
                         self.indexDaTabelaDeTokens += 1
                         if self.tokenAtual().tipo == "ID":
                             # Salvando o tipo do parametro atual
-                            tempParentesesParamAtual.append(self.tokenAtual().lexema)
+                            tempParentesesParamAtual.append(
+                                self.tokenAtual().lexema)
 
                             # [escopo, int, a] -> antes
 
@@ -610,8 +617,10 @@ class Parser:
 
                                         tempReturn = []
                                         if self.tokenAtual().tipo == "RETURN":
-                                            tempReturn.append(self.indexEscopoAtual)
-                                            tempReturn.append(self.tokenAtual().tipo)
+                                            tempReturn.append(
+                                                self.indexEscopoAtual)
+                                            tempReturn.append(
+                                                self.tokenAtual().tipo)
                                             # RETURN
                                             tempReturnParams = []
                                             tempReturnParams = self.return_statement(
@@ -633,7 +642,8 @@ class Parser:
                                                 ):
                                                     self.indexDaTabelaDeTokens += 1
                                                     # Adiciona na tabela de símbolos
-                                                    self.tabelaDeSimbolos.append(temp)
+                                                    self.tabelaDeSimbolos.append(
+                                                        temp)
                                                 else:
                                                     raise Exception(
                                                         "Erro sintatico: falta do ponto e vírgula na linha "
@@ -677,8 +687,10 @@ class Parser:
                                         tempReturn = []
                                         # RETURN
                                         if self.tokenAtual().tipo == "RETURN":
-                                            tempReturn.append(self.indexEscopoAtual)
-                                            tempReturn.append(self.tokenAtual().tipo)
+                                            tempReturn.append(
+                                                self.indexEscopoAtual)
+                                            tempReturn.append(
+                                                self.tokenAtual().tipo)
                                             # RETURN
                                             tempReturnParms = []
                                             tempReturnParms = self.return_statement(
@@ -698,7 +710,8 @@ class Parser:
                                                 ):
                                                     self.indexDaTabelaDeTokens += 1
                                                     # Adiciona na tabela de símbolos
-                                                    self.tabelaDeSimbolos.append(temp)
+                                                    self.tabelaDeSimbolos.append(
+                                                        temp)
                                                 else:
                                                     raise Exception(
                                                         "Erro sintatico: falta do ponto e vírgula na linha "
@@ -902,11 +915,13 @@ class Parser:
                     tempParentesesParamAtual.append(self.tokenAtual().tipo)
                     self.indexDaTabelaDeTokens += 1
                     if self.tokenAtual().tipo == "ID":
-                        tempParentesesParamAtual.append(self.tokenAtual().lexema)
+                        tempParentesesParamAtual.append(
+                            self.tokenAtual().lexema)
                         tempParenteses.append(tempParentesesParamAtual)
                         self.indexDaTabelaDeTokens += 1
                         if self.tokenAtual().tipo == "COMMA":
-                            tempParenteses.append(self.params_statement(tempParenteses))
+                            tempParenteses.append(
+                                self.params_statement(tempParenteses))
                             tempParenteses.pop()
                             temp.append(tempParenteses)
                             if self.tokenAtual().tipo == "PRIGHT":
@@ -1044,7 +1059,8 @@ class Parser:
                 )
         else:
             raise Exception(
-                "Erro sintatico: falta do ID na linha " + str(self.tokenAtual().linha)
+                "Erro sintatico: falta do ID na linha " +
+                str(self.tokenAtual().linha)
             )
 
     # ESCOPO OK
@@ -1065,7 +1081,8 @@ class Parser:
                     tempParams.append(self.tokenAtual().lexema)
                     self.indexDaTabelaDeTokens += 1
                     if self.tokenAtual().tipo == "COMMA":
-                        tempParams.append(self.params_call_statement(tempParams))
+                        tempParams.append(
+                            self.params_call_statement(tempParams))
                         tempParams.pop()
                         temp.append(tempParams)
                         #  [0, 'CALL', 'PROC', 'proc1', ['a', 'b', 'c']],
@@ -1098,7 +1115,8 @@ class Parser:
                 )
         else:
             raise Exception(
-                "Erro sintatico: falta do ID na linha " + str(self.tokenAtual().linha)
+                "Erro sintatico: falta do ID na linha " +
+                str(self.tokenAtual().linha)
             )
 
     # ESCOPO OK
@@ -1119,7 +1137,8 @@ class Parser:
                     tempParams.append(self.tokenAtual().lexema)
                     self.indexDaTabelaDeTokens += 1
                     if self.tokenAtual().tipo == "COMMA":
-                        tempParams.append(self.params_call_statement(tempParams))
+                        tempParams.append(
+                            self.params_call_statement(tempParams))
                         tempParams.pop()
                         if self.tokenAtual().tipo == "PRIGHT":
                             self.indexDaTabelaDeTokens += 1
@@ -1158,7 +1177,8 @@ class Parser:
                 )
         else:
             raise Exception(
-                "Erro sintatico: falta do ID na linha " + str(self.tokenAtual().linha)
+                "Erro sintatico: falta do ID na linha " +
+                str(self.tokenAtual().linha)
             )
 
     # ESCOPO OK
@@ -1304,7 +1324,8 @@ class Parser:
                             if self.tokenAtual().tipo == "ELSE":
                                 tempElse.append(self.indexEscopoAtual)
                                 tempElse.append(self.tokenAtual().tipo)
-                                tempElse = self.else_part_statement(tempElse)  # ELSE
+                                tempElse = self.else_part_statement(
+                                    tempElse)  # ELSE
 
                                 temp.append(tempElse)
                                 self.tabelaDeSimbolos.append(temp)
@@ -1410,7 +1431,8 @@ class Parser:
                             if self.tokenAtual().tipo == "ELSE":
                                 tempElse.append(self.indexEscopoAtual)
                                 tempElse.append(self.tokenAtual().tipo)
-                                tempElse = self.else_part_statement2(tempElse)  # ELSE
+                                tempElse = self.else_part_statement2(
+                                    tempElse)  # ELSE
 
                                 temp.append(tempElse)
                                 self.tabelaDeSimbolos.append(temp)
@@ -1597,7 +1619,8 @@ class Parser:
                 )
         else:
             raise Exception(
-                "Erro sintatico: falta do ID na linha " + str(self.tokenAtual().linha)
+                "Erro sintatico: falta do ID na linha " +
+                str(self.tokenAtual().linha)
             )
 
     # ESCOPO OK
@@ -1619,13 +1642,14 @@ class Parser:
                 return
         else:
             raise Exception(
-                "Erro sintatico: falta do ID na linha " + str(self.tokenAtual().linha)
+                "Erro sintatico: falta do ID na linha " +
+                str(self.tokenAtual().linha)
             )
 
     """
-    
+
     \/ Análise Semântica \/
-    
+
     """
 
     # Não finalizado
@@ -1634,20 +1658,23 @@ class Parser:
         for k in range(len(self.tabelaDeSimbolos)):
             # print(self.tabelaDeSimbolos[k])
             simbolo = self.tabelaDeSimbolos[k][2]
-            # Se for declaração de Variável
+            # Se for declaração de variável
             if simbolo == "INT" or simbolo == "BOOL":
                 # print("Análise da declaração", k + 1, " -> ", self.tabelaDeSimbolos[k])
                 self.declaration_var_semantico(self.tabelaDeSimbolos[k])
             if simbolo == "CALL":  # TODO: fazer semantico para call
                 return
 
+            # Se for chamada/atribuição de variável
             if simbolo == "ID":
                 # print("Análise da declaração", k + 1, " -> ", self.tabelaDeSimbolos[k])
-                simbolo = self.tabelaDeSimbolos[k][3]
+                simbolo = self.tabelaDeSimbolos[k]
                 self.call_var_semantico(simbolo)
             # Outras condições
 
-    # Não finalizado
+        print('FIM DA ANÁLISE SEMÂNTICA - DEU CERTO :)\n')
+
+    # Não finalizado (faltam expressões e funções)
     def declaration_var_semantico(self, tabelaNoIndiceAtual):
         if tabelaNoIndiceAtual[2] == "INT":
             simbolo = tabelaNoIndiceAtual[5][0]
@@ -1676,25 +1703,48 @@ class Parser:
 
             else:
                 raise Exception(
-                    "Erro Semântico, variável do tipo boolean não recebe boolean na linha: "
+                    "Erro Semântico: variável do tipo boolean não recebe boolean na linha: "
                     + str(tabelaNoIndiceAtual[1])
                 )
+    # Não finalizado (faltam expressões e funções)
 
-    # Estático
-    # Não está funcionando
     def call_var_semantico(self, simbolo):
+        flag = False
         for k in range(len(self.tabelaDeSimbolos)):
             if (
                 self.tabelaDeSimbolos[k][2] == "INT"
                 or self.tabelaDeSimbolos[k][2] == "BOOL"
             ):
-                if self.tabelaDeSimbolos[k][3] == simbolo:
-                    print("Variavel declarada ")
+                # Verificando se há duas var. com msm nome
+                if self.tabelaDeSimbolos[k][3] == simbolo[3]:
+                    # Se houver, verifica se a variavel está visivel no
+                    # escopo da qual foi chamada
+                    if(self.tabelaDeSimbolos[k][0] <= simbolo[0]):
+                        flag = True  # Flag para verificar se a chamada tá ok
+                        # Chamada de método para verificar o tipo da variavel
+                        # que está sendo atribuída
+                        self.verificarTipoCallVar(
+                            self.tabelaDeSimbolos[k], simbolo)
+                        break
 
-                else:
-                    print(
-                        "Variavel "
-                        + str(simbolo)
-                        + str(self.tabelaDeSimbolos[k][3])
-                        + " não declarada"
-                    )
+        # Se der errado a declaração:
+        if (flag == False):
+            raise Exception(
+                "Erro Semântico: variável não declarada na linha: "
+                + str(simbolo[1])
+            )
+
+    # Faltam expressões e funções
+    def verificarTipoCallVar(self, simboloDeclaradoNaTabela, simbolo):
+        if(simboloDeclaradoNaTabela[2] == 'INT'):
+            if(not simbolo[5].isnumeric()):
+                raise Exception(
+                    "Erro Semântico: variável do tipo int não recebe int na linha: "
+                    + str(simbolo[1])
+                )
+        if(simboloDeclaradoNaTabela[2] == 'BOOL'):
+            if((simbolo[5] != "True" or simbolo[5] != "False") == False):
+                raise Exception(
+                    "Erro Semântico: variável do tipo booleano não recebe booleano na linha: "
+                    + str(simbolo[1])
+                )

@@ -1,55 +1,52 @@
 program {
-    int a = 1;
-    a = 2;
 
-    bool b = True;
-    b = False;
-
-    c = False;
-    bool c = True;
+    int a = 05;
+    a = 10;
     
+    bool b = False;
+    b = True;
 
  } end
 
 while( a > b){
-        int var = 2;
-        break;
-        int c = False;
-        continue;
-    }endwhile
+    int var = 2;
+    break;
+    int c = False;
+    continue;
+}endwhile
 
-    func int funcaoTeste2(bool true, int a){
-        call func soma();
-        return 1;
-    };
-
-    call proc proc2(a, b, c);
-    call func func2b(true, b);
-    print(call func soma());
-
-    proc proc3(int a, bool b, int c){
-        a = c;
-    };
-
-    if(a == b){
-        a = b;
-    }endif
-    else{
-        b = b;
-    }endelse
-
-    int d = a;
-    int e = a + d;
-    int f = 1 + 2;
-    
-    int c = call func func2b(true, b);
-    
-    a1boca = 2;
-    bool b = False;
-
+func int funcaoTeste2(bool true, int a){
     call func soma();
+    return 1;
+};
 
-    func int funcaoTeste2(bool true, int a){
-        call func soma();
-        return 1;
-    };
+call proc proc2(a, b, c);
+call func func2b(true, b);
+print(call func soma());
+
+proc proc3(int a, bool b, int c){
+    a = c;
+};
+
+if(a == b){
+    a = b;
+}endif
+else{
+    b = b;
+}endelse
+
+int d = a;
+int e = a + d;
+int f = 1 + 2;
+
+int c = call func func2b(true, b);
+
+a1boca = 2;
+bool b = False;
+
+call func soma();
+
+func int funcaoTeste2(bool true, int a){
+    call func soma();
+    return 1;
+};
