@@ -7,15 +7,40 @@ program {
     int b = 1;
     int c = 1;
 
-    func bool soma1(int b){
-        return True;
+    proc soma(bool a, int b){
+        bool c = False;
+        call proc soma(a,b);
     };
-
-    c = 0;
     
-    call func soma1(c);
+    call proc soma(a,b);
+    
+    c = 0;
 
  } end
+
+
+func int soma2(int a, int b){
+    proc soma3(int a, int b){
+        proc soma4(int a, int b){
+            call func soma2(b,c);
+            if(a == b){
+                a = 2;
+            }endif
+            else{
+                b = 1;
+            }endelse
+        };
+    }; 
+    return 1;  
+};  
+
+func bool soma1(int b){
+    b = 1;
+    int c = 1;
+    print(c);
+    call func soma1(b);
+    return True;
+};
 
 func bool soma(int aviao, int bola){
     return True;
