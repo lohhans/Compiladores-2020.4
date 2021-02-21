@@ -1,19 +1,26 @@
 program {
 
     int d = 3;
-    d = 2;
+    d = 5;
     
-    
-    func bool soma(int aviao, int bola){
-        return True;
-    };
-    
-    int a = 0;
+    bool a = True;
     int b = 1;
     int c = 1;
-    call func soma(a, b);
+
+    func bool soma1(int b){
+        return True;
+    };
+
+    c = 0;
+    
+    call func soma1(c);
 
  } end
+
+func bool soma(int aviao, int bola){
+    return True;
+};
+call func soma(b, c);
 
 
 int a = 05;

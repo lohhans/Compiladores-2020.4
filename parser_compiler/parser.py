@@ -1677,6 +1677,11 @@ class Parser:
 
         print('FIM DA ANÁLISE SEMÂNTICA - DEU CERTO :)\n')
 
+    def buscarNaTabelaDeSimbolos(self, simbolo, indice):
+        for k in range(len(self.tabelaDeSimbolos)):
+            if(self.tabelaDeSimbolos[k][indice] == simbolo):
+                return self.tabelaDeSimbolos[k]
+
     # Não finalizado (faltam expressões e funções)
     def declaration_var_semantico(self, tabelaNoIndiceAtual):
         if tabelaNoIndiceAtual[2] == "INT":
@@ -1791,34 +1796,72 @@ class Parser:
                 + str(simbolo[1])
             )
 
-    # Não finalizado
+    # Não finalizado?
     def verificarParams(self, simboloDeclaradoNaTabela, simbolo):
         # PASSO A PASSO:
         # 1º -> Verificar quantidade de parametros de acordo com a declaração
         # 2º -> Se for > 0
         # Devemos percorrer cada variavel dos parametros, então verificar em cada um o seguinte:
         # 1º -> Verificar se já foi declarada no escopo visível ok
-        # 2º -> Verificar se o tipo na chamada é o mesmo da declaração
-        # 3º -> ?
-        # 2º -> Se for sem params, prosseguir
-        flag = False
-        if(len(simboloDeclaradoNaTabela[5]) == len(simbolo[5])):
-            if len(simbolo[5]) > 0:
-                for k in range(len(simbolo[5])):
-                    for i in range(len(self.tabelaDeSimbolos)):
-                        if(self.tabelaDeSimbolos[i][3] == simbolo[5][k]):
-                            if(self.tabelaDeSimbolos[i][0] <= simbolo[0]):
-                                if(self.tabelaDeSimbolos[i][1] <= simbolo[1]):
-                                    flag = True
-                                    break
+        # 2º -> Verificar se o tipo na chamada é o mesmo da declaração ok
+        # 3º -> Se for sem params, prosseguir
 
-        elif(flag == False and (len(simboloDeclaradoNaTabela[5]) == len(simbolo[5]))):
-            raise Exception(
-                "Erro Semântico: variável de parametros não declarada na linha: "
-                + str(simbolo[1])
-            )
+        flag = 0
+        # Verifica se a quantidade de parametros da chamada corresponde com a declaração
+        if(len(simboloDeclaradoNaTabela[5]) == len(simbolo[5])):
+            # Se os parâmetros não for vazio:
+            if len(simbolo[5]) > 0:
+                # P/ cada parâmetro
+                for k in range(len(simbolo[5])):
+                    # Leitura da declaração do parametro atual
+                    for i in range(len(self.tabelaDeSimbolos)):
+                        # Busca na tabela de simbolos a variavel passada na chamada da função
+                        if(self.tabelaDeSimbolos[i][3] == simbolo[5][k]):
+                            # Verifica se foi declarado em escopo/linhas anteriores
+                            if((self.tabelaDeSimbolos[i][0] <= simbolo[0]) and (self.tabelaDeSimbolos[i][1] <= simbolo[1])):
+                                # Só incrementa quando acha declaração de váriavel
+                                if(self.tabelaDeSimbolos[i][2] == 'INT' or self.tabelaDeSimbolos[i][2] == 'BOOL'):
+                                    flag += 1
+                                    self.comparaTipoChamadaComDeclaracao(
+                                        self.tabelaDeSimbolos[i], simbolo)
+                                # break
+
+            # Se não tiver params
+            else:
+                return
+
         else:
             raise Exception(
-                "Erro Semântico: quantidade de parametros inválido na linha: "
+                "Erro Semântico: quantidade de parâmetros inválido na linha: "
                 + str(simbolo[1])
+            )
+
+        if(flag != len(simboloDeclaradoNaTabela[5])):
+            raise Exception(
+                "Erro Semântico: variável do parâmetro não declarada na linha: "
+                + str(simbolo[1])
+            )
+
+    def comparaTipoChamadaComDeclaracao(self, declaracaoVarNaTabela, callFuncTabela):
+        declaracaoFuncNaTabela = self.buscarNaTabelaDeSimbolos('FUNC', 2)
+        flag = False
+        for k in range(len(declaracaoFuncNaTabela[5])):
+            if(declaracaoFuncNaTabela[5][k][1] == declaracaoVarNaTabela[2]):
+                flag = True
+                break
+
+            # Caso ele encontre um ID ao inves da declaração direta,
+            # deve buscar pra saber se o tipo corresponde
+            elif(declaracaoVarNaTabela[2] == 'ID'):
+                tipoDeclaracaoDoID = self.buscarNaTabelaDeSimbolos('ID', 2)
+                varDeclarada = self.buscarNaTabelaDeSimbolos(
+                    tipoDeclaracaoDoID[3], 3)
+                if(declaracaoFuncNaTabela[5][k][1] == varDeclarada[2]):
+                    flag = True
+                    break
+
+        if(flag == False):
+            raise Exception(
+                "Erro Semântico: tipo do parâmetro inválido na linha: " +
+                str(callFuncTabela[1])
             )
