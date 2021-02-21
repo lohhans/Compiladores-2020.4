@@ -1,5 +1,4 @@
 import re
-from pprint import pprint
 
 # print('Entrou... Tipo: %s, lexema: %s, na linha: %s' % (self.tokenAtual().tipo, self.tokenAtual().lexema, self.tokenAtual().linha))
 
@@ -27,7 +26,6 @@ class Parser:
         escopoPai = self.indexEscopoAtual  # (-1 -> início)
         self.indexEscopoAtual += 1
         self.statement_list()  # Análise Sintática
-        # pprint(self.tabelaDeSimbolos)
         # Temporário \/
         self.checkSemantica()
         return
@@ -140,7 +138,6 @@ class Parser:
                 # self.indexDaTabelaDeTokens += 1
                 if self.tokenAtual().tipo == "SEMICOLON":
                     self.indexDaTabelaDeTokens += 1
-                    self.tokenAtual().tipo
                     self.tabelaDeSimbolos.append(temp)
                     return temp
                 else:
@@ -1907,6 +1904,7 @@ class Parser:
                 + str(callFuncTabela[1])
             )
 
+    # TODO: Fazer
     def declaration_proc_semantico(self, tabelaNoIndiceAtual):
         # Analisar se variaveis e funções usados dentro do procedimento são passados no parametro ou se são declarados antes
         # print(tabelaNoIndiceAtual)
