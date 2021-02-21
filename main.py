@@ -21,14 +21,13 @@ if __name__ == "__main__":
 
     parser = Parser(tabelaDeTokens)
 
-    """
-    print('Tabela de tokens:\n')
-    for i in tabelaDeTokens:
-        print(i)
-        # tabelaDeSimbolos.append(i.lexema)
-    """
+    # print("\nTABELA DE TOKENS:\n")
+    # for i in tabelaDeTokens:
+    #     print(i)
+
     try:
         parser.start()
+        # print("\nTABELA DE SÍMBOLOS:\n")
         # pprint(parser.tabelaDeSimbolos)
     except Exception as e:
         print(e)
