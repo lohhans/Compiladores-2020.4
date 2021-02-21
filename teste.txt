@@ -1,12 +1,26 @@
 program {
 
-    int a = 05;
-    a = 10;
+    int d = 3;
+    d = 2;
     
-    bool b = False;
-    b = True;
+    
+    func bool soma(int aviao, int bola){
+        return True;
+    };
+    
+    int a = 0;
+    int b = 1;
+    int c = 1;
+    call func soma(a, b);
 
  } end
+
+
+int a = 05;
+a = 10;
+
+bool b = False;
+b = True;
 
 while( a > b){
     int var = 2;

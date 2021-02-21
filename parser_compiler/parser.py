@@ -1662,9 +1662,12 @@ class Parser:
             if simbolo == "INT" or simbolo == "BOOL":
                 # print("Análise da declaração", k + 1, " -> ", self.tabelaDeSimbolos[k])
                 self.declaration_var_semantico(self.tabelaDeSimbolos[k])
-            if simbolo == "CALL":  # TODO: fazer semantico para call
-                return
+            if simbolo == "FUNC":
+                self.declaration_func_semantico(self.tabelaDeSimbolos[k])
 
+            if simbolo == "CALL":
+                if(self.tabelaDeSimbolos[k][3] == "FUNC"):
+                    self.call_func_semantico(self.tabelaDeSimbolos[k])
             # Se for chamada/atribuição de variável
             if simbolo == "ID":
                 # print("Análise da declaração", k + 1, " -> ", self.tabelaDeSimbolos[k])
@@ -1680,10 +1683,10 @@ class Parser:
             simbolo = tabelaNoIndiceAtual[5][0]
             if simbolo.isnumeric():
                 return True
-            if (
-                simbolo == "CALL"
-            ):  # TODO: fazer semantico para int c = call func func2b(true, b); int d = a; int e = a + d; int f = 1 + 2;
-                return True
+            if(simbolo == "CALL"):  # TODO: fazer semantico para int c = call func func2b(true, b); int d = a; int e = a + d; int f = 1 + 2;
+                # print(tabelaNoIndiceAtual[5])
+                if(tabelaNoIndiceAtual[5][1] == 'FUNC'):
+                    return True
 
             else:
                 raise Exception(
@@ -1720,12 +1723,13 @@ class Parser:
                     # Se houver, verifica se a variavel está visivel no
                     # escopo da qual foi chamada
                     if(self.tabelaDeSimbolos[k][0] <= simbolo[0]):
-                        flag = True  # Flag para verificar se a chamada tá ok
-                        # Chamada de método para verificar o tipo da variavel
-                        # que está sendo atribuída
-                        self.verificarTipoCallVar(
-                            self.tabelaDeSimbolos[k], simbolo)
-                        break
+                        if(self.tabelaDeSimbolos[k][1] <= simbolo[1]):
+                            flag = True  # Flag para verificar se a chamada tá ok
+                            # Chamada de método para verificar o tipo da variavel
+                            # que está sendo atribuída
+                            self.verificarTipoCallVar(
+                                self.tabelaDeSimbolos[k], simbolo)
+                            break
 
         # Se der errado a declaração:
         if (flag == False):
@@ -1748,3 +1752,73 @@ class Parser:
                     "Erro Semântico: variável do tipo booleano não recebe booleano na linha: "
                     + str(simbolo[1])
                 )
+
+    # Faltam variaveis e funções
+    def declaration_func_semantico(self, tabelaNoIndiceAtual):
+        # print(tabelaNoIndiceAtual)
+        if(tabelaNoIndiceAtual[3] == "INT"):
+            if(not tabelaNoIndiceAtual[6][2][0].isnumeric()):
+                raise Exception(
+                    "Erro Semântico: O retorno espera um inteiro na linha: "
+                    + str(tabelaNoIndiceAtual[1])
+                )
+
+        if(tabelaNoIndiceAtual[3] == "BOOL"):
+            if((tabelaNoIndiceAtual[6][2][0] == "True" or tabelaNoIndiceAtual[6][2][0] == "False") is False):
+                raise Exception(
+                    "Erro Semântico: O retorno espera um boolean na linha: "
+                    + str(tabelaNoIndiceAtual[1])
+                )
+
+    def call_func_semantico(self, tabelaNoIndiceAtual):
+        # print(tabelaNoIndiceAtual)
+        flag = False
+        for k in range(len(self.tabelaDeSimbolos)):
+            if (
+                self.tabelaDeSimbolos[k][2] == "FUNC"
+            ):
+                if self.tabelaDeSimbolos[k][4] == tabelaNoIndiceAtual[4]:
+                    if(self.tabelaDeSimbolos[k][0] <= tabelaNoIndiceAtual[0]):
+                        flag = True
+                        self.verificarParams(
+                            self.tabelaDeSimbolos[k], tabelaNoIndiceAtual)
+                        break
+
+        # Se der errado a declaração:
+        if (flag == False):
+            raise Exception(
+                "Erro Semântico: função não declarada na linha: "
+                + str(simbolo[1])
+            )
+
+    # Não finalizado
+    def verificarParams(self, simboloDeclaradoNaTabela, simbolo):
+        # PASSO A PASSO:
+        # 1º -> Verificar quantidade de parametros de acordo com a declaração
+        # 2º -> Se for > 0
+        # Devemos percorrer cada variavel dos parametros, então verificar em cada um o seguinte:
+        # 1º -> Verificar se já foi declarada no escopo visível ok
+        # 2º -> Verificar se o tipo na chamada é o mesmo da declaração
+        # 3º -> ?
+        # 2º -> Se for sem params, prosseguir
+        flag = False
+        if(len(simboloDeclaradoNaTabela[5]) == len(simbolo[5])):
+            if len(simbolo[5]) > 0:
+                for k in range(len(simbolo[5])):
+                    for i in range(len(self.tabelaDeSimbolos)):
+                        if(self.tabelaDeSimbolos[i][3] == simbolo[5][k]):
+                            if(self.tabelaDeSimbolos[i][0] <= simbolo[0]):
+                                if(self.tabelaDeSimbolos[i][1] <= simbolo[1]):
+                                    flag = True
+                                    break
+
+        elif(flag == False and (len(simboloDeclaradoNaTabela[5]) == len(simbolo[5]))):
+            raise Exception(
+                "Erro Semântico: variável de parametros não declarada na linha: "
+                + str(simbolo[1])
+            )
+        else:
+            raise Exception(
+                "Erro Semântico: quantidade de parametros inválido na linha: "
+                + str(simbolo[1])
+            )
