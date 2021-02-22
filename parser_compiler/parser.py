@@ -107,7 +107,8 @@ class Parser:
             temp.append(self.tokenAtual().linha)
             # temp.append('PROC')
             temp.append(self.tokenAtual().tipo)
-            self.declaration_proc_statement(temp)
+            temp = self.declaration_proc_statement(temp)
+            self.tabelaDeSimbolos.append(temp)
             return temp
 
         # ESCOPO OK
@@ -956,7 +957,7 @@ class Parser:
                                         self.indexDaTabelaDeTokens += 1
                                         if self.tokenAtual().tipo == "SEMICOLON":
                                             self.indexDaTabelaDeTokens += 1
-                                            self.tabelaDeSimbolos.append(temp)
+                                            return temp
                                         else:
                                             raise Exception(
                                                 "Erro sintatico: falta do ponto e vírgula na linha "
@@ -1005,7 +1006,7 @@ class Parser:
                                         self.indexDaTabelaDeTokens += 1
                                         if self.tokenAtual().tipo == "SEMICOLON":
                                             self.indexDaTabelaDeTokens += 1
-                                            self.tabelaDeSimbolos.append(temp)
+                                            return temp
                                         else:
                                             raise Exception(
                                                 "Erro sintatico: falta do ponto e vírgula na linha "
@@ -1059,7 +1060,7 @@ class Parser:
                                 self.indexDaTabelaDeTokens += 1
                                 if self.tokenAtual().tipo == "SEMICOLON":
                                     self.indexDaTabelaDeTokens += 1
-                                    self.tabelaDeSimbolos.append(temp)
+                                    return temp
                                 else:
                                     raise Exception(
                                         "Erro sintatico: falta do ponto e vírgula na linha "
@@ -1697,6 +1698,11 @@ class Parser:
             if simbolo == "INT" or simbolo == "BOOL":
                 # print("Análise da declaração", k + 1, " -> ", self.tabelaDeSimbolos[k])
                 self.declaration_var_semantico(self.tabelaDeSimbolos[k])
+
+            if simbolo == "IF":
+                # print("Análise da declaração", k + 1, " -> ", self.tabelaDeSimbolos[k])
+                self.if_semantico(self.tabelaDeSimbolos[k])
+
             # Se for chamada/atribuição de variável
             if simbolo == "ID":
                 # print("Análise da declaração", k + 1, " -> ", self.tabelaDeSimbolos[k])
@@ -1710,7 +1716,7 @@ class Parser:
             if self.tabelaDeSimbolos[k][indice] == simbolo:
                 return self.tabelaDeSimbolos[k]
 
-    # Não finalizado (faltam expressões e funções)
+    # TODO: Não finalizado (faltam expressões e funções)
     def declaration_var_semantico(self, tabelaNoIndiceAtual):
         if tabelaNoIndiceAtual[2] == "INT":
             simbolo = tabelaNoIndiceAtual[5][0]
@@ -1745,8 +1751,8 @@ class Parser:
                     + str(tabelaNoIndiceAtual[1])
                 )
 
-    # Não finalizado (faltam expressões e funções)
-
+    # TODO: Não finalizado (faltam expressões e funções)
+    # TODO: Resolver problema de escopo antigo sendo visivel
     def call_var_semantico(self, simbolo):
         flag = False
         # print(len(self.tabelaDeSimbolos))
@@ -1808,9 +1814,32 @@ class Parser:
                 flag = True
                 break
 
-    
+    def buscarParamsFunc(self, simbolo, flag):
+        paramsFunc = self.buscarNaTabelaDeSimbolos("FUNC", 2)[5]
+        for k in range(len(paramsFunc)):
+            if simbolo[3] == paramsFunc[k][2]:
+                if paramsFunc[k][1] == "INT":
+                    if simbolo[5].isnumeric():
+                        return True
+                    if not simbolo[5].isnumeric():
+                        raise Exception(
+                            "Erro Semântico: variável do tipo int não recebe int na linha: "
+                            + str(simbolo[1])
+                        )
+                if paramsFunc[k][1] == "BOOL":
+                    # TODO: verificar posteriormente
+                    if simbolo[5] == "True" or simbolo[5] == "False":
+                        return True
+                    else:
+                        raise Exception(
+                            "Erro Semântico: variável do tipo booleano não recebe booleano na linha: "
+                            + str(simbolo[1])
+                        )
 
-    # Faltam expressões e funções
+                flag = True
+                break
+
+    # TODO: Faltam expressões e funções
     def verificarTipoCallVar(self, simboloDeclaradoNaTabela, simbolo):
         if simboloDeclaradoNaTabela[2] == "INT":
             if not simbolo[5].isnumeric():
@@ -1827,7 +1856,7 @@ class Parser:
                     + str(simbolo[1])
                 )
 
-    # Faltam variaveis e funções
+    # TODO:  Faltam variaveis e funções
     def declaration_func_semantico(self, tabelaNoIndiceAtual):
         # print(tabelaNoIndiceAtual)
         if tabelaNoIndiceAtual[3] == "INT":
@@ -2052,5 +2081,99 @@ class Parser:
         if flag == False:
             raise Exception(
                 "Erro Semântico: procedimento não declarado na linha: "
+                + str(tabelaNoIndiceAtual[1])
+            )
+
+    def if_semantico(self, tabelaNoIndiceAtual):
+        buscaParam1 = self.buscarNaTabelaDeSimbolos(tabelaNoIndiceAtual[3][0], 3)
+        buscaParam2 = self.buscarNaTabelaDeSimbolos(tabelaNoIndiceAtual[3][2], 3)
+
+        if (tabelaNoIndiceAtual[3][0]).isnumeric() and (
+            tabelaNoIndiceAtual[3][2]
+        ).isnumeric():
+            return True
+
+        elif (
+            tabelaNoIndiceAtual[3][0].isalpha() and tabelaNoIndiceAtual[3][2].isalpha()
+        ):
+            if buscaParam1 != None and buscaParam2 != None:
+                if buscaParam1[2] == "INT" and buscaParam2[2] != "INT":
+                    raise Exception(
+                        "Erro Semântico: Não é possível comparar dois tipos diferentes na linha: "
+                        + str(tabelaNoIndiceAtual[1])
+                    )
+                if buscaParam2[2] == "INT" and buscaParam1[2] != "INT":
+                    raise Exception(
+                        "Erro Semântico: Não é possível comparar dois tipos diferentes na linha: "
+                        + str(tabelaNoIndiceAtual[1])
+                    )
+
+                if buscaParam2[2] == "INT" and buscaParam1[2] == "INT":
+                    return True
+                if buscaParam2[2] == "BOOL" and buscaParam1[2] == "BOOL":
+                    if (
+                        tabelaNoIndiceAtual[3][1] == "=="
+                        or tabelaNoIndiceAtual[3][1] == "!="
+                    ):
+                        return True
+                    else:
+                        raise Exception(
+                            "Erro Semântico: Não é possível fazer este tipo de comparação com Boolean na linha: "
+                            + str(tabelaNoIndiceAtual[1])
+                        )
+                if buscaParam2[2] == "INT" and buscaParam1[2] != "BOOL":
+                    raise Exception(
+                        "Erro Semântico: Não é possível comparar dois tipos diferentes na linha: "
+                        + str(tabelaNoIndiceAtual[1])
+                    )
+                if buscaParam2[2] == "BOOL" and buscaParam1[2] != "INT":
+                    raise Exception(
+                        "Erro Semântico: Não é possível comparar dois tipos diferentes na linha: "
+                        + str(tabelaNoIndiceAtual[1])
+                    )
+            else:
+                raise Exception(
+                    "Erro Semântico: variavel não declarada na linha: "
+                    + str(tabelaNoIndiceAtual[1])
+                )
+
+        elif (
+            tabelaNoIndiceAtual[3][0].isalpha()
+            and (tabelaNoIndiceAtual[3][2]).isnumeric()
+        ):
+            if buscaParam1 != None:
+                if buscaParam1[2] != "INT":
+                    raise Exception(
+                        "Erro Semântico: Não é possível comparar dois tipos diferentes na linha: "
+                        + str(tabelaNoIndiceAtual[1])
+                    )
+                else:
+                    return True
+            else:
+                raise Exception(
+                    "Erro Semântico: variavel não declarada na linha: "
+                    + str(tabelaNoIndiceAtual[1])
+                )
+
+        elif (tabelaNoIndiceAtual[3][0]).isnumeric() and tabelaNoIndiceAtual[3][
+            2
+        ].isalpha():
+            if buscaParam2 != None:
+                if buscaParam2[2] != "INT":
+                    raise Exception(
+                        "Erro Semântico: Não é possível comparar dois tipos diferentes na linha: "
+                        + str(tabelaNoIndiceAtual[1])
+                    )
+                else:
+                    return True
+            else:
+                raise Exception(
+                    "Erro Semântico: variavel não declarada na linha: "
+                    + str(tabelaNoIndiceAtual[1])
+                )
+
+        else:
+            raise Exception(
+                "Erro Semântico: parametros inválidos na linha: "
                 + str(tabelaNoIndiceAtual[1])
             )

@@ -1,7 +1,16 @@
 program {
-    proc soma(bool aviao, int curupira){
-        aviao = True;
-    };
-    
+
+    int a = 2;
+    bool b = True;
+    bool c = True;
+    if(b > c){
+        print(a);
+        if(b > 2){
+            print(a);
+        }endif
+    }endif
+    else{
+        print(b);
+    }endelse 
     
  } end
