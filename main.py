@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
     try:
         parser.start()
-        # print("\nTABELA DE SÍMBOLOS:\n")
+        # print("\nTABELA DE SÍMBOLOS:")
         # pprint(parser.tabelaDeSimbolos)
     except Exception as e:
         print(e)
