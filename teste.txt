@@ -1,16 +1,11 @@
 program {
 
-    int a = 2;
+    int var = 1;
     bool b = True;
     bool c = True;
-    if(b > c){
-        print(a);
-        if(b > 2){
-            print(a);
-        }endif
-    }endif
-    else{
-        print(b);
-    }endelse 
+    while(var == b){
+        int var = 1;
+        continue;
+    }endwhile
     
  } end

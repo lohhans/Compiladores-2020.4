@@ -1701,7 +1701,11 @@ class Parser:
 
             if simbolo == "IF":
                 # print("Análise da declaração", k + 1, " -> ", self.tabelaDeSimbolos[k])
-                self.if_semantico(self.tabelaDeSimbolos[k])
+                self.expression_semantico(self.tabelaDeSimbolos[k])
+
+            if simbolo == "WHILE":
+                # print("Análise da declaração", k + 1, " -> ", self.tabelaDeSimbolos[k])
+                self.expression_semantico(self.tabelaDeSimbolos[k])
 
             # Se for chamada/atribuição de variável
             if simbolo == "ID":
@@ -1774,12 +1778,12 @@ class Parser:
                             break
 
             # Buscar em parametros de PROC
-            elif self.buscarParamsProc(simbolo, flag) == True:
+            elif self.buscarParamsProc(simbolo) == True:
                 flag = True
                 break
 
             # Buscar em parametros de FUNC
-            elif self.buscarParamsFunc(simbolo, flag) == True:
+            elif self.buscarParamsFunc(simbolo) == True:
                 flag = True
                 break
 
@@ -1789,7 +1793,7 @@ class Parser:
                 "Erro Semântico: variável não declarada na linha: " + str(simbolo[1])
             )
 
-    def buscarParamsProc(self, simbolo, flag):
+    def buscarParamsProc(self, simbolo):
         paramsProc = self.buscarNaTabelaDeSimbolos("PROC", 2)[4]
         for k in range(len(paramsProc)):
             if simbolo[3] == paramsProc[k][2]:
@@ -1810,8 +1814,6 @@ class Parser:
                             "Erro Semântico: variável do tipo booleano não recebe booleano na linha: "
                             + str(simbolo[1])
                         )
-
-                flag = True
                 break
 
     def buscarParamsFunc(self, simbolo, flag):
@@ -2084,7 +2086,7 @@ class Parser:
                 + str(tabelaNoIndiceAtual[1])
             )
 
-    def if_semantico(self, tabelaNoIndiceAtual):
+    def expression_semantico(self, tabelaNoIndiceAtual):
         buscaParam1 = self.buscarNaTabelaDeSimbolos(tabelaNoIndiceAtual[3][0], 3)
         buscaParam2 = self.buscarNaTabelaDeSimbolos(tabelaNoIndiceAtual[3][2], 3)
 
@@ -2109,18 +2111,35 @@ class Parser:
                     )
 
                 if buscaParam2[2] == "INT" and buscaParam1[2] == "INT":
-                    return True
-                if buscaParam2[2] == "BOOL" and buscaParam1[2] == "BOOL":
-                    if (
-                        tabelaNoIndiceAtual[3][1] == "=="
-                        or tabelaNoIndiceAtual[3][1] == "!="
+                    if (buscaParam1[0] <= tabelaNoIndiceAtual[0]) and (
+                        buscaParam2[0] <= tabelaNoIndiceAtual[0]
                     ):
                         return True
                     else:
                         raise Exception(
-                            "Erro Semântico: Não é possível fazer este tipo de comparação com Boolean na linha: "
+                            "Erro Semântico: Variável não declarada na linha: "
                             + str(tabelaNoIndiceAtual[1])
                         )
+                if buscaParam2[2] == "BOOL" and buscaParam1[2] == "BOOL":
+                    if (buscaParam1[0] <= tabelaNoIndiceAtual[0]) and (
+                        buscaParam2[0] <= tabelaNoIndiceAtual[0]
+                    ):
+                        if (
+                            tabelaNoIndiceAtual[3][1] == "=="
+                            or tabelaNoIndiceAtual[3][1] == "!="
+                        ):
+                            return True
+                        else:
+                            raise Exception(
+                                "Erro Semântico: Não é possível fazer este tipo de comparação com Boolean na linha: "
+                                + str(tabelaNoIndiceAtual[1])
+                            )
+                    else:
+                        raise Exception(
+                            "Erro Semântico: Variável não declarada na linha: "
+                            + str(tabelaNoIndiceAtual[1])
+                        )
+
                 if buscaParam2[2] == "INT" and buscaParam1[2] != "BOOL":
                     raise Exception(
                         "Erro Semântico: Não é possível comparar dois tipos diferentes na linha: "
@@ -2148,7 +2167,13 @@ class Parser:
                         + str(tabelaNoIndiceAtual[1])
                     )
                 else:
-                    return True
+                    if buscaParam1[0] <= tabelaNoIndiceAtual[0]:
+                        return True
+                    else:
+                        raise Exception(
+                            "Erro Semântico: Variável não declarada na linha: "
+                            + str(tabelaNoIndiceAtual[1])
+                        )
             else:
                 raise Exception(
                     "Erro Semântico: variavel não declarada na linha: "
@@ -2165,7 +2190,13 @@ class Parser:
                         + str(tabelaNoIndiceAtual[1])
                     )
                 else:
-                    return True
+                    if buscaParam2[0] <= tabelaNoIndiceAtual[0]:
+                        return True
+                    else:
+                        raise Exception(
+                            "Erro Semântico: Variável não declarada na linha: "
+                            + str(tabelaNoIndiceAtual[1])
+                        )
             else:
                 raise Exception(
                     "Erro Semântico: variavel não declarada na linha: "
