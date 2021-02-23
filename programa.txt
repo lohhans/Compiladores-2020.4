@@ -1,70 +1,13 @@
 program {
 
-    int num1 = 1;
-    bool b = False;
+    int b = 10;
+    bool c = False;
 
-    num1 = 0;
-    b = True;
-    num1 = num2;
-
-    int num3 = call func soma();
-
-    print(call func soma());
-    print(a);
-    print(1);
-    print(1+12*3/4);
-    print(False);
-
-    call proc proc0();
-    call proc proc1(x);
-    call proc proc2(a, b, c);
-    
-    call func func0b();
-    call func func1b(a);
-    call func func2b(true, b);
-
-    proc proc1(){};
-    proc proc2(int pão){};
-    proc proc3(int a, bool b, int c){};
-
-    func int funcaoTeste1(){
-        return call func funcaoTeste2();
-    };
-    func int funcaoTeste2(bool true){
-        call func soma();
-        return 1;
-    };
-    func int funcaoTeste3(int a, int b){
-        return 1;
-    };
-
-    int a = 1 + 2 + 3 * 3;
-
-    if(1 == 1){
-        print(a);
-    }endif
-    else{
-        print(b);
-    }endelse 
-
-    if(a == b){
+    func int me(int a, int vdd){
         a = b;
-        if(a > b){
-            a = 2;
-        }endif
-        if(a<b){
-           a = 3; 
-        }endif
-        else{
-            k = 1;
-        }endelse
-    }endif
-    else{
-        a = b;
-    }endelse
+        return 0;
+    };
 
-    while( a > b){
-        int var = 1;
-        continue;
-    }endwhile
+    call func me(b, c);
+
  } end

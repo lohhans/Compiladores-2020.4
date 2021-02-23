@@ -1,11 +1,13 @@
 program {
+    
+    int b = 10;
+    int c = 3;
 
-    int var = 1;
-    bool b = True;
-    bool c = True;
-    while(var == b){
-        int var = 1;
-        continue;
-    }endwhile
+    func int teste(int c, int b){
+        print(b);
+        return 1;
+    };
+
+    int a = call func teste(c, b);
     
  } end
