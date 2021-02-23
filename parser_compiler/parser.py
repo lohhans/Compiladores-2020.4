@@ -1744,7 +1744,6 @@ class Parser:
                         # Procura na tabela de simbolos alguma declaração de Função
                         if self.tabelaDeSimbolos[k][2] == "FUNC":
                             # Vê se alguma função declarada tem o mesmo nome da função da variável
-                            print(self.tabelaDeSimbolos[k][4])
                             if self.tabelaDeSimbolos[k][4] == tabelaNoIndiceAtual[5][2]:
                                 # Conferir se a função está declarada no escopo/linha menor ou igual
                                 if (
@@ -1755,11 +1754,11 @@ class Parser:
                                     <= tabelaNoIndiceAtual[1]
                                 ):
                                     # Verificar a quantidade de parametros da função declarada com a função passada
-                                    print
-                                    if len(self.tabelaDeSimbolos[k][4]) == len(
-                                        tabelaNoIndiceAtual[8]
+                                    if len(self.tabelaDeSimbolos[k][5]) == len(
+                                        tabelaNoIndiceAtual[5][3]
                                     ):
                                         # Verifica qual o tipo de retorno da função declarada
+                                        # TODO: Verificar se as variáveis passadas na chamada, já foram declaradas
                                         if self.tabelaDeSimbolos[k][3] == "INT":
                                             return True
                                         else:
@@ -1767,6 +1766,11 @@ class Parser:
                                                 "Erro Semântico: int não recebe int na linha: "
                                                 + str(tabelaNoIndiceAtual[1])
                                             )
+                                    else:
+                                        raise Exception(
+                                            "Erro Semântico: quantidade de parametros inválida na linha: "
+                                            + str(tabelaNoIndiceAtual[1])
+                                        )
                                 else:
                                     raise Exception(
                                         "Erro Semântico: função não declarada na linha: "
