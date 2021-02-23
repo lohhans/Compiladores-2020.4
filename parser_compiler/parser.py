@@ -1884,14 +1884,11 @@ class Parser:
 
         # Se var for bool
         if tabelaNoIndiceAtual[2] == "BOOL":
+
             # Exemplo: Caso se 'int b = True';
             #  <boolean>
             simbolo = tabelaNoIndiceAtual[5][0]
             if simbolo == "True" or simbolo == "False":
-                return True
-
-            # <call_func>
-            if simbolo == "CALL":
                 return True
 
             if simbolo.isnumeric():
@@ -1901,7 +1898,81 @@ class Parser:
                 )
 
             # TODO: Fazer semantico caso 'int e = a + d;' 'int f = 1 + 2;' (Expressão aritmética)
-            # <call_op>
+            if simbolo == "CALL":
+
+                if tabelaNoIndiceAtual[5][1] == "FUNC":
+                    for k in range(len(self.tabelaDeSimbolos)):
+                        # Procura na tabela de simbolos alguma declaração de Função
+                        if self.tabelaDeSimbolos[k][2] == "FUNC":
+                            # Vê se alguma função declarada tem o mesmo nome da função da variável
+                            if self.tabelaDeSimbolos[k][4] == tabelaNoIndiceAtual[5][2]:
+                                # Conferir se a função está declarada no escopo/linha menor ou igual
+                                if (
+                                    self.tabelaDeSimbolos[k][0]
+                                    <= tabelaNoIndiceAtual[0]
+                                ) and (
+                                    self.tabelaDeSimbolos[k][1]
+                                    <= tabelaNoIndiceAtual[1]
+                                ):
+                                    # Verificar a quantidade de parametros da função declarada com a função passada
+                                    if len(self.tabelaDeSimbolos[k][5]) == len(
+                                        tabelaNoIndiceAtual[5][3]
+                                    ):
+                                        # TODO: Verificar se as variáveis passadas na chamada, já foram declaradas
+                                        for n in range(len(tabelaNoIndiceAtual[5][3])):
+                                            # Procura tem alguma variável declarada na tabela com o nome da var passada na chamada
+                                            varDeclaradaNaTabela = self.buscarNaTabelaDeSimbolos(
+                                                tabelaNoIndiceAtual[5][3][n], 3)
+                                            if(varDeclaradaNaTabela != None):
+                                                # Conferir se a variavel está declarada no escopo/linha menor ou igual
+                                                if (varDeclaradaNaTabela[0] <= tabelaNoIndiceAtual[0]
+                                                    ) and (varDeclaradaNaTabela[1] <= tabelaNoIndiceAtual[1]):
+                                                    # Verifica se ta passando variaveis com tipo certo nos parametros
+                                                    if(varDeclaradaNaTabela[2] == self.tabelaDeSimbolos[k][5][n][1]):
+                                                        # Verifica qual o tipo de retorno da função declarada
+                                                        if self.tabelaDeSimbolos[k][3] == "BOOL":
+                                                            return True
+                                                        else:
+                                                            raise Exception(
+                                                                "Erro Semântico: boolean não recebe boolean na linha: "
+                                                                + str(tabelaNoIndiceAtual[1])
+                                                            )
+                                                    else:
+                                                        raise Exception(
+                                                            "Erro Semântico: tipo de variáveis incompativéis nos parametros na linha: "
+                                                            + str(tabelaNoIndiceAtual[1])
+                                                        )
+                                                else:
+                                                    raise Exception(
+                                                        "Erro Semântico: variável não declarada nos parametros na linha: "
+                                                        + str(tabelaNoIndiceAtual[1])
+                                                    )
+                                            else:
+                                                raise Exception(
+                                                    "Erro Semântico: variável não declarada nos parametros na linha: "
+                                                    + str(tabelaNoIndiceAtual[1])
+                                                )
+                                    else:
+                                        raise Exception(
+                                            "Erro Semântico: quantidade de parametros inválida na linha: "
+                                            + str(tabelaNoIndiceAtual[1])
+                                        )
+                                else:
+                                    raise Exception(
+                                        "Erro Semântico: função não declarada na linha: "
+                                        + str(tabelaNoIndiceAtual[1])
+                                    )
+
+                            else:
+                                raise Exception(
+                                    "Erro Semântico: função não declarada na linha: "
+                                    + str(tabelaNoIndiceAtual[1])
+                                )
+                else:
+                    raise Exception(
+                        "Erro Semântico: variável não pode receber procedimento na linha: "
+                        + str(tabelaNoIndiceAtual[1])
+                    )
 
             # Caso 'bool b = a'; se 'bool a' for declarado já
             # <identifier>
