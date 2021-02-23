@@ -1,4 +1,5 @@
 import re
+from parser_compiler.util import *
 from pprint import pprint
 
 # print('Entrou... Tipo: %s, lexema: %s, na linha: %s' % (self.tokenAtual().tipo, self.tokenAtual().lexema, self.tokenAtual().linha))
@@ -15,6 +16,8 @@ class Parser:
         # Pra saber na semantica qual declaracao de variavel no codigo tá sendo checada
         self.indexDaDeclaracaoDaVariavelAtual = -1
         self.indexEscopoAntesDaFuncao = 0
+        self.tabelaDeTresEnderecos = []
+        self.tempTresEnderecos = ''
 
     def tokenAtual(self):
         return self.tabelaDeTokens[self.indexDaTabelaDeTokens]
@@ -27,7 +30,12 @@ class Parser:
         escopoPai = self.indexEscopoAtual  # (-1 -> início)
         self.indexEscopoAtual += 1
         self.statement_list()  # Análise Sintática
-        # Temporário \/
+
+        for linha in self.tabelaDeTresEnderecos:
+            pprint(linha)
+
+        print('\n')
+
         self.checkSemantica()
         return
 
@@ -97,6 +105,7 @@ class Parser:
             temp.append(self.tokenAtual().linha)
             # temp.append('FUNC')
             temp.append(self.tokenAtual().tipo)
+
             self.declaration_func_statement(temp)
             return temp
 
@@ -110,6 +119,18 @@ class Parser:
             temp.append(self.tokenAtual().tipo)
             temp = self.declaration_proc_statement(temp)
             self.tabelaDeSimbolos.append(temp)
+
+            #  INICIO TAB 3 END - PROC
+            nomeDaFuncao = temp[3]
+            paramsDaFuncao = temp[4]
+
+            self.tabelaDeTresEnderecos.append(('label', nomeDaFuncao, 'null'))
+
+            for param in paramsDaFuncao:
+                self.tabelaDeTresEnderecos.append(('pop', param[2], 'null'))
+
+            self.tabelaDeTresEnderecos.append(('ret', 'null', 'null'))
+
             return temp
 
         # ESCOPO OK
@@ -436,6 +457,7 @@ class Parser:
                 # o que tem dentro da variavel
                 self.end_var_statement(tempEndVar)
                 temp.append(tempEndVar)
+
                 if self.tokenAtual().tipo == "SEMICOLON":
                     self.indexDaTabelaDeTokens += 1
                     self.tabelaDeSimbolos.append(temp)
@@ -449,6 +471,9 @@ class Parser:
                     "Erro sintatico: falta da atribuição na linha "
                     + str(self.tokenAtual().linha)
                 )
+
+            #  TRES END
+            self.tabelaDeTresEnderecos.append(('mov', temp[3], 'temp'))
         else:
             raise Exception(
                 "Erro sintatico: falta do ID na linha " +
@@ -612,6 +637,18 @@ class Parser:
                                 temp.append(tempParenteses)
                                 if self.tokenAtual().tipo == "PRIGHT":
                                     self.indexDaTabelaDeTokens += 1
+
+                                    #  INICIO TAB 3 END
+                                    nomeDaFuncao = temp[4]
+                                    paramsDaFuncao = temp[5]
+
+                                    self.tabelaDeTresEnderecos.append(
+                                        ('label', nomeDaFuncao, 'null'))
+
+                                    for param in paramsDaFuncao:
+                                        self.tabelaDeTresEnderecos.append(
+                                            ('pop', param[2], 'null'))
+
                                     if self.tokenAtual().tipo == "CLEFT":
                                         # Armazendando o escopo antes de entrar na função
                                         self.indexEscopoAntesDaFuncao = (
@@ -655,6 +692,10 @@ class Parser:
                                                     # Adiciona na tabela de símbolos
                                                     self.tabelaDeSimbolos.append(
                                                         temp)
+                                                    self.tabelaDeTresEnderecos.append(
+                                                        ('push', self.tempTresEnderecos, 'null'))
+                                                    self.tabelaDeTresEnderecos.append(
+                                                        ('ret', 'null', 'null'))
                                                 else:
                                                     raise Exception(
                                                         "Erro sintatico: falta do ponto e vírgula na linha "
@@ -768,6 +809,25 @@ class Parser:
                         if self.tokenAtual().tipo == "PRIGHT":
                             temp.append(tempParenteses)
                             self.indexDaTabelaDeTokens += 1
+
+                            exit(0)
+
+                            #  INICIO TAB 3 END
+                            nomeDaFuncao = temp[4]
+                            paramsDaFuncao = temp[5]
+
+                            self.tabelaDeTresEnderecos.append(
+                                ('label', nomeDaFuncao, 'null'))
+
+                            for param in paramsDaFuncao:
+                                self.tabelaDeTresEnderecos.append(
+                                    ('pop', param[2], 'null'))
+
+                            self.tabelaDeTresEnderecos.append(
+                                ('push', self.tempTresEnderecos, 'null'))
+                            self.tabelaDeTresEnderecos.append(
+                                ('ret', 'null', 'null'))
+
                             if self.tokenAtual().tipo == "CLEFT":
                                 self.indexEscopoAntesDaFuncao = self.indexEscopoAtual
                                 self.indexEscopoAtual += 1
@@ -866,6 +926,8 @@ class Parser:
             or (self.tokenAtual().tipo == "ID")
         ):
             tempReturnParams.append(self.tokenAtual().lexema)
+            # TRES END
+            self.tempTresEnderecos = tempReturnParams[0]
             self.indexDaTabelaDeTokens += 1
             if self.tokenAtual().tipo == "SEMICOLON":
                 self.indexDaTabelaDeTokens += 1
@@ -1270,6 +1332,11 @@ class Parser:
         if self.tokenAtual().tipo == "PLEFT":
             tempParams = []
             temp.append(self.params_print_statement(tempParams))
+
+            # TRES END
+
+            self.tabelaDeTresEnderecos.append(
+                ('print', self.tempTresEnderecos, 'null'))
             if self.tokenAtual().tipo == "PRIGHT":
                 self.indexDaTabelaDeTokens += 1
                 if self.tokenAtual().tipo == "SEMICOLON":
@@ -1688,6 +1755,19 @@ class Parser:
             ):
                 tempEndVar.append(self.tokenAtual().lexema)
                 self.call_op_statement(tempEndVar)
+
+                # TRES END - OP
+
+                expressaoTratada = arvoreExpressao(tempEndVar)
+
+                var = expressaoTresEnderecos(expressaoTratada)
+
+                self.tabelaDeTresEnderecos.extend(var)
+
+                # [ 2 * [1 + 1]]
+                # ('Mov', temp, 1)
+                # ('Add', temp, 1)
+                # ('Mult', temp, 2)
             else:
                 return
         else:
