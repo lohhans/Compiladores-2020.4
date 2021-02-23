@@ -1,13 +1,23 @@
 program {
-    
-    int b = 10;
+
+    bool a = False;
+
+ } end
+
+
+    int ba = 10;
     bool c = True;
+
+    bool a = False;
+
+    int e = 0;
+
+    int d = ba;
 
     func int teste(int c, int b){
         print(b);
+        int f = b; -> Corrigir
         return 1;
     };
 
-    int a = call func teste(b, c);
-    
- } end
+    bool a = call func teste(b, c); -> Corrigir

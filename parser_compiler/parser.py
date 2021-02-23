@@ -1792,12 +1792,19 @@ class Parser:
                                                 # Conferir se a variavel está declarada no escopo/linha menor ou igual
                                                 if (varDeclaradaNaTabela[0] <= tabelaNoIndiceAtual[0]
                                                     ) and (varDeclaradaNaTabela[1] <= tabelaNoIndiceAtual[1]):
-                                                    # Verifica qual o tipo de retorno da função declarada
-                                                    if self.tabelaDeSimbolos[k][3] == "INT":
-                                                        return True
+                                                    # Verifica se ta passando variaveis com tipo certo nos parametros
+                                                    if(varDeclaradaNaTabela[2] == self.tabelaDeSimbolos[k][5][n][1]):
+                                                        # Verifica qual o tipo de retorno da função declarada
+                                                        if self.tabelaDeSimbolos[k][3] == "INT":
+                                                            return True
+                                                        else:
+                                                            raise Exception(
+                                                                "Erro Semântico: int não recebe int na linha: "
+                                                                + str(tabelaNoIndiceAtual[1])
+                                                            )
                                                     else:
                                                         raise Exception(
-                                                            "Erro Semântico: int não recebe int na linha: "
+                                                            "Erro Semântico: tipo de variáveis incompativéis nos parametros na linha: "
                                                             + str(tabelaNoIndiceAtual[1])
                                                         )
                                                 else:
@@ -1836,7 +1843,7 @@ class Parser:
 
             # Caso 'int b = a'; se 'int a' for declarado já
             # <identifier>
-            if simbolo.isalpha():
+            if simbolo.isalpha() and simbolo != 'True' and simbolo != 'False':
                 # Buscar se o 'a' foi declarado
                 varDeclarada = self.buscarNaTabelaDeSimbolos(
                     tabelaNoIndiceAtual[5][0], 3
@@ -1875,10 +1882,11 @@ class Parser:
                     + str(tabelaNoIndiceAtual[1])
                 )
 
-        if tabelaNoIndiceAtual[1] == "BOOL":
+        # Se var for bool
+        if tabelaNoIndiceAtual[2] == "BOOL":
             # Exemplo: Caso se 'int b = True';
             #  <boolean>
-            simbolo = tabelaNoIndiceAtual[4][0]
+            simbolo = tabelaNoIndiceAtual[5][0]
             if simbolo == "True" or simbolo == "False":
                 return True
 
@@ -1886,12 +1894,18 @@ class Parser:
             if simbolo == "CALL":
                 return True
 
+            if simbolo.isnumeric():
+                raise Exception(
+                    "Erro Semântico: variável do tipo boolean não recebe boolean na linha: "
+                    + str(tabelaNoIndiceAtual[1])
+                )
+
             # TODO: Fazer semantico caso 'int e = a + d;' 'int f = 1 + 2;' (Expressão aritmética)
             # <call_op>
 
             # Caso 'bool b = a'; se 'bool a' for declarado já
             # <identifier>
-            if simbolo.isalpha():
+            if simbolo.isalpha() and simbolo != 'True' and simbolo != 'False':
                 # Buscar se o 'a' foi declarado
                 varDeclarada = self.buscarNaTabelaDeSimbolos(
                     tabelaNoIndiceAtual[5][0], 3
@@ -1905,7 +1919,13 @@ class Parser:
                     ):
                         # Verificar se 'a' é bool
                         if varDeclarada[2] == "BOOL":
-                            return True
+                            if (varDeclarada[5][0] == 'True' or varDeclarada[5][0] == 'False'):
+                                return True
+                            else:
+                                raise Exception(
+                                    "Erro Semântico: variável do tipo boolean não recebe boolean na linha: "
+                                    + str(tabelaNoIndiceAtual[1])
+                                )
                         # Se não, 'bool b', não pode receber 'a'
                         else:
                             raise Exception(
@@ -1940,7 +1960,6 @@ class Parser:
                 self.tabelaDeSimbolos[k][2] == "INT"
                 or self.tabelaDeSimbolos[k][2] == "BOOL"
             ):
-                print
                 # Verificando se há duas var. com msm nome
                 if self.tabelaDeSimbolos[k][3] == simbolo[3]:
                     # Se houver, verifica se a variavel está visivel no
