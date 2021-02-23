@@ -1,8 +1,13 @@
 program {
 
-    func int name(int a, int vdd){
-        a = 1;
-        return 1;
+    int b = 10;
+    bool c = False;
+
+    func int me(int a, int vdd){
+        a = b;
+        return 0;
     };
+
+    call func me(b, c);
 
  } end

@@ -1728,7 +1728,6 @@ class Parser:
 
     # TODO: Não finalizado (faltam expressões e funções)
     def declaration_var_semantico(self, tabelaNoIndiceAtual):
-        print('caiu aq')
         # Se var for int
         if tabelaNoIndiceAtual[2] == "INT":
             simbolo = tabelaNoIndiceAtual[5][0]
@@ -1739,8 +1738,51 @@ class Parser:
 
             # TODO: Caso se 'int b = call func a();' se o return de func for int
             # <call_func>
-            
+            if simbolo == "CALL":
+                if tabelaNoIndiceAtual[5][1] == "FUNC":
+                    for k in range(len(self.tabelaDeSimbolos)):
+                        # Procura na tabela de simbolos alguma declaração de Função
+                        if self.tabelaDeSimbolos[k][2] == "FUNC":
+                            # Vê se alguma função declarada tem o mesmo nome da função da variável
+                            print(self.tabelaDeSimbolos[k][4])
+                            if self.tabelaDeSimbolos[k][4] == tabelaNoIndiceAtual[5][2]:
+                                # Conferir se a função está declarada no escopo/linha menor ou igual
+                                if (
+                                    self.tabelaDeSimbolos[k][0]
+                                    <= tabelaNoIndiceAtual[0]
+                                ) and (
+                                    self.tabelaDeSimbolos[k][1]
+                                    <= tabelaNoIndiceAtual[1]
+                                ):
+                                    # Verificar a quantidade de parametros da função declarada com a função passada
+                                    print
+                                    if len(self.tabelaDeSimbolos[k][4]) == len(
+                                        tabelaNoIndiceAtual[8]
+                                    ):
+                                        # Verifica qual o tipo de retorno da função declarada
+                                        if self.tabelaDeSimbolos[k][3] == "INT":
+                                            return True
+                                        else:
+                                            raise Exception(
+                                                "Erro Semântico: int não recebe int na linha: "
+                                                + str(tabelaNoIndiceAtual[1])
+                                            )
+                                else:
+                                    raise Exception(
+                                        "Erro Semântico: função não declarada na linha: "
+                                        + str(tabelaNoIndiceAtual[1])
+                                    )
 
+                            else:
+                                raise Exception(
+                                    "Erro Semântico: função não declarada na linha: "
+                                    + str(tabelaNoIndiceAtual[1])
+                                )
+                else:
+                    raise Exception(
+                        "Erro Semântico: variável não pode receber procedimento na linha: "
+                        + str(tabelaNoIndiceAtual[1])
+                    )
             # TODO: Fazer semantico caso 'int e = a + d;' 'int f = 1 + 2;' (Expressão aritmética)
             # <call_op>
 
@@ -1762,7 +1804,7 @@ class Parser:
                         if varDeclarada[2] == "INT":
                             return True
                         # Se não, 'int b', não pode receber 'a'
-                        elif varDeclarada[2] == "BOOL":
+                        else:
                             raise Exception(
                                 "Erro Semântico: variável do tipo int não recebe int na linha: "
                                 + str(tabelaNoIndiceAtual[1])
@@ -1781,7 +1823,7 @@ class Parser:
                     )
             else:
                 raise Exception(
-                    "Erro Semântico, variável do tipo inteiro não recebe inteiro na linha: "
+                    "Erro Semântico: variável do tipo inteiro não recebe inteiro na linha: "
                     + str(tabelaNoIndiceAtual[1])
                 )
 
@@ -1818,7 +1860,7 @@ class Parser:
                         if varDeclarada[2] == "BOOL":
                             return True
                         # Se não, 'bool b', não pode receber 'a'
-                        elif varDeclarada[2] == "INT":
+                        else:
                             raise Exception(
                                 "Erro Semântico: variável do tipo boolean não recebe boolean na linha: "
                                 + str(tabelaNoIndiceAtual[1])
