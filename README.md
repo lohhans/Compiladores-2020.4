@@ -1,5 +1,10 @@
 # Compiladores-2020.4
 
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![AGPL-3.0 License][license-shield]][license-url]
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/b2473ced6948471386eb0d3564a336f2)](https://www.codacy.com/gh/lohhans/Compiladores-2020.4/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=lohhans/Compiladores-2020.4&amp;utm_campaign=Badge_Grade)
 
 ## Desenvolvido por
@@ -62,3 +67,13 @@ Para acessar a gramática, [clique aqui][gramatica]
 [ufape]: http://www.ufape.edu.br/br/node/409
 [professora]: https://sites.google.com/site/maasibaldo/home
 [gramatica]: https://github.com/lohhans/Compiladores-2020.4/blob/main/Gram%C3%A1tica.bnf
+[contributors-shield]: https://img.shields.io/github/contributors/lohhans/Compiladores-2020.4.svg?style=flat-square
+[contributors-url]: https://github.com/lohhans/Compiladores-2020.4/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/lohhans/Compiladores-2020.4.svg?style=flat-square
+[forks-url]: https://github.com/lohhans/Compiladores-2020.4/network/members
+[stars-shield]: https://img.shields.io/github/stars/lohhans/Compiladores-2020.4.svg?style=flat-square
+[stars-url]: https://github.com/lohhans/Compiladores-2020.4/stargazers
+[issues-shield]: https://img.shields.io/github/issues/lohhans/Compiladores-2020.4.svg?style=flat-square
+[issues-url]: https://github.com/lohhans/Compiladores-2020.4/issues
+[license-shield]: https://img.shields.io/github/license/lohhans/Compiladores-2020.4.svg?style=flat-square
+[license-url]: https://github.com/lohhans/Compiladores-2020.4/blob/master/LICENSE
